@@ -44,7 +44,7 @@ MySceneGraph.prototype.onXMLReady=function()
 	this.scene.onGraphLoaded();
 
 };
-
+//Function that Returns a CGFCamera() using the defaultCameraID
 MySceneGraph.prototype.getCamera = function(){
 	
 	var view = this.views[this.defaultCameraID];
@@ -53,7 +53,7 @@ MySceneGraph.prototype.getCamera = function(){
 
 }
 
-
+//Function that get a vector3 from an Element
 MySceneGraph.prototype.getVector3FromElement = function (element){
 	
 	var point = {
@@ -75,6 +75,7 @@ MySceneGraph.prototype.getVector3FromElement = function (element){
 	return point;
 }
 
+//Function that Returns a string with the values of a vector3
 MySceneGraph.prototype.printVector3 = function (vector){
 
 	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " )"; 
@@ -82,6 +83,14 @@ MySceneGraph.prototype.printVector3 = function (vector){
 
 }
 
+/*Function to parse the element: Prespective
+Parses the following attributes:
+	near : ff 
+	far : ff
+	angle : ff
+	from : vector3
+	to : vector3
+*/
  MySceneGraph.prototype.parsePerspective = function(element){
 
 	if(element == null)
@@ -99,7 +108,12 @@ MySceneGraph.prototype.printVector3 = function (vector){
 	console.log("View Added: near: " + view.near + " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
 	this.views[element.id] = view; 
 }
- 
+/* Function to parse the element: Views
+Parses the following attributes:
+	default : ss - defaultCameraID
+And the following elements:
+	prespective :
+*/
 MySceneGraph.prototype.parseViews = function(rootElement){
 	
 	var elems = rootElement.getElementsByTagName('views');
@@ -132,8 +146,6 @@ MySceneGraph.prototype.parseViews = function(rootElement){
  * Example of method that parses elements of one block and stores information in a specific data structure
  */
  
-
-
 MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 	
 	var elems =  rootElement.getElementsByTagName('globals');
