@@ -1,4 +1,3 @@
-
 function XMLscene() {
     CGFscene.call(this);
 }
@@ -34,7 +33,9 @@ XMLscene.prototype.initLights = function () {
 };
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500,
+    							vec3.fromValues(15, 15, 15),
+    							vec3.fromValues(0, 0, 0));
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
@@ -48,8 +49,20 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.gl.clearColor(this.graph.background.r,this.graph.background.g,this.graph.background.b,this.graph.background.a);
-	this.setAmbient(this.graph.ambient.r, this.graph.ambient.g, this.graph.ambient.b, this.graph.ambient.a);
+	this.gl.clearColor(	this.graph.illumination.background.r,
+						this.graph.illumination.background.g,
+						this.graph.illumination.background.b,
+						this.graph.illumination.background.a);
+	
+	this.setAmbient(	this.graph.illumination.ambient.r,
+						this.graph.illumination.ambient.g,
+						this.graph.illumination.ambient.b,
+						this.graph.illumination.ambient.a);
+
+	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.05);
+	
+	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
+
 	this.camera = this.graph.getCamera();
 
 };

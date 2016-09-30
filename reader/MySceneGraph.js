@@ -1,10 +1,10 @@
-
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
 	
-	this.ambient = {r: 0.1, g: 0.1, b: 0.1, a: 1}; 
-	this.background = {r: 0, g: 0, b: 0, a: 1};
-	this.views = {}
+	this.illumination = { 	ambient : {r: 0.1, g: 0.1, b: 0.1, a: 1} ,
+							background : {r: 0, g: 0, b: 0, a: 1}};
+	this.views = { default : "" , childs : {}};
+	this.sceneInfo = { root : "", axis_length : 0.0};
 
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
@@ -30,6 +30,14 @@ MySceneGraph.prototype.checkError=function(error){
 } 
 
 /*
+ * Callback to be executed on any read error
+ */
+MySceneGraph.prototype.onXMLError=function (message) {
+	console.error("XML Loading Error: "+message);	
+	this.loadedOk=false;
+}
+
+/*
  * Callback to be executed after successful reading
  */
 MySceneGraph.prototype.onXMLReady=function() 
@@ -38,15 +46,12 @@ MySceneGraph.prototype.onXMLReady=function()
 	var rootElement = this.reader.xmlDoc.documentElement;
 	
 	// Here should go the calls for different functions to parse the various blocks
-	//var error = this.parseGlobalsExample(rootElement);
-
-	//var error = this.parseViews(rootElement);
+	if(this.checkError(this.parseScene(rootElement)))
+		return;
 	if(this.checkError(this.parseViews(rootElement)))
 		return;
 	if(this.checkError(this.parseIllumination(rootElement)))
 		return;
-	
-	//this.parseIllumination(rootElement);	
 
 	this.loadedOk=true;
 	
@@ -54,14 +59,16 @@ MySceneGraph.prototype.onXMLReady=function()
 	this.scene.onGraphLoaded();
 
 };
+
 //Function that Returns a CGFCamera() using the defaultCameraID
 MySceneGraph.prototype.getCamera = function(){
 	
-	var view = this.views[this.defaultCameraID];
+	var view = this.views.childs[this.views.default];
 
 	return new CGFcamera(view.angle, view.near, view.far, vec3.fromValues(view.from.x, view.from.y, view.from.z), vec3.fromValues(view.to.x, view.to.y, view.to.z));
 
 }
+
 //--------------------------
 //-----------HELPERS--------
 //--------------------------
@@ -121,10 +128,66 @@ MySceneGraph.prototype.printVector3 = function (vector){
 
 }
 //[/VECTOR3]
+
+//[VECTOR4]
+//Function that get a vector4 from an Element
+MySceneGraph.prototype.getVector4FromElement = function (element){
+	
+	var point = {
+		x : 0,
+		y : 0,
+		z : 0,
+		w : 1.0
+	};
+	
+	if(element == null)
+		return point;
+	
+	point.x = this.reader.getFloat(element, "x");
+	point.y = this.reader.getFloat(element, "y");
+	point.z = this.reader.getFloat(element, "z");
+	point.w = this.reader.getFloat(element, "w");
+
+	return point;
+}
+
+//Function that Returns a string with the values of a vector4
+MySceneGraph.prototype.printVector4 = function (vector){
+
+	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " W: " + vector.w + " )"; 
+	return res;
+
+}
+//[/VECTOR4]
+
 //***************************
 //************HELPERS********
 //***************************
+//---------------------------
+//-----------<SCENE>---------
+//---------------------------
+/* Function to parse the element: Scene
+Parses the following attributes:
+	root : ss - name of rootElement
+	axis_length : ff - length of the scenes axis
+*/
+MySceneGraph.prototype.parseScene = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('scene');
+	
+	if(elems == null || elems.length != 1){
+		return "scene element is MISSING or more than one element";
+	}
 
+	var scene = elems[0];
+	this.sceneInfo.root = this.reader.getString(scene,'root');
+	this.sceneInfo.axis_length = this.reader.getFloat(scene,'axis_length');
+	console.log("Root Name is : " + this.sceneInfo.root + " Axis length is: " + this.sceneInfo.axis_length);
+}
+
+//***************************
+//************</SCENE>*******
+//***************************
 //---------------------------
 //-----------<VIEWS>---------
 //---------------------------
@@ -144,6 +207,7 @@ Parses the following attributes:
 
 	var from = element.getElementsByTagName("from")[0];
 	var to = element.getElementsByTagName("to")[0];
+	//Check de erro (TODO)
 	var view = {
 		near : this.reader.getFloat(element, "near") || 0.0,
 		far : this.reader.getFloat(element, "far") || 0.0, 
@@ -152,7 +216,7 @@ Parses the following attributes:
 		to :  this.getVector3FromElement(to)
 	};
 	console.log("View Added: near: " + view.near + " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
-	this.views[element.id] = view; 
+	this.views.childs[element.id] = view;
 }
 /* Function to parse the element: Views
 Parses the following attributes:
@@ -169,9 +233,9 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 	}
 
 	var views = elems[0];
-	this.defaultCameraID = this.reader.getString(views,'default');
+	this.views.default = this.reader.getString(views,'default');
 
-	console.log("Default View is: " + this.defaultCameraID);
+	console.log("Default View is: " + this.views.default);
 	
 	var nNodes = views.children.length;
 	
@@ -204,30 +268,30 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 	var elems = rootElement.getElementsByTagName('illumination');
 	
 	if(elems == null || elems.length != 1){
-		return "illumination element is MISSING or more than one element";
+		return "Illumination element is MISSING or more than one element";
 	}
 
-	var illumination = elems[0];
-	this.illumDoubleSided = this.reader.getInteger(illumination, "doublesided");
-	this.illumLocal = this.reader.getInteger(illumination, "local");
+	var illum = elems[0];
+	this.illumination.doubleSided = this.reader.getInteger(illum, "doublesided");
+	this.illumination.local = this.reader.getInteger(illum, "local");
 	
-	console.log("Illum DoubleSided is: " + this.illumDoubleSided  + " Illum Local" + this.illumLocal + "\n");
+	console.log("Illum DoubleSided is: " + this.illumination.doubleSided  + " Illum Local" + this.illumination.local + "\n");
 
-	var nNodes = illumination.children.length;
+	var nNodes = illum.children.length;
 	
 	for(var i = 0; i < nNodes; i++){
-		var child = illumination.children[i];
+		var child = illum.children[i];
 		switch(child.tagName){
 			case "background":
-				this.background = this.getRGBAFromElement(child);
+				this.illumination.background = this.getRGBAFromElement(child);
 				break;
 			case "ambient":
-				this.ambient = this.getRGBAFromElement(child);
+				this.illumination.ambient = this.getRGBAFromElement(child);
 				break;
 		}	
 	}
 
-	console.log("BG:" + this.printRGBA(this.background) + " , Ambient: " + this.printRGBA(this.ambient));
+	console.log("BG:" + this.printRGBA(this.illumination.background) + " , Ambient: " + this.printRGBA(this.illumination.ambient));
 
 }
 
@@ -235,8 +299,7 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 //*******</illumination>*****
 //***************************
 
-/*
- * Example of method that parses elements of one block and stores information in a specific data structure
+/** Example of method that parses elements of one block and stores information in a specific data structure
  
  
 MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
@@ -277,15 +340,4 @@ MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 		console.log("Read list item id "+ e.id+" with value "+this.list[e.id]);
 	};
 
-};
-	
-/*
- * Callback to be executed on any read error
- */
- 
-MySceneGraph.prototype.onXMLError=function (message) {
-	console.error("XML Loading Error: "+message);	
-	this.loadedOk=false;
-};
-
-
+}*/
