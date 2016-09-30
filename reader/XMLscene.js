@@ -20,6 +20,8 @@ XMLscene.prototype.init = function (application) {
 	this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
 
+    this.enableTextures(false);
+
 	this.axis=new CGFaxis(this);
 };
 
@@ -28,7 +30,7 @@ XMLscene.prototype.initLights = function () {
 	this.lights[0].setPosition(2, 3, 3, 1);
     this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
     this.lights[0].update();
-    
+
 };
 
 XMLscene.prototype.initCameras = function () {
@@ -46,8 +48,10 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.gl.clearColor(this.graph.background[0],this.graph.background[1],this.graph.background[2],this.graph.background[3]);
+	this.gl.clearColor(this.graph.background.r,this.graph.background.g,this.graph.background.b,this.graph.background.a);
+	this.setAmbient(this.graph.ambient.r, this.graph.ambient.g, this.graph.ambient.b, this.graph.ambient.a);
 	this.camera = this.graph.getCamera();
+
 };
 
 XMLscene.prototype.display = function () {

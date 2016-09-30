@@ -2,8 +2,8 @@
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
 	
-	this.ambient = [0.1,0.1,0.1,1]; 
-	this.background = [0,0,0,1];
+	this.ambient = {r: 0.1, g: 0.1, b: 0.1, a: 1}; 
+	this.background = {r: 0, g: 0, b: 0, a: 1};
 	this.views = {}
 
 	// Establish bidirectional references between scene and graph
@@ -22,6 +22,13 @@ function MySceneGraph(filename, scene) {
 	this.reader.open('scenes/'+filename, this);  
 }
 
+MySceneGraph.prototype.checkError=function(error){
+	if (error != null) {
+		this.onXMLError(error);
+		return 1;
+	}
+} 
+
 /*
  * Callback to be executed after successful reading
  */
@@ -33,12 +40,13 @@ MySceneGraph.prototype.onXMLReady=function()
 	// Here should go the calls for different functions to parse the various blocks
 	//var error = this.parseGlobalsExample(rootElement);
 
-	var error = this.parseViews(rootElement);
-	
-	if (error != null) {
-		this.onXMLError(error);
+	//var error = this.parseViews(rootElement);
+	if(this.checkError(this.parseViews(rootElement)))
 		return;
-	}	
+	if(this.checkError(this.parseIllumination(rootElement)))
+		return;
+	
+	//this.parseIllumination(rootElement);	
 
 	this.loadedOk=true;
 	
@@ -54,7 +62,38 @@ MySceneGraph.prototype.getCamera = function(){
 	return new CGFcamera(view.angle, view.near, view.far, vec3.fromValues(view.from.x, view.from.y, view.from.z), vec3.fromValues(view.to.x, view.to.y, view.to.z));
 
 }
+//--------------------------
+//-----------HELPERS--------
+//--------------------------
 
+//[RGBA]
+MySceneGraph.prototype.getRGBAFromElement = function(element){
+
+	var color = {
+		r : 0,
+		g : 0,
+		b : 0,
+		a : 1
+	}
+	if(element == null)
+		return color;
+
+	color.r = this.reader.getFloat(element, "r");
+	color.g = this.reader.getFloat(element, "g");
+	color.b = this.reader.getFloat(element, "b");
+	color.a = this.reader.getFloat(element, "a");
+
+	return color;
+}
+
+MySceneGraph.prototype.printRGBA = function(element){
+	
+	return ("(R: " + element.r + " , G: " + element.g + " , B: " + element.b + " , A: " + element.a + " )" ); 
+}
+
+//[/RGBA]
+
+//[VECTOR3]
 //Function that get a vector3 from an Element
 MySceneGraph.prototype.getVector3FromElement = function (element){
 	
@@ -80,6 +119,14 @@ MySceneGraph.prototype.printVector3 = function (vector){
 	return res;
 
 }
+//[/VECTOR3]
+//***************************
+//************HELPERS********
+//***************************
+
+//---------------------------
+//-----------<VIEWS>---------
+//---------------------------
 
 /*Function to parse the element: Prespective
 Parses the following attributes:
@@ -133,10 +180,59 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 			case "perspective":
 				this.parsePerspective(child);
 				break;
-		}
-		
+		}	
 	}
 }
+//**************************
+//***********</VIEWS>*******
+//**************************
+
+
+//---------------------------
+//-------<illumination>------
+//---------------------------
+
+
+/* Function to parse the element: illumination
+Parses the following elements:
+	ambient : rgb 
+	background : rgb
+*/
+MySceneGraph.prototype.parseIllumination = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('illumination');
+	
+	if(elems == null || elems.length != 1){
+		return "illumination element is MISSING or more than one element";
+	}
+
+	var illumination = elems[0];
+	this.illumDoubleSided = this.reader.getInteger(illumination, "doublesided");
+	this.illumLocal = this.reader.getInteger(illumination, "local");
+	
+	console.log("Illum DoubleSided is: " + this.illumDoubleSided  + " Illum Local" + this.illumLocal + "\n");
+
+	var nNodes = illumination.children.length;
+	
+	for(var i = 0; i < nNodes; i++){
+		var child = illumination.children[i];
+		switch(child.tagName){
+			case "background":
+				this.background = this.getRGBAFromElement(child);
+				break;
+			case "ambient":
+				this.ambient = this.getRGBAFromElement(child);
+				break;
+		}	
+	}
+
+	console.log("BG:" + this.printRGBA(this.background) + " , Ambient: " + this.printRGBA(this.ambient));
+
+}
+
+//***************************
+//*******</illumination>*****
+//***************************
 
 /*
  * Example of method that parses elements of one block and stores information in a specific data structure
