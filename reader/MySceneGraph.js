@@ -67,6 +67,7 @@ MySceneGraph.prototype.getCamera = function(){
 //--------------------------
 
 //[RGBA]
+//Function that get RGBA values from an Element
 MySceneGraph.prototype.getRGBAFromElement = function(element){
 
 	var color = {
@@ -85,7 +86,7 @@ MySceneGraph.prototype.getRGBAFromElement = function(element){
 
 	return color;
 }
-
+//Function that Returns a string with the values of a RGBA structure
 MySceneGraph.prototype.printRGBA = function(element){
 	
 	return ("(R: " + element.r + " , G: " + element.g + " , B: " + element.b + " , A: " + element.a + " )" ); 
