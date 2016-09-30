@@ -2,7 +2,7 @@
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
 	
-	this.ambient = [0,0,0,1]; 
+	this.ambient = [0.1,0.1,0.1,1]; 
 	this.background = [0,0,0,1];
 	this.views = {}
 
@@ -31,8 +31,10 @@ MySceneGraph.prototype.onXMLReady=function()
 	var rootElement = this.reader.xmlDoc.documentElement;
 	
 	// Here should go the calls for different functions to parse the various blocks
-	var error = this.parseGlobalsExample(rootElement);
+	//var error = this.parseGlobalsExample(rootElement);
+
 	var error = this.parseViews(rootElement);
+	
 	if (error != null) {
 		this.onXMLError(error);
 		return;
@@ -62,16 +64,12 @@ MySceneGraph.prototype.getVector3FromElement = function (element){
 		z : 0
 	};
 	
-
-
 	if(element == null)
 		return point;
 	
 	point.x = this.reader.getFloat(element, "x");
 	point.y = this.reader.getFloat(element, "y");
 	point.z = this.reader.getFloat(element, "z");
-	
-
 	return point;
 }
 
@@ -140,11 +138,9 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 	}
 }
 
-
-
 /*
  * Example of method that parses elements of one block and stores information in a specific data structure
- */
+ 
  
 MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 	
