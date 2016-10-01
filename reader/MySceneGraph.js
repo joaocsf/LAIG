@@ -9,6 +9,7 @@ function MySceneGraph(filename, scene) {
 	this.lightIndex = 0;
 	this.textures = {};
 	this.materials = {};
+	this.transformations = {};
 	this.primitives = {};
 	this.components = {};
 
@@ -69,6 +70,8 @@ MySceneGraph.prototype.onXMLReady=function()
 	if(this.checkError(this.parseTextures(rootElement)))
 		return;
 	if(this.checkError(this.parseMaterials(rootElement)))
+		return;
+	if(this.checkError(this.parseTransformations(rootElement)))
 		return;
 	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
@@ -141,6 +144,51 @@ MySceneGraph.prototype.getRGBAFromElement = function(element){
 	color.a = this.reader.getFloat(element, "a");
 
 	return color;
+}
+
+//Function that computes the transformation matrix of a given transformation list
+MySceneGraph.prototype.ComputeTransformation = function(element){
+
+	var childs = this.element.getChildren();
+	
+    var trans = [	1.0, 0.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0];
+
+	for(i = 0; i < childs.length ; i++){
+		var child = childs[i];
+		switch(child.tagName){
+			case 'translate':
+				var translation = this.getVector3FromElement(child);
+				console.log("Read translation : " + this.printVector3(translation));
+				mat4.translate(trans,trans,[translation.x,translation.y,translation.z]);
+				break;
+			case 'rotate' :
+				var rotate_axis = child.getElementsByTagName('axis');
+				var rotate_angle = child.getElementsByTagName('angle');
+				console.log("Read rotatation with axis : " + rotate_axis + " angle : " + rotate_angle);
+				switch(rotate_axis){
+					case 'x':
+						mat4.rotate(trans,trans,rotate_angle,[1,0,0]);
+						break;
+					case 'y':
+						mat4.rotate(trans,trans,rotate_angle,[0,1,0]);
+						break;
+					case 'z':
+						mat4.rotate(trans,trans,rotate_angle[0,0,1]);
+						break;
+				}
+				break;
+			case 'scale' :
+			 	var scaling = this.getVector3FromElement(child);
+			 	console.log("Read scaling : " + this.printVector3(scaling));
+			 	mat4.scale(trans,trans,[scaling.x,scaling.y,scaling.z]);
+				break;	
+		}
+	}
+
+	return trans;
 }
 //Function that Returns a string with the values of a RGBA structure
 MySceneGraph.prototype.printRGBA = function(element){
@@ -601,6 +649,55 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 
 //***************************
 //*******</materials>********
+//***************************
+
+//---------------------------
+//-------<transformations>---
+//---------------------------
+
+/*Function to parse the element: Material
+Parses the following attributes:
+	emission : rgba 
+	ambient : rgba
+	diffuse : rgba
+	specular : rgba
+	shininess : ff
+*/
+ MySceneGraph.prototype.parseTransformation = function(element){
+
+	if(element == null)
+		return;
+	console.log("Reading transformation " + element.id);	
+	var trans = this.ComputeTransformation(element);
+
+	this.transformations[element.id] = trans;
+	//Check de erro (TODO)
+}
+/* Function to parse the element: Materials
+Parses the following elements:
+	material :
+*/
+MySceneGraph.prototype.parseTransformations = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('transformations');
+
+	if(elems == null || elems.length != 1){
+		return "Transformation element is MISSING or more than one element!";
+	}
+
+	if(elems[0].children.length < 1)
+		return "There should be at least 1 or more transformation blocks";
+
+	var transformations = elems[0];
+	
+	var nNodes = transformations.children.length;
+	
+	for(var i = 0; i < nNodes; i++)
+		this.parseTransformation(transformations.children[i]);
+}
+
+//***************************
+//*******</transformation>***
 //***************************
 //--------------------------------
 //-----------<PRIMITIVES>---------
