@@ -26,9 +26,11 @@ XMLscene.prototype.init = function (application) {
 
 XMLscene.prototype.initLights = function () {
 
-	this.lights[0].setPosition(2, 3, 3, 1);
+	this.lights[0].setPosition(1, 2, 1, 1);
     this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
     this.lights[0].update();
+    this.lights[0].enable();
+
 
 };
 
@@ -62,9 +64,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.05);
 	
 	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
-
+	this.lights[0].setVisible(true);
 	this.camera = this.graph.getCamera();
-
 };
 
 XMLscene.prototype.display = function () {
@@ -93,7 +94,8 @@ XMLscene.prototype.display = function () {
 	// This is one possible way to do it
 	if (this.graph.loadedOk)
 	{
-		//this.lights[0].update();
+		for(var i = 0; i < this.lights.length; i++)
+			this.lights[i].update();
 	};	
 };
 

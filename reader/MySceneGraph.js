@@ -5,8 +5,8 @@ function MySceneGraph(filename, scene) {
 							background : {r: 0, g: 0, b: 0, a: 1}};
 	this.views = { default : "" , childs : {}};
 	this.sceneInfo = { root : "", axis_length : 0.0};
-	this.lights = [];
-
+	this.lights = {};
+	this.lightIndex = 0;
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
@@ -53,7 +53,9 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	if(this.checkError(this.parseIllumination(rootElement)))
 		return;
-
+	if(this.checkError(this.parseLights(rootElement)))
+		return;
+	
 	this.loadedOk=true;
 	
 	// As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
@@ -318,14 +320,15 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	if(element == null)
 		return;
 
-	var omni = new CGFlight(this.scene,this.reader.getFloat(element, "id") || "");
-
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
+	var omni = this.scene.lights[this.lightIndex];
 	
 	omni.disable();
+	omni.setVisible(true);
 	
+
 	if(enable == 1){
-		omni.enable();
+		this.scene.lights[this.lightIndex].enable();
 	}
 
 	var location = this.getVector4FromElement(element.getElementsByTagName("location")[0]);
@@ -340,10 +343,12 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
 	omni.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
+
 	//Check de erro (TODO)
-	console.log("Omni Added: id: " + omni.id + " enable : " + enabled + " location: " + this.printVector4(location) + " ambient: " + this.printVector4(ambient) + " diffuse: " + this.printVector4(diffuse) + " specular: " + this.printVector4(specular));
+	console.log("Omni Added: id: " + omni.id + " enable : " + enable + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 	
-	this.lights.push(omni);
+	this.lights[element.id] = this.scene.lights[this.lightIndex];
+	this.lightIndex++;
 	omni.update();
 
 }
@@ -364,8 +369,11 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	
 	if(element == null)
 		return;
+	var spot = this.scene.lights[this.lightIndex];
 
-	var spot = new CGFlight(this.scene,this.reader.getFloat(element, "id") || "");
+	spot.disable();
+	spot.setVisible(true);
+
 
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
 	
@@ -382,8 +390,8 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	spot.setSpotExponent(exponent);
 
 	var target = this.getVector3FromElement(element.getElementsByTagName("target")[0]);
-	var location = this.getVector4FromElement(element.getElementsByTagName("location")[0]);
-	spot.setPosition(location.x,location.y,location.z,location.w);
+	var location = this.getVector3FromElement(element.getElementsByTagName("location")[0]);
+	spot.setPosition(location.x,location.y,location.z,1);
 	var direction = {//Direction of the spot is target - location
 		x : target.x - location.x,
 		y : target.y - location.y,
@@ -401,9 +409,10 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	spot.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
 	//Check de erro (TODO)
-	console.log("Spot Added: id: " + spot.id + " enable : " + enabled + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector4(location) + " ambient: " + this.printVector4(ambient) + " diffuse: " + this.printVector4(diffuse) + " specular: " + this.printVector4(specular));
+	console.log("Spot Added: id: " + spot.id + " enable : " + enable + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 	
-	this.lights.push(spot);
+	this.lights[element.id] = spot;
+	this.lightIndex++;
 	spot.update();
 
 }
@@ -421,12 +430,11 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 		return "Lights element is MISSING or more than one element";
 	}
 
-	if(elems.children.length < 1){
-		return "Missing lights please specify at least one 'omni' and/or 'spot'";
-	}
-
 	var lights = elems[0];
 	
+	if(lights.children.length < 1){
+		return "Missing lights please specify at least one 'omni' and/or 'spot'";
+	}
 	var nNodes = lights.children.length;
 	
 	for(var i = 0; i < nNodes; i++){
