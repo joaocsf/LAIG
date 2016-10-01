@@ -96,7 +96,7 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 
 	this.setDefaultAppearance();
-	this.TEST.display();
+	
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph
