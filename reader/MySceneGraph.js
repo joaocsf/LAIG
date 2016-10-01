@@ -7,8 +7,13 @@ function MySceneGraph(filename, scene) {
 	this.sceneInfo = { root : "", axis_length : 0.0};
 	this.lights = {};
 	this.lightIndex = 0;
+	this.textures = {};
+	this.materials = {};
 	this.primitives = {};
 	this.components = {};
+
+
+
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
@@ -60,6 +65,10 @@ MySceneGraph.prototype.onXMLReady=function()
 	if(this.checkError(this.parseIllumination(rootElement)))
 		return;
 	if(this.checkError(this.parseLights(rootElement)))
+		return;
+	if(this.checkError(this.parseTextures(rootElement)))
+		return;
+	if(this.checkError(this.parseMaterials(rootElement)))
 		return;
 	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
@@ -488,7 +497,110 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 }
 
 //***************************
-//*******</lights>*****
+//*******</lights>***********
+//***************************
+
+//---------------------------
+//-------<textures>----------
+//---------------------------
+
+
+/* Function to parse the element: textures
+Parses the following attributes:
+	id : ss
+	file : ss
+	length_s : ff
+	length_t : ff
+*/
+MySceneGraph.prototype.parseTextures = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('textures');
+	
+	if(elems == null || elems.length != 1){
+		return "Textures element is MISSING or more than one element";
+	}
+
+	var texts = elems[0];
+
+	var nNodes = texts.children.length;
+	
+	for(var i = 0; i < nNodes; i++){
+		var child = texts.children[i];
+		var texture = {
+			id : this.reader.getString(child,"id"),
+			textData : new CGFtexture(this.scene,this.reader.getString(child,"file")),
+			length_s : this.reader.getFloat(child,"length_s"),
+			length_t : this.reader.getFloat(child,"length_t") 
+		};
+		console.log("Texture read with id: " + texture.id + " path: " + texture.textData.path + " length_s: " + texture.length_s + " length_t: " + texture.length_t);
+		this.textures[texture.id] = texture;
+	}
+}
+
+//***************************
+//*******</textures>*********
+//***************************
+
+//---------------------------
+//-------<materials>---------
+//---------------------------
+
+/*Function to parse the element: Material
+Parses the following attributes:
+	emission : rgba 
+	ambient : rgba
+	diffuse : rgba
+	specular : rgba
+	shininess : ff
+*/
+ MySceneGraph.prototype.parseMaterial = function(element){
+
+	if(element == null)
+		return;
+
+	var emission = this.getRGBAFromElement(element.getElementsByTagName("emission")[0]);
+	var ambient = this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
+	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
+	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
+	var shininess = this.reader.getFloat(element.getElementsByTagName("shininess")[0],"value");
+
+	console.log("Material read with id: " + element.id + " emission: " + this.printRGBA(emission) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular) + " shininess: " + shininess);
+	
+	var appear = new CGFappearance(this.scene);
+	appear.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+	appear.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+	appear.setEmission(emission.r,emission.g,emission.b,emission.a);
+	appear.setSpecular(specular.r,specular.g,specular.b,specular.a);
+	appear.setShininess(shininess);
+
+	this.materials[element.id] = appear;
+	//Check de erro (TODO)
+}
+/* Function to parse the element: Materials
+Parses the following elements:
+	material :
+*/
+MySceneGraph.prototype.parseMaterials = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('materials');
+
+	if(elems[0] == null || elems[0].parentNode != rootElement){
+		return "Materials element is MISSING or more than one element and this block HAS to be prior to components block!";
+	}
+
+	if(elems[0].children.length < 1)
+		return "There should be at least 1 or more material blocks";
+
+	var materials = elems[0];
+	
+	var nNodes = materials.children.length;
+	
+	for(var i = 0; i < nNodes; i++)
+		this.parseMaterial(materials.children[i]);
+}
+
+//***************************
+//*******</materials>********
 //***************************
 //--------------------------------
 //-----------<PRIMITIVES>---------
