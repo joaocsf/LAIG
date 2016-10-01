@@ -8,6 +8,7 @@ function MySceneGraph(filename, scene) {
 	this.lights = {};
 	this.lightIndex = 0;
 	this.primitives = {};
+	this.components = {};
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
@@ -22,6 +23,10 @@ function MySceneGraph(filename, scene) {
 	 */
 	console.log("Opening Scene:" + filename);
 	this.reader.open('scenes/'+filename, this);  
+}
+
+MySceneGraph.prototype.getRoot = function(){
+	return this.components[this.sceneInfo.root];
 }
 
 MySceneGraph.prototype.checkError=function(error){
@@ -58,7 +63,11 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
+	if(this.checkError(this.parseComponents(rootElement)))
+		return;
 	
+	this.startAssociation();
+
 	this.loadedOk=true;
 	
 	// As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
@@ -75,6 +84,31 @@ MySceneGraph.prototype.getCamera = function(){
 
 }
 
+//--------------------------
+//--------INITIALIZE--------
+//--------------------------
+MySceneGraph.prototype.associateIDs = function(component){
+
+	for(var i = 0; i < component.componentsID.length; i++){
+		var key = component.componentsID[i];
+		component.components.push(this.components[key]);
+	}
+
+	for(var i = 0; i < component.primitivesID.length; i++){
+		var key = component.primitivesID[i];
+		component.primitives.push(this.primitives[key]);
+	}
+}
+MySceneGraph.prototype.startAssociation = function(element){
+	for(var key in this.components){
+		var component = this.components[key];
+
+		this.associateIDs(component);
+	}
+}
+//***************************
+//*********INITIALIZE********
+//***************************
 //--------------------------
 //-----------HELPERS--------
 //--------------------------
@@ -552,7 +586,107 @@ MySceneGraph.prototype.parseRectangle = function(element){
 //********************************
 //************</PRIMITIVES>*******
 //********************************
+//--------------------------------
+//-----------<COMPONENTS>---------
+//--------------------------------
+/* Function to parse the element: Components
+Parses the following elements:
+	component :
+*/
+MySceneGraph.prototype.parseComponents = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('components');
+	
+	if(elems == null || elems.length != 1){
+		return "components element is MISSING or more than one element";
+	}
 
+	var components = elems[0];
+	
+	var nnodes = components.children.length;
+	var error;
+	for(var i = 0; i < nnodes; i++){
+
+		var child = components.children[i];
+		
+		if(child.tagName != "component")
+			return "Expecting <component> instead got: <" + child.tagName + ">";
+
+		error = this.parseComponent(child);
+
+		if(error)
+			return error;
+	}
+}
+/* Function to parse the element: Component
+Parses the following attributes:
+	id : ss
+Parses the following elements:
+	transformation :
+	materials 
+	texture
+	children
+*/
+MySceneGraph.prototype.parseComponent = function(element){
+	
+	console.log ("Parsing Component:" + element.id);
+
+	var transformation = element.getElementsByTagName("transformation");
+
+	if(transformation.length > 1 || transformation.length == 0)
+		return "Only ONE <transformation> block is required";
+	
+	var materials = element.getElementsByTagName("materials");
+	
+	if(materials.length > 1 || materials.length == 0)
+		return "Only ONE <materials> block is required";
+	
+	var texture = element.getElementsByTagName("texture");
+
+	if(texture.length > 1 || texture.length == 0)
+		return "Only ONE <texture> block is required";
+	
+	texture = texture[0].id;
+	
+	if(texture != "none" && texture != "inherit"){
+		//PROCURAR A TEXTURA!!!!!!!!!!!!!!!
+	}
+	
+	var comp = new Component(this.scene);
+	comp.texture = texture;
+	comp.materials = materials;
+	comp.transformation = transformation;
+	
+	
+	//leitura de childern
+
+	var childern = element.getElementsByTagName("children");
+	if(childern.length > 1 || childern.length == 0 || childern == null)
+		return "Only ONE <texture> block is required";
+	
+	children = childern[0];
+	
+	var nnodes = children.children.length;
+
+	for(var i = 0; i < nnodes; i++){
+		
+		var child = children.children[i];
+		switch(child.tagName){
+
+			case "componentref":
+				comp.componentsID.push(child.id);
+			break;
+			case "primitiveref":
+				comp.primitivesID.push(child.id);
+			break; 
+		}
+	}
+
+	this.components[element.id] = comp;
+}
+//********************************
+//************</COMPONENTS>*******
+//********************************
 
 /** Example of method that parses elements of one block and stores information in a specific data structure
  

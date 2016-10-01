@@ -21,7 +21,7 @@ XMLscene.prototype.init = function (application) {
 
     this.enableTextures(false);
 	this.TEST = new Rectangle(this,0,0,100,100);
-	
+
 	this.axis=new CGFaxis(this);
 };
 
@@ -73,6 +73,9 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.lights[0].setVisible(true);
 	this.camera = this.graph.getCamera();
 	this.interface.setActiveCamera(this.camera);
+	
+	this.root = this.graph.getRoot();
+
 };
 
 XMLscene.prototype.display = function () {
@@ -103,6 +106,8 @@ XMLscene.prototype.display = function () {
 	{
 		for(var i = 0; i < this.lights.length; i++)
 			this.lights[i].update();
+
+		this.root.display();
 	};	
 };
 

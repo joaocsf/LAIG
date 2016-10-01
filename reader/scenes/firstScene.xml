@@ -142,7 +142,7 @@
     
     <components>
         
-        <component id="ss">
+        <component id="rute">
         
             <!-- bloco "transformation" obrigatorio -->
             <transformation>
