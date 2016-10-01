@@ -5,6 +5,7 @@ function MySceneGraph(filename, scene) {
 							background : {r: 0, g: 0, b: 0, a: 1}};
 	this.views = { default : "" , childs : {}};
 	this.sceneInfo = { root : "", axis_length : 0.0};
+	this.lights = [];
 
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
@@ -297,6 +298,152 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 
 //***************************
 //*******</illumination>*****
+//***************************
+
+//---------------------------
+//-------<lights>------------
+//---------------------------
+
+/* Function to parse the element: omni
+Parses the following attributes:
+	id : ss - defaultOmniLightID
+	enabled : tt - initial state
+	location : vector4
+	ambient : rgb
+	diffuse : rgb
+	specular :	rgb
+*/
+MySceneGraph.prototype.parseOmniLights = function(element){
+	
+	if(element == null)
+		return;
+
+	var omni = new CGFlight(this.scene,this.reader.getFloat(element, "id") || "");
+
+	var enable = this.reader.getBoolean(element, "enabled") || 0;
+	
+	omni.disable();
+	
+	if(enable == 1){
+		omni.enable();
+	}
+
+	var location = this.getVector4FromElement(element.getElementsByTagName("location")[0]);
+	omni.setPosition(location.x,location.y,location.z,location.w);
+
+	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
+	omni.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+
+	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
+	omni.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+
+	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
+	omni.setSpecular(specular.r,specular.g,specular.b,specular.a);
+
+	//Check de erro (TODO)
+	console.log("Omni Added: id: " + omni.id + " enable : " + enabled + " location: " + this.printVector4(location) + " ambient: " + this.printVector4(ambient) + " diffuse: " + this.printVector4(diffuse) + " specular: " + this.printVector4(specular));
+	
+	this.lights.push(omni);
+	omni.update();
+
+}
+
+/* Function to parse the element: spot
+Parses the following attributes:
+	id : ss - defaultSpotLightID
+	enabled : tt - initial state
+	angle : ff - spot angle
+	exponent : ff - spot light exponent
+	target : vector3
+	location : vector4
+	ambient : rgb
+	diffuse : rgb
+	specular :	rgb
+*/
+MySceneGraph.prototype.parseSpotLights = function(element){
+	
+	if(element == null)
+		return;
+
+	var spot = new CGFlight(this.scene,this.reader.getFloat(element, "id") || "");
+
+	var enable = this.reader.getBoolean(element, "enabled") || 0;
+	
+	spot.disable();
+	
+	if(enable == 1){
+		spot.enable();
+	}
+
+	var angle = this.reader.getFloat(element,"angle") || 0.0;
+	spot.setSpotCutOff(angle);
+
+	var exponent = this.reader.getFloat(element,"exponent") || 0.0;
+	spot.setSpotExponent(exponent);
+
+	var target = this.getVector3FromElement(element.getElementsByTagName("target")[0]);
+	var location = this.getVector4FromElement(element.getElementsByTagName("location")[0]);
+	spot.setPosition(location.x,location.y,location.z,location.w);
+	var direction = {//Direction of the spot is target - location
+		x : target.x - location.x,
+		y : target.y - location.y,
+		z : target.z - location.z
+	}
+	spot.setSpotDirection(direction.x,direction.y,direction.z);
+
+	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
+	spot.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+
+	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
+	spot.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+
+	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
+	spot.setSpecular(specular.r,specular.g,specular.b,specular.a);
+
+	//Check de erro (TODO)
+	console.log("Spot Added: id: " + spot.id + " enable : " + enabled + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector4(location) + " ambient: " + this.printVector4(ambient) + " diffuse: " + this.printVector4(diffuse) + " specular: " + this.printVector4(specular));
+	
+	this.lights.push(spot);
+	spot.update();
+
+}
+
+/* Function to parse the element: lights
+Parses the following elements:
+	omni :
+	spot :
+*/
+MySceneGraph.prototype.parseLights = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('lights');
+	
+	if(elems == null || elems.length != 1){
+		return "Lights element is MISSING or more than one element";
+	}
+
+	if(elems.children.length < 1){
+		return "Missing lights please specify at least one 'omni' and/or 'spot'";
+	}
+
+	var lights = elems[0];
+	
+	var nNodes = lights.children.length;
+	
+	for(var i = 0; i < nNodes; i++){
+		var child = lights.children[i];
+		switch(child.tagName){
+			case "omni":
+				this.parseOmniLights(child);
+				break;
+			case "spot":
+				this.parseSpotLights(child);
+				break;
+		}	
+	}
+}
+
+//***************************
+//*******</lights>*****
 //***************************
 
 /** Example of method that parses elements of one block and stores information in a specific data structure
