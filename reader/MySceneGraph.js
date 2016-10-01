@@ -7,6 +7,7 @@ function MySceneGraph(filename, scene) {
 	this.sceneInfo = { root : "", axis_length : 0.0};
 	this.lights = {};
 	this.lightIndex = 0;
+	this.primitives = {};
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
@@ -54,6 +55,8 @@ MySceneGraph.prototype.onXMLReady=function()
 	if(this.checkError(this.parseIllumination(rootElement)))
 		return;
 	if(this.checkError(this.parseLights(rootElement)))
+		return;
+	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
 	
 	this.loadedOk=true;
@@ -453,6 +456,103 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 //***************************
 //*******</lights>*****
 //***************************
+//--------------------------------
+//-----------<PRIMITIVES>---------
+//--------------------------------
+/* Function to parse the element: Primitives
+Parses the following elements:
+	primitive :
+*/
+MySceneGraph.prototype.parsePrimitives = function(rootElement){
+	
+	var elems = rootElement.getElementsByTagName('primitives');
+	
+	if(elems == null || elems.length != 1){
+		return "primitives element is MISSING or more than one element";
+	}
+
+	var primitives = elems[0];
+
+	if(primitives.children == null || primitives.children.length == 0){
+		return "There must be one or more <primitive> inside <primitives>";
+	}
+	
+	var nnodes = primitives.children.length;
+	var error;
+	for(var i = 0; i < nnodes; i++){
+
+		var child = primitives.children[i];
+		
+		if(child.tagName != "primitive")
+			return "Parsing <primitive> instead got: <" + child.tagName + ">";
+
+		error = this.parsePrimitive(child);
+		if(error)
+			return error;
+	}
+}
+/* Function to parse the element: Primitive
+Parses the following attributes:
+	id
+Parses the following elements:
+	rectangle :
+	triangle
+	cylinder
+	sphere
+	torus
+*/
+MySceneGraph.prototype.parsePrimitive = function(element){
+	
+	if(element.children == null || element.children.length != 1){
+		return "There must be ONLY ONE (<rectangle>,<triangle>,<cylinder>,<sphere>,<torus>) inside <primitive>";
+	}
+	console.log("Parsing primitive:" + element.id);
+
+	var child = element.children[0];
+	var primitive;
+	switch(child.tagName){
+		case "rectangle":
+		primitive = this.parseRectangle(child);
+		break;
+		case "triangle":
+
+		break;
+		case "cylinder":
+
+		break;
+		case "torus":
+
+		break;
+	}
+	
+	this.primitives[element.id] = primitive;
+
+}
+/* Function to parse the element: Rectangle
+Parses the following attributes:
+	x1 : ff
+	y1 : ff
+	x2 : ff
+	y2 : ff
+*/
+MySceneGraph.prototype.parseRectangle = function(element){
+	var tmp = {
+		x1:0,
+		y1:0,
+		x2:0,
+		y2:0
+	}
+	tmp.x1 = this.reader.getFloat(element,"x1");
+	tmp.x2 = this.reader.getFloat(element,"x2");
+	tmp.y1 = this.reader.getFloat(element,"y1");
+	tmp.y2 = this.reader.getFloat(element,"y2");
+	console.log("New Rectangle X1:" + tmp.x1, "Y1:" + tmp.y1 + "X2:" + tmp.x2 + "Y2:" + tmp.y2 );
+	return new Rectangle(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2);
+}
+//********************************
+//************</PRIMITIVES>*******
+//********************************
+
 
 /** Example of method that parses elements of one block and stores information in a specific data structure
  

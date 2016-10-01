@@ -58,10 +58,10 @@
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
         </omni>
         
-        <spot id="spot1" enabled="1" angle="30" exponent="100">
+        <spot id="spot1" enabled="1" angle="30" exponent="1">
             <!-- atencao, "target" e' diferente de "direction" -->
-            <target x="0.0" y="0.0" z="0.0" />
-            <location x="1.0" y="2.0" z="0.0" />
+            <target x="0.5" y="0.5" z="0.0" />
+            <location x="0.5" y="0.5" z="1.0" />
             <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
@@ -128,11 +128,12 @@
             <!--     rectangle, triangle, cylinder, sphere, torus -->
             <!-- os parametros devem ser interpretados, genericamente como-->
             <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
-            <rectangle x1="ff" y1="ff" x2="ff" y2="ff" />
-            <triangle x1="ff" y1="ff" z1="ff" x2="ff" y2="ff" z2="ff" x3="ff" y3="ff" z3="ff" />
+            <rectangle x1="0.0" y1="0.0" x2="1.0" y2="1.0" />
+			
+            <!-- <triangle x1="ff" y1="ff" z1="ff" x2="ff" y2="ff" z2="ff" x3="ff" y3="ff" z3="ff" />
             <cylinder base="ff" top="ff" height="ff" slices="ii" stacks="ii" />
             <sphere radius="ff" slices="ii" stacks="ii" />
-            <torus inner="ff" outer="ff" slices="ii" loops="ii" />
+            <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
             
         </primitive>
         

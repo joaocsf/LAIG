@@ -20,8 +20,14 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
     this.enableTextures(false);
-
+	this.TEST = new Rectangle(this,0,0,100,100);
+	
 	this.axis=new CGFaxis(this);
+};
+
+XMLscene.prototype.setInterface = function (interface) {
+	this.interface = interface;
+
 };
 
 XMLscene.prototype.initLights = function () {
@@ -66,6 +72,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
 	this.lights[0].setVisible(true);
 	this.camera = this.graph.getCamera();
+	this.interface.setActiveCamera(this.camera);
 };
 
 XMLscene.prototype.display = function () {
@@ -86,7 +93,7 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 
 	this.setDefaultAppearance();
-	
+	this.TEST.display();
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph
