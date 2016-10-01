@@ -83,7 +83,7 @@
         <!-- objetos respetivos podem a violar esta regra.         -->
         <!-- Nao necessario aplicar fatores de escala em  -->
         <!-- quadricas (esfera, ciclindro...) -->
-        <texture id="ss" file="ss" length_s="ff" length_t="ff" />  
+        <texture id="textura1" file="../pics/teste.png" length_s="1.0" length_t="1.0" />  
         
     </textures>
 
@@ -93,10 +93,10 @@
         <!-- Deve existir um ou mais blocos "material" -->
         <!-- Os identificadores "id" nao podem ser repetidos -->
         <material id="material1" >
-            <emission r="1.0" g="0.5" b="0.5" a="1.0" />
-            <ambient r="1.0" g="0.5" b="0.5" a="1.0" />
-            <diffuse r="1.0" g="0.5" b="0.5" a="1.0" />
-            <specular r="1.0" g="0.5" b="0.5" a="1.0" />
+            <emission r="0.0" g="0.5" b="0.5" a="1.0" />
+            <ambient r="1.0" g="0.1" b="0.5" a="1.0" />
+            <diffuse r="1.0" g="0.1" b="1.1" a="1.0" />
+            <specular r="0.0" g="0.5" b="0.5" a="1.0" />
             <shininess value="1.0" />
         </material>
         
@@ -167,7 +167,7 @@
             <!-- o material muda para o proximo material da lista; do --> 
             <!-- ultimo material da lista volta ao primeiro -->
             <materials>
-                <material id="ss" />
+                <material id="material1" />
             </materials>
                          
             <!-- declaracao obrigatoria de texture -->
@@ -175,7 +175,7 @@
             <!-- id="none" remove a textura recebida do pai -->
             <!-- a textura declarada sobrepoe a textura recebida do -->
             <!-- objecto "pai" -->
-            <texture id="ss" />
+            <texture id="textura1" />
             
             <!-- bloco "children" obrigatorio num "component" -->
             <children>

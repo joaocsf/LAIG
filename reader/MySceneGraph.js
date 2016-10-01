@@ -750,9 +750,14 @@ MySceneGraph.prototype.parseComponent = function(element){
 	
 	var materials = element.getElementsByTagName("materials");
 	
-	if(materials.length > 1 || materials.length == 0)
+	if(materials == null || materials.length > 1 || materials.length == 0)
 		return "Only ONE <materials> block is required";
+
+	materials = this.parseCMat(materials[0]); 
 	
+	if(materials.length == 0)
+		return "Component need at least one material";
+
 	var texture = element.getElementsByTagName("texture");
 
 	if(texture.length > 1 || texture.length == 0)
@@ -761,21 +766,22 @@ MySceneGraph.prototype.parseComponent = function(element){
 	texture = texture[0].id;
 	
 	if(texture != "none" && texture != "inherit"){
-		//PROCURAR A TEXTURA!!!!!!!!!!!!!!!
+		texture = this.textures[texture].textData; 
 	}
 	
 	var comp = new Component(this.scene);
 	comp.texture = texture;
 	comp.materials = materials;
+	comp.material = materials[0];
 	comp.transformation = transformation;
 	
-	
+	console.log("Component" + element.id + " materials:" + materials.length);
 	//leitura de childern
 
 	var childern = element.getElementsByTagName("children");
 	if(childern.length > 1 || childern.length == 0 || childern == null)
 		return "Only ONE <texture> block is required";
-	
+		
 	children = childern[0];
 	
 	var nnodes = children.children.length;
@@ -795,6 +801,32 @@ MySceneGraph.prototype.parseComponent = function(element){
 	}
 
 	this.components[element.id] = comp;
+}
+/* Function to parse the element: materials inside component
+Parses the following elements:
+	material
+*/
+MySceneGraph.prototype.parseCMat = function(element){
+	
+	var res = [];
+
+	var nnodes = element.children.length;
+
+	for(var i = 0; i < nnodes; i++){
+		var child = element.children[i];
+		var mat;
+
+		if(child.id == "inherit")
+			mat = "inherit";
+		else
+			mat = this.materials[child.id];
+
+		if(mat == null)
+			console.error("Material:" + child.id + " don't exist");
+		else
+			res.push(mat);
+	}
+	return res;
 }
 //********************************
 //************</COMPONENTS>*******

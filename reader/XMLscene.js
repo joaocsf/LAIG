@@ -19,9 +19,8 @@ XMLscene.prototype.init = function (application) {
 	this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
 
-    this.enableTextures(false);
-	this.TEST = new Rectangle(this,0,0,100,100);
-
+    this.enableTextures(true);
+	this.materialDefault = new CGFappearance(this);
 	this.axis=new CGFaxis(this);
 };
 
@@ -76,6 +75,9 @@ XMLscene.prototype.onGraphLoaded = function ()
 	
 	this.root = this.graph.getRoot();
 
+
+
+
 };
 
 XMLscene.prototype.display = function () {
@@ -91,12 +93,10 @@ XMLscene.prototype.display = function () {
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-
+	this.setDefaultAppearance();
+	this.materialDefault.apply();
 	// Draw axis
 	this.axis.display();
-
-	this.setDefaultAppearance();
-	
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph

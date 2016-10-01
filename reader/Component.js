@@ -30,8 +30,8 @@ function Component(scene) {
         if(this.material == "inherit")
             mat = material;
          
-        var tex = this.texture;
-        switch(this.texture){
+        var tex = this.texture;//this.texture;
+        switch(tex){
             case "none":
                tex = null;
             break;
@@ -41,14 +41,14 @@ function Component(scene) {
         }
         
         for(var i = 0; i < this.components.length; i++){
-            if(mat != null)
-                mat.setTexture(tex);
+            mat.setTexture(tex);
+            mat.apply();
             if(this.components[i] != null)
             this.components[i].display2(mat,tex);
         }
-        if(mat != null)
-          mat.setTexture(tex);
-
+        
+        mat.setTexture(tex);
+        mat.apply();
         for(var i = 0; i < this.primitives.length; i++){
 
             this.primitives[i].display();
