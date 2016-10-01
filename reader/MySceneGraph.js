@@ -149,7 +149,7 @@ MySceneGraph.prototype.getRGBAFromElement = function(element){
 //Function that computes the transformation matrix of a given transformation list
 MySceneGraph.prototype.ComputeTransformation = function(element){
 
-	var childs = this.element.getChildren();
+	var childs = element.children;
 	
     var trans = [	1.0, 0.0, 0.0, 0.0,
                     0.0, 1.0, 0.0, 0.0,
@@ -165,18 +165,18 @@ MySceneGraph.prototype.ComputeTransformation = function(element){
 				mat4.translate(trans,trans,[translation.x,translation.y,translation.z]);
 				break;
 			case 'rotate' :
-				var rotate_axis = child.getElementsByTagName('axis');
-				var rotate_angle = child.getElementsByTagName('angle');
+				var rotate_axis = this.reader.getString(child,'axis');
+				var rotate_angle = this.reader.getFloat(child,'angle') * Math.PI/180;
 				console.log("Read rotatation with axis : " + rotate_axis + " angle : " + rotate_angle);
 				switch(rotate_axis){
-					case 'x':
+					case "x":
 						mat4.rotate(trans,trans,rotate_angle,[1,0,0]);
 						break;
-					case 'y':
+					case "y":
 						mat4.rotate(trans,trans,rotate_angle,[0,1,0]);
 						break;
-					case 'z':
-						mat4.rotate(trans,trans,rotate_angle[0,0,1]);
+					case "z":
+						mat4.rotate(trans,trans,rotate_angle,[0,0,1]);
 						break;
 				}
 				break;
@@ -845,6 +845,8 @@ MySceneGraph.prototype.parseComponent = function(element){
 	if(transformation.length > 1 || transformation.length == 0)
 		return "Only ONE <transformation> block is required";
 	
+	transformation = this.parseCTransform(transformation[0]);
+
 	var materials = element.getElementsByTagName("materials");
 	
 	if(materials == null || materials.length > 1 || materials.length == 0)
@@ -870,7 +872,7 @@ MySceneGraph.prototype.parseComponent = function(element){
 	comp.texture = texture;
 	comp.materials = materials;
 	comp.material = materials[0];
-	comp.transformation = transformation;
+	comp.matrix = transformation;
 	
 	console.log("Component" + element.id + " materials:" + materials.length);
 	//leitura de childern
@@ -898,6 +900,20 @@ MySceneGraph.prototype.parseComponent = function(element){
 	}
 
 	this.components[element.id] = comp;
+}
+/* Function to parse the element: transformation inside component
+Parses the following elements:
+	material
+*/
+MySceneGraph.prototype.parseCTransform = function(element){
+	
+	var transformRef = element.getElementsByTagName("transformationref");
+
+	if(transformRef != null && transformRef.length == 1)
+		return this.transformations[transformRef[0].id];
+	else
+		return this.ComputeTransformation(element);
+
 }
 /* Function to parse the element: materials inside component
 Parses the following elements:
