@@ -66,13 +66,12 @@ Torus.prototype.drawCircle = function( positionX, diameter, angle, slices, incrA
 		this.vertices.push(finalPos[1]);
 		this.vertices.push(finalPos[2]);
 		
-		var percentH = i/slices;
+		var percentH = i/(slices);
+		if(percentH >= 0.5)
+			percentH = 1.0 - percentH;
 
-		if(percentH > 0.5)
-			percenH = 1.0 - percentH;
-		
 		percentH *= 2;
-
+	
 		if(percentH <= 0)
 			percentH = 0.01;
 		else if(percentH >=1)
