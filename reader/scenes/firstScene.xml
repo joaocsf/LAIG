@@ -83,6 +83,7 @@
         <!-- Nao necessario aplicar fatores de escala em  -->
         <!-- quadricas (esfera, ciclindro...) -->
         <texture id="textura1" file="../pics/teste.png" length_s="1.0" length_t="1.0" />  
+        <texture id="textura2" file="../pics/checkers.png" length_s="1.0" length_t="1.0" />  
         
     </textures>
 
@@ -92,10 +93,10 @@
         <!-- Deve existir um ou mais blocos "material" -->
         <!-- Os identificadores "id" nao podem ser repetidos -->
         <material id="material1" >
-            <emission r="0.5" g="0.5" b="0.5" a="1.0" />
+            <emission r="0.1" g="0.1" b="0.1" a="1.0" />
             <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
-            <specular r="1.0" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
             <shininess value="1.0" />
         </material>
 		<material id="material2" >
@@ -143,6 +144,16 @@
             <sphere radius="ff" slices="ii" stacks="ii" />
             <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
             
+        </primitive>
+
+        <primitive id="prim2">
+           
+            <!-- apenas pode existir UMA das seguintes tags: -->
+            <!--     rectangle, triangle, cylinder, sphere, torus -->
+            <!-- os parametros devem ser interpretados, genericamente como-->
+            <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
+            <torus inner="4.0" outer="5.5" slices="6" loops="30" /> 
+             
         </primitive>
         
     </primitives>
@@ -194,12 +205,35 @@
                 <componentref id="rute2" />
 				<componentref id="rute3" />
 				<componentref id="mastercheckers" /> 
+                <componentref id="torusFino" />
                 <primitiveref id="prim1" />
+
                 
             </children>
             
         </component>
 		
+		<component id="torusFino">
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0" />
+            </transformation>
+
+            <materials>
+				<material id="material1" />
+            </materials>
+
+            <texture id="textura2" />
+            
+            <children>
+
+                <primitiveref id="prim2" />
+                
+            </children>
+            
+        </component>
+
+
 		<component id="rute2">
 
             <transformation>
