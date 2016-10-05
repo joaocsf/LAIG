@@ -69,7 +69,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.05);
 	
 	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
-	this.lights[0].setVisible(true);
+
 	this.camera = this.graph.getCamera();
 	this.interface.setActiveCamera(this.camera);
 	
