@@ -1,7 +1,7 @@
 function Component(scene) {
  	CGFobject.call(this,scene);
     this.scene = scene;
-
+    this.id = "";
     //Matriz de Transformações
     this.matrix = [ 1.0, 0.0, 0.0, 0.0,
                     0.0, 1.0, 0.0, 0.0,
@@ -17,6 +17,7 @@ function Component(scene) {
     this.texture = "none";
     this.materials = [];
     this.indexMaterial = 0;
+    this.materialChanged = false;
  };
 
  Component.prototype = Object.create(CGFobject.prototype);
@@ -59,16 +60,14 @@ function Component(scene) {
  }
 
  Component.prototype.changeMaterial = function() {
+    
      if(this.indexMaterial < this.materials.length - 1)
         this.indexMaterial++;
      else
         this.indexMaterial = 0;
     
     this.material = this.materials[this.indexMaterial];
-    
-    for(var i = 0; i < this.components.length; i++){
-        this.components[i].changeMaterial();
-    }
+    //console.log("Changing material on:" + this.id + " (" + this.indexMaterial+ "/"+ this.materials.length + ")");
  }
 
  Component.prototype.display = function(){

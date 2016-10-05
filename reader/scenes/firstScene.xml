@@ -193,7 +193,7 @@
                 <!-- componentes ou primitivas -->
                 <componentref id="rute2" />
 				<componentref id="rute3" />
-				
+				<componentref id="checkers" /> 
                 <primitiveref id="prim1" />
                 
             </children>
@@ -243,6 +243,138 @@
             </children>
             
         </component>
+		
+		<component id="checkers"> 
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="1.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials> 
+
+            <texture id="none" />
+            <children>
+                <componentref id="checkers0" />
+                <componentref id="checkers1" />
+				<componentref id="checkers2" />
+                <componentref id="checkers3" />
+            </children>
+            
+        </component>
+		
+		<component id="checkers0"> 
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials> 
+
+            <texture id="none" />
+            <children>
+                <componentref id="checker0" />
+            </children>
+            
+        </component>
+		
+		<component id="checkers1"> 
+
+            <transformation>
+                <translate x="1.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials> 
+
+            <texture id="none" />
+            <children>
+                <componentref id="checker1" />
+            </children>
+            
+        </component>
+		
+		<component id="checkers2"> 
+
+            <transformation>
+                <translate x="0.0" y="1.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials> 
+
+            <texture id="none" />
+            <children>
+                <componentref id="checker1" />
+            </children>
+            
+        </component>
+		
+		<component id="checkers3"> 
+
+            <transformation>
+                <translate x="1.0" y="1.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials> 
+
+            <texture id="none" />
+			
+            <children>
+                <componentref id="checker0" />
+            </children>
+            
+        </component>
+		
+		<component id="checker0"> 
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="material1" /> 
+				<material id="material2" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+                
+            </children>
+            
+        </component>
+		
+		<component id="checker1"> 
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+				<material id="material2" />
+                <material id="material1" /> 
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+                
+            </children>
+            
+        </component>
+		
         
         
     </components>

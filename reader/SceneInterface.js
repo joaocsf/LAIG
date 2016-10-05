@@ -85,7 +85,7 @@ SceneInterface.prototype.processKeyDown = function(event){
 		switch (event.keyCode)
 	{
 		case (77): // Key M
-			this.scene.root.changeMaterial();
+			this.scene.graph.changeMaterials();
 			break;
 		case (86): // Key V
 			this.scene.nextCamera();

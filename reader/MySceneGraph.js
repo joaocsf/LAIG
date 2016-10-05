@@ -88,10 +88,17 @@ MySceneGraph.prototype.onXMLReady=function()
 
 };
 
+MySceneGraph.prototype.changeMaterials=function() {
+	for(var key in this.components){
+		var component = this.components[key];
+		component.changeMaterial();
+	}
+}
+
 //Function that Returns a CGFCamera() using the defaultCameraID
 MySceneGraph.prototype.getCamera = function(){
 	var view = this.views.childs[this.views.defaultID];
-	
+
 	if(this.views.defaultID < this.views.childs.length - 1 )
 		this.views.defaultID ++;
 	else
@@ -108,18 +115,21 @@ MySceneGraph.prototype.associateIDs = function(component){
 
 	for(var i = 0; i < component.componentsID.length; i++){
 		var key = component.componentsID[i];
+		console.log("--with component ID: " + key);
 		component.components.push(this.components[key]);
 	}
 
 	for(var i = 0; i < component.primitivesID.length; i++){
 		var key = component.primitivesID[i];
+		console.log("--with primitive ID: " + key);
 		component.primitives.push(this.primitives[key]);
 	}
 }
 MySceneGraph.prototype.startAssociation = function(element){
 	for(var key in this.components){
 		var component = this.components[key];
-
+		component.id = key;
+		console.log("Associating component ID: " + key);
 		this.associateIDs(component);
 	}
 }
@@ -939,7 +949,6 @@ MySceneGraph.prototype.parseCMat = function(element){
 	for(var i = 0; i < nnodes; i++){
 		var child = element.children[i];
 		var mat;
-
 		if(child.id == "inherit")
 			mat = "inherit";
 		else
