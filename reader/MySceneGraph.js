@@ -312,6 +312,7 @@ Parses the following attributes:
 		from : this.getVector3FromElement(from),
 		to :  this.getVector3FromElement(to)
 	};
+	view.angle *= Math.PI/180;
 	console.log("View Added: near: " + view.near + " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
 	this.views.childs[element.id] = view;
 }
@@ -478,8 +479,9 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	}
 
 	var angle = this.reader.getFloat(element,"angle") || 0.0;
+	angle *= Math.PI/180;
 	spot.setSpotCutOff(angle);
-
+	
 	var exponent = this.reader.getFloat(element,"exponent") || 0.0;
 	spot.setSpotExponent(exponent);
 
