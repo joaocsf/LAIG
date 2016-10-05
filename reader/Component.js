@@ -12,10 +12,11 @@ function Component(scene) {
 
     this.components = [];  //Lista de Componentes
     this.primitives = []; //Lista de Componentes
-
+    
     this.material = null;
     this.texture = "none";
     this.materials = [];
+    this.indexMaterial = 0;
  };
 
  Component.prototype = Object.create(CGFobject.prototype);
@@ -55,9 +56,19 @@ function Component(scene) {
         }
         
      this.scene.popMatrix();
+ }
 
-        
-
+ Component.prototype.changeMaterial = function() {
+     if(this.indexMaterial < this.materials.length - 1)
+        this.indexMaterial++;
+     else
+        this.indexMaterial = 0;
+    
+    this.material = this.materials[this.indexMaterial];
+    
+    for(var i = 0; i < this.components.length; i++){
+        this.components[i].changeMaterial();
+    }
  }
 
  Component.prototype.display = function(){

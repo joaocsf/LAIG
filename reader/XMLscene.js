@@ -18,6 +18,8 @@ XMLscene.prototype.init = function (application) {
     this.gl.enable(this.gl.DEPTH_TEST);
 	this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
+	
+	this.lightState =[];
 
     this.enableTextures(true);
 	this.materialDefault = new CGFappearance(this);
@@ -52,6 +54,11 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);	
 };
 
+XMLscene.prototype.nextCamera = function(){
+	this.camera = this.graph.getCamera();
+	this.interface.setActiveCamera(this.camera);
+}
+
 // Handler called when the graph is finally loaded. 
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () 
@@ -70,15 +77,32 @@ XMLscene.prototype.onGraphLoaded = function ()
 	
 	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
 
-	this.camera = this.graph.getCamera();
-	this.interface.setActiveCamera(this.camera);
+	this.nextCamera();
 	
+	for(var i = 0 ; i < this.lights.length; i++){
+		if(this.lights[i].visible)
+			this.lightState.push(this.lights[i].enabled);
+
+		console.log(this.lights[i].enabled);
+	}
+	this.interface.updateLights();
 	this.root = this.graph.getRoot();
 
 
 
 
 };
+
+XMLscene.prototype.updateLights = function(){
+	
+	for(var i = 0; i < this.lightState.length; i++){
+		if(this.lightState[i])
+			this.lights[i].enable();
+		else
+			this.lights[i].disable();
+	}
+		
+}
 
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
@@ -90,6 +114,8 @@ XMLscene.prototype.display = function () {
 	// Initialize Model-View matrix as identity (no transformation
 	this.updateProjectionMatrix();
     this.loadIdentity();
+	
+	this.updateLights();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();

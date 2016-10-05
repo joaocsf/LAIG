@@ -21,7 +21,6 @@
     
     
     <views default="vista1" >
-    
         <!-- declaracao obrigatoria de pelo menos uma vista; -->
         <!-- se varias vistas declaradas, o default e' a -->
         <!-- primeira vista; de cada vez que se pressione a tecla v/V, -->
@@ -211,6 +210,7 @@
 
             <materials>
                 <material id="material2" />
+				<material id="material1" />
             </materials>
 
             <texture id="none" />
@@ -231,6 +231,7 @@
 
             <materials>
                 <material id="inherit" />
+				<material id="material2" />
             </materials>
 
             <texture id="inherit" />

@@ -3,7 +3,8 @@ function MySceneGraph(filename, scene) {
 	
 	this.illumination = { 	ambient : {r: 0.1, g: 0.1, b: 0.1, a: 1} ,
 							background : {r: 0, g: 0, b: 0, a: 1}};
-	this.views = { default : "" , childs : {}};
+	this.views = { default : "" , childs : [], defaultID : 0};
+
 	this.sceneInfo = { root : "", axis_length : 0.0};
 	this.lights = {};
 	this.lightIndex = 0;
@@ -13,7 +14,7 @@ function MySceneGraph(filename, scene) {
 	this.primitives = {};
 	this.components = {};
 
-
+	this.cameraIndex = 0;
 
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
@@ -89,14 +90,18 @@ MySceneGraph.prototype.onXMLReady=function()
 
 //Function that Returns a CGFCamera() using the defaultCameraID
 MySceneGraph.prototype.getCamera = function(){
+	var view = this.views.childs[this.views.defaultID];
 	
-	var view = this.views.childs[this.views.default];
+	if(this.views.defaultID < this.views.childs.length - 1 )
+		this.views.defaultID ++;
+	else
+		this.views.defaultID = 0;
 
 	return new CGFcamera(view.angle, view.near, view.far, vec3.fromValues(view.from.x, view.from.y, view.from.z), vec3.fromValues(view.to.x, view.to.y, view.to.z));
 
 }
 
-//--------------------------
+//-------------------------- 
 //--------INITIALIZE--------
 //--------------------------
 MySceneGraph.prototype.associateIDs = function(component){
@@ -314,7 +319,11 @@ Parses the following attributes:
 	};
 	view.angle *= Math.PI/180;
 	console.log("View Added: near: " + view.near + " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
-	this.views.childs[element.id] = view;
+	console.log(" ------------CAMERA " + element.id + " TMP " + this.views.default);
+	if(element.id === this.views.default)
+		this.views.defaultID = this.views.childs.length;
+	this.views.childs.push(view);
+	
 }
 /* Function to parse the element: Views
 Parses the following attributes:
