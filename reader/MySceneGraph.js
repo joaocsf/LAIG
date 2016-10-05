@@ -779,13 +779,15 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		primitive = this.parseRectangle(child);
 		break;
 		case "triangle":
-
+		primitive = this.parseTriangle(child);
 		break;
 		case "cylinder":
-
+		primitive = this.parseCylinder(child);
 		break;
 		case "torus":
 		primitive = this.parseTorus(child);
+		break;
+		case "sphere":
 		break;
 	}
 	
@@ -833,6 +835,70 @@ MySceneGraph.prototype.parseTorus = function(element){
 
 	console.log("New Torus inner:" + inner, "outer:" + outer + "slices:" + slices + "loops:" + loops);
 	return new Torus(this.scene,inner, outer, slices, loops);
+	
+}
+/* Function to parse the element: Cylinder
+Parses the following attributes:
+	base : ff
+	top : ff
+	height : ff
+	slices : ii
+	stacks : ii
+*/
+MySceneGraph.prototype.parseCylinder = function(element){
+	var base = 0;
+	var top = 0;
+	var height = 0;
+	var slices = 0;
+	var stacks = 0;
+	
+	base = this.reader.getFloat(element,"base");
+	top = this.reader.getFloat(element,"top");
+	height = this.reader.getFloat(element,"height");
+	slices = this.reader.getInteger(element,"slices");
+	stacks = this.reader.getInteger(element,"stacks");
+
+	console.log("New Cylinder base:" + base, " top:" + top + " height:" + height +  " slices:" + slices + " stacks:" + stacks);
+	return new Cylinder(this.scene,base,top,height,slices,stacks);
+	
+}
+/* Function to parse the element: Triangle
+Parses the following attributes:
+	x1 : ff
+	y1 : ff
+	z1 : ff
+	x2 : ff
+	y2 : ff
+	z2 : ff
+	x3 : ff
+	y3 : ff
+	z3 : ff
+*/
+MySceneGraph.prototype.parseTriangle = function(element){
+	var x1 = 0;
+	var y1 = 0;
+	var z1 = 0;
+	var x2 = 0;
+	var y2 = 0;
+	var z2 = 0;
+	var x3 = 0;
+	var y3 = 0;
+	var z3 = 0;
+	
+	x1 = this.reader.getFloat(element,"x1");
+	y1 = this.reader.getFloat(element,"y1");
+	z1 = this.reader.getFloat(element,"z1");
+	x2 = this.reader.getFloat(element,"x2");
+	y2 = this.reader.getFloat(element,"y2");
+	z2 = this.reader.getFloat(element,"z2");
+	x3 = this.reader.getFloat(element,"x3");
+	y3 = this.reader.getFloat(element,"y3");
+	z3 = this.reader.getFloat(element,"z3");
+
+	console.log("New Triangle p1:" + x1 + "," + y1 + "," + z1 + ")" +
+							" p2:" + x2 + "," + y2 + "," + z2 + ")" +
+							" p3:" + x3 + "," + y3 + "," + z3 + ")");
+	return new Triangle(this.scene,x1,y1,z1,x2,y2,z2,x3,y3,z3);
 	
 }
 //********************************
