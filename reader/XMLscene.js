@@ -123,6 +123,7 @@ XMLscene.prototype.display = function () {
 	this.materialDefault.apply();
 	// Draw axis
 	this.axis.display();
+
 	// ---- END Background, camera and axis setup
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.

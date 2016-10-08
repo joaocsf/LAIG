@@ -148,31 +148,25 @@
 
         <primitive id="prim2">
 
-            <!-- apenas pode existir UMA das seguintes tags: -->
-            <!--     rectangle, triangle, cylinder, sphere, torus -->
-            <!-- os parametros devem ser interpretados, genericamente como-->
-            <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
             <torus inner="4.0" outer="5.5" slices="60" loops="60" />
 
         </primitive>
 
 		<primitive id="prim3">
 
-            <!-- apenas pode existir UMA das seguintes tags: -->
-            <!--     rectangle, triangle, cylinder, sphere, torus -->
-            <!-- os parametros devem ser interpretados, genericamente como-->
-            <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
-            <cylinder base="0.5" top="2.0" height="5.0" slices="20" stacks="5" />
+            <cylinder base="0.5" top="2.0" height="5.0" slices="50" stacks="20" />
 
         </primitive>
 
 		<primitive id="prim4">
 
-            <!-- apenas pode existir UMA das seguintes tags: -->
-            <!--     rectangle, triangle, cylinder, sphere, torus -->
-            <!-- os parametros devem ser interpretados, genericamente como-->
-            <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
             <triangle x1="0.0" y1="0.0" z1="0.0" x2="1.0" y2="0.0" z2="0.0" x3="0.0" y3="1.0" z3="0.0" />
+
+        </primitive>
+		
+		<primitive id="prim5">
+
+            <sphere radius="1.5" slices="50" stacks="20" />
 
         </primitive>
 
@@ -228,6 +222,7 @@
                 <componentref id="torusFino" />
 				<componentref id="CilindroGrosso" />
                 <primitiveref id="prim1" />
+				<primitiveref id="prim5" />
 
 
             </children>

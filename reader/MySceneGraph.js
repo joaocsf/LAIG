@@ -788,6 +788,7 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		primitive = this.parseTorus(child);
 		break;
 		case "sphere":
+		primitive = this.parseSphere(child);
 		break;
 	}
 	
@@ -814,6 +815,24 @@ MySceneGraph.prototype.parseRectangle = function(element){
 	tmp.y2 = this.reader.getFloat(element,"y2");
 	console.log("New Rectangle X1:" + tmp.x1, "Y1:" + tmp.y1 + "X2:" + tmp.x2 + "Y2:" + tmp.y2 );
 	return new Rectangle(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2);
+}
+/* Function to parse the element: Sphere
+Parses the following attributes:
+	radius : ff
+	slices : ii
+	stacks : ii
+*/
+MySceneGraph.prototype.parseSphere = function(element){
+	var tmp = {
+		radius:0,
+		slices:0,
+		stacks:0,
+	}
+	tmp.radius = this.reader.getFloat(element,"radius");
+	tmp.slices = this.reader.getInteger(element,"slices");
+	tmp.stacks = this.reader.getInteger(element,"stacks");
+	console.log("New Sphere radius:" + tmp.radius, " slices:" + tmp.slices + " stacks:" + tmp.stacks);
+	return new Sphere(this.scene,tmp.radius,tmp.slices,tmp.stacks);
 }
 /* Function to parse the element: Torus
 Parses the following attributes:
