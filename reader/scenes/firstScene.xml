@@ -1,22 +1,5 @@
-<!-- Os comentarios devem ter espacos no inicio e no fim, a -->
-<!-- separar dos hifens -->
-<!-- Nao devem ser usados caracteres especiais (p.ex. acentos) -->
-<!-- Todas as tags e atributos sao obrigatorios, exceto onde for -->
-<!-- referido o contrario -->
-
-<!-- Na descricao abaixo, os simbolos utilizados tem o seguinte significado: -->
-    <!-- ii: integer value -->
-    <!-- ff: float value -->
-    <!-- ss: string value -->
-    <!-- cc: character "x" or "y" or "z" -->
-    <!-- tt: "0" or "1" with Boolean significance -->
-
-
 <dsx>
 
-
-    <!-- deve definir-se um objeto para raiz do grafo , assim -->
-    <!-- como o comprimento dos tres eixos (cilindros) -->
     <scene root="rute" axis_length="1.0" />
 
 
@@ -38,7 +21,6 @@
 
     </views>
 
-	<!--  -->
     <illumination doublesided="1" local="0" >
 
         <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
