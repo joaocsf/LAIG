@@ -76,7 +76,13 @@
 			var y = radius * Math.sin(ang);
 
 			this.vertices.push(x,z,y);
-			this.normals.push(x,0,y);
+			
+			if(z = 0){
+				this.normals.push(x,0,y);	
+			} else {
+
+			}
+			
 			
 			var s = i/this.slices;
 
