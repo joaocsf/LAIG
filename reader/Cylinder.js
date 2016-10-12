@@ -27,7 +27,9 @@
 
         var x = radius * Math.cos(ang);
         var y = radius * Math.sin(ang); 
-	
+		var xx = Math.cos(ang);
+		var yy = Math.sin(ang);
+
         this.vertices.push(x,z,y);
         
         if(isTop == 0){
@@ -44,9 +46,9 @@
                 this.indices.push(indiceTemp, indiceTemp + i + 2, indiceTemp + i + 1);
             }
         }
-        var s = (x+1) /2.0; 
+        var s = (xx+1) /2.0; 
 
-        var v = ((y*-1)+1) /2.0; 
+        var v = ((yy*-1)+1) /2.0; 
 
         this.texCoords.push( s, v); 
 
@@ -67,7 +69,6 @@
     var z_increase = this.height / this.stacks;
 
 	var ang = 0;
-
 	for(var z = 0 ; z <= this.height ; z += z_increase){
 		for(var i = 0 ; i < this.slices; i++){
 
@@ -79,11 +80,16 @@
 			
 			var s = i/this.slices;
 
-			var v = z/this.stacks; 
+			var v = z/z_increase/this.stacks; 
 			
 			if( i > this.slices/2){
 				s = (this.slices - i)/this.slices;
 			}
+			s*=2;
+			if(s <= 0)
+				s = 0.01;
+			else if(s >= 1)
+				s = 0.99;
 
 			this.texCoords.push(s,v);
 
