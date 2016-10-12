@@ -73,7 +73,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 						this.graph.illumination.ambient.b,
 						this.graph.illumination.ambient.a);
 
-	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.05);
+	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.1);
 	
 	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
 
@@ -88,7 +88,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.interface.updateLights();
 	this.root = this.graph.getRoot();
 
-
+	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_LOCAL_VIEWER, this.graph.illumination.local);
+	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_TWO_SIDED, this.graph.illumination.doubleSided);
 
 
 };

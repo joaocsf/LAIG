@@ -1,6 +1,6 @@
 <dsx>
 
-    <scene root="rute" axis_length="1.0" />
+    <scene root="rute" axis_length="15.0" />
 
 
     <views default="vista1" >
@@ -20,11 +20,16 @@
 
 
     </views>
+<<<<<<< Updated upstream
 	<!-- local/doublesided? A ser implementado / XMLScene setDefaultAppearance-->
 	<!-- Obrigatoriedade de rever a ordem -->
 	<!-- Spot lights Talvez-->
 	<!-- Texturas no objeto, alterar o UV do objeto em tempo de execução? sim -->
     <illumination doublesided="1" local="0" >
+=======
+
+    <illumination doublesided="1" local="1" >
+>>>>>>> Stashed changes
 
         <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
         <background r="0.5" g="0" b="0.1" a="1.0" />
@@ -41,8 +46,15 @@
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
         </omni>
-		
-        <spot id="spot1" enabled="1" angle="1" exponent="100">
+
+        <omni id="omni2" enabled="1" >
+            <location x="10.0" y="0.0" z="-2.0" w="1.0" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+        </omni>
+
+        <spot id="spot1" enabled="1" angle="90" exponent="1">
             <!-- atencao, "target" e' diferente de "direction" -->
             <target x="0.0" y="0.0" z="0.0" />
             <location x="15.0" y="0.0" z="0.0" />
@@ -144,30 +156,30 @@
             <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
 
         </primitive>
-		
+
 		<primitive id="arvore1">
 
 			<cylinder base="1" top="0.6" height="1.0" slices="8" stacks="3" />
 
         </primitive>
-		
+
 		<primitive id="arvore2">
 
             <cylinder base="1" top="0.5" height="1.0" slices="5" stacks="3" />
 
 
         </primitive>
-		
+
 		<primitive id="arvore3">
 
             <cylinder base="1" top="0.0" height="1.0" slices="5" stacks="3" />
-			
+
         </primitive>
-		
+
 		<primitive id="tronco">
 
             <cylinder base="1" top="1" height="1.0" slices="6" stacks="3" />
-			
+
         </primitive>
 
         <primitive id="prim2">
@@ -187,7 +199,7 @@
             <triangle x1="0.0" y1="0.0" z1="0.0" x2="1.0" y2="0.0" z2="0.0" x3="0.0" y3="1.0" z3="0.0" />
 
         </primitive>
-		
+
 		<primitive id="prim5">
 
             <sphere radius="1.5" slices="50" stacks="20" />
@@ -248,7 +260,7 @@
                 <componentref id="arvore-total" />
 				<primitiveref id="prim1" />
 				<primitiveref id="prim5" />
-				
+
 
 
             </children>
@@ -544,18 +556,18 @@
             </children>
 
         </component>
-		
+
 		<component id="arvore-folha1">
 
             <transformation>
                 <translate x="0.0" y="1.0" z="0.0" />
 				<scale x="0.8" y="0.8" z="0.8" />
             </transformation>
-			
+
             <materials>
                 <material id="folhas" />
             </materials>
-			
+
             <texture id="inherit" />
 
             <children>
@@ -564,7 +576,7 @@
             </children>
 
         </component>
-		
+
 		<component id="arvore-folha2">
 
             <transformation>
@@ -572,11 +584,11 @@
 				<scale x="0.8" y="0.8" z="0.8" />
 				<rotate axis="y" angle="45" />
             </transformation>
-			
+
             <materials>
                 <material id="folhas" />
             </materials>
-			
+
             <texture id="inherit" />
 
             <children>
@@ -585,7 +597,7 @@
             </children>
 
         </component>
-		
+
 		<component id="arvore-folha3">
 
             <transformation>
@@ -593,11 +605,11 @@
 				<scale x="0.7" y="0.7" z="0.7" />
 				<rotate axis="y" angle="45" />
             </transformation>
-			
+
             <materials>
                 <material id="folhas" />
             </materials>
-			
+
             <texture id="inherit" />
 
             <children>
@@ -605,13 +617,13 @@
             </children>
 
         </component>
-		
+
 		<component id="arvore-total">
 
             <transformation>
                 <translate x="15.0" y="0.0" z="0.0" />
             </transformation>
-			
+
             <materials>
                 <material id="tronco" />
             </materials>
@@ -624,15 +636,15 @@
             </children>
 
         </component>
-		
-		
+
+
 		<component id="arvore-tronco">
 
             <transformation>
                 <translate x="0.0" y="0.0" z="0.0" />
 				<scale x="0.3" y="1.0" z="0.3" />
             </transformation>
-			
+
             <materials>
                 <material id="tronco" />
             </materials>
