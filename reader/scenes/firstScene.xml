@@ -20,17 +20,8 @@
 
 
     </views>
-<<<<<<< Updated upstream
-	<!-- local/doublesided? A ser implementado / XMLScene setDefaultAppearance-->
-	<!-- Obrigatoriedade de rever a ordem -->
-	<!-- Spot lights Talvez-->
-	<!-- Texturas no objeto, alterar o UV do objeto em tempo de execução? sim -->
-    <illumination doublesided="1" local="0" >
-=======
 
     <illumination doublesided="1" local="1" >
->>>>>>> Stashed changes
-
         <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
         <background r="0.5" g="0" b="0.1" a="1.0" />
 
