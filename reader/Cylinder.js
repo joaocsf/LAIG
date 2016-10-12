@@ -56,6 +56,37 @@
     }
  }
 
+Cylinder.prototype.calculateCross = function(A,B){
+	
+	var cross = {
+		x: A.y * B.z - A.z * B.y,
+		y: A.z * B.x - A.x - B.z,
+		z: A.x * B.y - A.y * B.x
+	};
+	return cross
+}
+
+Cylinder.prototype.calculateNormal = function(angle){
+
+	
+	var tangent ={
+		x: Math.sin(angle),
+		y: 0,
+		z: -Math.cos(angle)
+		};
+	
+	var vetor = {
+		x: (this.top - this.base) * Math.cos(angle),
+		y: this.height,
+		z: (this.top - this.base) * Math.sin(angle)
+		};
+	var norm = Math.sqrt(vetor.x * vetor.x + vetor.y * vetor.y + vetor.z * vetor.z);
+	vetor.x /= norm;
+	vetor.y /= norm;
+	vetor.z /= norm;
+	return this.calculateCross(tangent,vetor);
+}
+
  Cylinder.prototype.initBuffers = function() {
 
 
@@ -69,24 +100,25 @@
     var z_increase = this.height / this.stacks;
 
 	var ang = 0;
-	for(var z = 0 ; z <= this.height ; z += z_increase){
+	for(var z = 0 ; z <= this.stacks ; z ++){
 		for(var i = 0 ; i < this.slices; i++){
-
-			var x = radius * Math.cos(ang);
-			var y = radius * Math.sin(ang);
-
-			this.vertices.push(x,z,y);
 			
-			if(z = 0){
-				this.normals.push(x,0,y);	
-			} else {
-
-			}
+			var z2 = z * z_increase;
+			var radius2 = z/this.stacks * (this.top - this.base) + this.base;
 			
+			var x = radius2 * Math.cos(ang);
+			var y = radius2 * Math.sin(ang);
+
+			this.vertices.push(x,z2,y);
+
+			var normal = this.calculateNormal(ang);
+	
+			this.normals.push(normal.x,normal.y, normal.z);	
+			//this.normals.push(x, 0 , y);	
 			
 			var s = i/this.slices;
 
-			var v = z/z_increase/this.stacks; 
+			var v = z/this.stacks; 
 			
 			if( i > this.slices/2){
 				s = (this.slices - i)/this.slices;
@@ -102,8 +134,6 @@
             
 			ang += this.aRad;
 		}
-
-		radius += radius_decrease;
 	}
 
 	for(var i = 0 ; i < this.stacks; i++){
