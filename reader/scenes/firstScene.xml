@@ -108,6 +108,13 @@
             <specular r="0.5" g="0.5" b="0.5" a="1.0" />
             <shininess value="1.0" />
         </material>
+		<material id="estrela" >
+            <emission r="1.0" g="1.0" b="0.0" a="1.0" />
+            <ambient r="0.1" g="0.1" b="0.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="0.0" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+            <shininess value="1.0" />
+        </material>
 
     </materials>
 
@@ -196,6 +203,16 @@
             <sphere radius="1.5" slices="50" stacks="20" />
 
         </primitive>
+		<primitive id="cone">
+
+            <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+
+        </primitive>
+		<primitive id="bola">
+		
+             <sphere radius="1.0" slices="5" stacks="5" />
+        
+		</primitive>
 
     </primitives>
 
@@ -604,6 +621,7 @@
             <texture id="inherit" />
 
             <children>
+				<componentref id="arvore-estrela" />
                 <primitiveref id="arvore3" />
             </children>
 
@@ -627,8 +645,7 @@
             </children>
 
         </component>
-
-
+		
 		<component id="arvore-tronco">
 
             <transformation>
@@ -645,6 +662,168 @@
             <children>
 
                 <primitiveref id="tronco" />
+
+            </children>
+
+        </component>
+		
+		<component id="arvore-estrela">
+
+            <transformation>
+				<translate x="0.0" y="1.2" z="0.0" />
+				
+            </transformation>
+
+            <materials>
+                <material id="estrela" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="estrela-centro" />
+            </children>
+
+        </component>
+		
+		<component id="estrela-centro">
+
+            <transformation>
+				<rotate axis="x" angle="0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <componentref id="estrela-ponta1" />
+				<componentref id="estrela-ponta2" />
+				<componentref id="estrela-ponta3a" />
+				<componentref id="estrela-ponta3b" />
+				<componentref id="estrela-ponta4" />
+            </children>
+
+        </component>
+		
+		
+		<component id="estrela-ponta1">
+
+            <transformation>
+				<rotate axis="x" angle="0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <componentref id="estrela-ponta" />
+
+            </children>
+
+        </component>
+		
+		<component id="estrela-ponta2">
+
+            <transformation>
+				<rotate axis="x" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <componentref id="estrela-ponta" />
+
+            </children>
+
+        </component>
+		
+		<component id="estrela-ponta3a">
+
+            <transformation>
+				<rotate axis="x" angle="135" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <componentref id="estrela-ponta" />
+
+            </children>
+
+        </component>
+		
+		<component id="estrela-ponta3b">
+
+            <transformation>
+				<rotate axis="x" angle="225" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <componentref id="estrela-ponta" />
+
+            </children>
+
+        </component>
+		
+		<component id="estrela-ponta4">
+
+            <transformation>
+				<rotate axis="x" angle="270" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <componentref id="estrela-ponta" />
+
+            </children>
+
+        </component>
+		
+		<component id="estrela-ponta">
+
+            <transformation>
+				<scale x="0.3" y="1.0" z="0.3" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="cone" />
 
             </children>
 
