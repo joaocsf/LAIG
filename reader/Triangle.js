@@ -10,7 +10,22 @@ function Triangle(scene, x1, y1, z1, x2, y2, z2, x3, y3, z3) {
     this.z1 = z1;
     this.z2 = z2;
     this.z3 = z3;
-
+    this.b = Math.sqrt(	Math.pow((this.x2 - this.x1),2) + 
+    					Math.pow((this.y2 - this.y1),2) + 
+    					Math.pow((this.z2 - this.z1),2));
+    this.a = Math.sqrt(	Math.pow((this.x3 - this.x1),2) + 
+    					Math.pow((this.y3 - this.y1),2) + 
+    					Math.pow((this.z3 - this.z1),2));
+    this.c = Math.sqrt(	Math.pow((this.x3 - this.x2),2) + 
+    					Math.pow((this.y3 - this.y2),2) + 
+    					Math.pow((this.z3 - this.z2),2));
+    this.alpha  = Math.acos((-(this.a*this.a) + (this.b*this.b) + (this.c*this.c))/
+    						(2 * this.b * this.c));
+    this.beta   = Math.acos(((this.a*this.a) - (this.b*this.b) + (this.c*this.c))/
+    						(2 * this.a * this.c));
+    this.lambda = Math.acos(((this.a*this.a) + (this.b*this.b) - (this.c*this.c))/
+    						(2 * this.a * this.b));
+    
 	this.initBuffers();
 };
 
@@ -60,18 +75,10 @@ Triangle.prototype.initBuffers = function () {
         ];
 
     this.texCoords = [
+		this.c - (this.a * Math.cos(this.beta)), this.a * Math.sin(this.beta),
 		0.0, 0.0,
-		1.0, 0.0,
-		1.0, 1.0, 
-		0.0, 1.0
+		this.c, 0.0
     ];
-	/*
-    this.texCoords = [
-		this.minS, this.maxT,
-		this.maxS, this.maxT,
-		this.minS, this.minT,
-		this.maxS, this.minT
-    ];/**/
 		
 	this.primitiveType=this.scene.gl.TRIANGLES;
 	this.initGLBuffers();
