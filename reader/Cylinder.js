@@ -63,27 +63,28 @@ Cylinder.prototype.calculateCross = function(A,B){
 		y: A.z * B.x - A.x - B.z,
 		z: A.x * B.y - A.y * B.x
 	};
+
+	var norm = Math.sqrt(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z);
+	cross.x /= norm;
+	cross.y /= norm;
+	cross.z /= norm;
+
 	return cross
 }
 
 Cylinder.prototype.calculateNormal = function(angle){
-
 	
 	var tangent ={
-		x: Math.sin(angle),
+		x: Math.sin(angle) , 
 		y: 0,
 		z: -Math.cos(angle)
 		};
 	
 	var vetor = {
-		x: (this.top - this.base) * Math.cos(angle),
-		y: this.height,
+		x: (this.top - this.base) * Math.cos(angle) ,
+		y: this.height, 
 		z: (this.top - this.base) * Math.sin(angle)
 		};
-	var norm = Math.sqrt(vetor.x * vetor.x + vetor.y * vetor.y + vetor.z * vetor.z);
-	vetor.x /= norm;
-	vetor.y /= norm;
-	vetor.z /= norm;
 	return this.calculateCross(tangent,vetor);
 }
 
@@ -98,7 +99,7 @@ Cylinder.prototype.calculateNormal = function(angle){
     var radius_decrease = (this.top - this.base) / this.stacks;
     var radius = this.base;
     var z_increase = this.height / this.stacks;
-
+	var offset = this.slices % 2;
 	var ang = 0;
 	for(var z = 0 ; z <= this.stacks ; z ++){
 		for(var i = 0 ; i < this.slices; i++){
@@ -114,20 +115,17 @@ Cylinder.prototype.calculateNormal = function(angle){
 			var normal = this.calculateNormal(ang);
 	
 			this.normals.push(normal.x,normal.y, normal.z);	
-			//this.normals.push(x, 0 , y);	
-			
-			var s = i/this.slices;
 
-			var v = z/this.stacks; 
+			//this.normals.push(x, 0 , y);	
+
+			var s = i/(this.slices + offset);
 			
-			if( i > this.slices/2){
-				s = (this.slices - i)/this.slices;
+			if(s >= 0.5){
+				s = 1.0 - s;
 			}
-			s*=2;
-			if(s <= 0)
-				s = 0.01;
-			else if(s >= 1)
-				s = 0.99;
+
+			var v = 1 - (z/this.stacks); 
+
 
 			this.texCoords.push(s,v);
 
