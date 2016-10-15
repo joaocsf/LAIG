@@ -298,6 +298,7 @@
 				<componentref id="arvores" />
 				<componentref id="patrick"/>
 				<componentref id="anjos" />
+				<componentref id="cubo" />
 
             </children>
 
@@ -991,7 +992,7 @@
 		<component id="patrick">
 
             <transformation>
-				<translate x="1.2" y="0.2" z="-1" />
+				<translate x="1.2" y="0.70" z="-1" />
 				<scale x="1.0" y="1.0" z="1.0" />
 				<rotate axis="y" angle="35" />
             </transformation>
@@ -1150,6 +1151,160 @@
             </children>
 
         </component>
+		
+		<component id="cubo">
+
+            <transformation>
+				<translate x="1.2" y="0.25" z="-1.0" />
+				<rotate axis="y" angle="35" />
+				<scale x="0.4" y="0.5" z="1.0" />
+				
+				
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="textura2" />
+
+            <children>
+
+                <componentref id="c1" />
+				<componentref id="c2" />
+				<componentref id="c3" />
+				<componentref id="c4" />
+				<componentref id="c5" />
+				<componentref id="c6" />
+				
+
+            </children>
+
+        </component>
+		
+		<component id="c2">
+
+            <transformation>
+				<rotate axis="y" angle="90" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		<component id="c5">
+
+            <transformation>
+				<rotate axis="x" angle="90" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		<component id="c6">
+
+            <transformation>
+				<rotate axis="x" angle="-90" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		<component id="c3">
+
+            <transformation>
+				<rotate axis="y" angle="180" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		
+				<component id="c4">
+
+            <transformation>
+				<rotate axis="y" angle="270" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		
+		<component id="c1">
+
+            <transformation>
+				<scale x="1.0" y="1.0" z="1.0" />
+				<translate x="-0.5" y="-0.5" z="0.5" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+
+                <primitiveref id="prim1" />
+
+            </children>
+
+        </component>
+		
 		
 		<component id="cabeca">
 
