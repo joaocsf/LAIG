@@ -770,7 +770,7 @@ Parses the following elements:
 MySceneGraph.prototype.parsePrimitive = function(element){
 	
 	if(element.children == null || element.children.length != 1){
-		return "There must be ONLY ONE (<rectangle>,<triangle>,<cylinder>,<sphere>,<torus>) inside <primitive>";
+		return ("There must be ONLY ONE (<rectangle>,<triangle>,<cylinder>,<sphere>,<torus>) inside <primitive> : " + element.id);
 	}
 	console.log("Parsing primitive:" + element.id);
 

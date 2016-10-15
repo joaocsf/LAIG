@@ -163,16 +163,31 @@
             <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
 
         </primitive>
-		<primitive id="cone">
+		
+		<primitive id="corpoAnjo">
 
-            <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+            <cylinder base="1.5" top="0.3" height="4.0" slices="20" stacks="8" />
 
         </primitive>
+		
 		<primitive id="cabeca">
 
             <cylinder base="1.0" top="0.0" height="1.0" slices="10" stacks="5" />
 
         </primitive>
+		
+		<primitive id="cabecaAnjo">
+		
+             <sphere radius="1" slices="15" stacks="15" />
+        
+		</primitive>
+		
+		<primitive id="aureolaAnjo">
+		
+			<torus inner="0.8" outer="1" slices="60" loops="60" /> 
+			
+		</primitive>
+		
 		<primitive id="arvore1">
 
 			<cylinder base="1" top="0.6" height="1.0" slices="8" stacks="3" />
@@ -182,7 +197,6 @@
 		<primitive id="arvore2">
 
             <cylinder base="1" top="0.5" height="1.0" slices="5" stacks="3" />
-
 
         </primitive>
 
@@ -222,17 +236,17 @@
 
         </primitive>
 
-		<primitive id="bola">
+		<primitive id="cone">
 		
-             <sphere radius="1.0" slices="5" stacks="5" />
-        
-		</primitive>
+            <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
 
+        </primitive>
+		
 		<primitive id="bottom">
 
 			<cylinder base="0.3" top="0.2" height="1.0" slices="10" stacks="3" />
-
-        </primitive>
+		
+		</primitive>
 		
     </primitives>
 
@@ -283,7 +297,129 @@
 				<componentref id="mastercheckers" />
 				<componentref id="arvores" />
 				<componentref id="patrick"/>
+				<componentref id="anjos" />
 
+            </children>
+
+        </component>
+		
+		<component id="anjos">
+			
+			<transformation>
+			</transformation>
+			
+			<materials>
+				<material id="material1" />
+			</materials>
+			
+			<texture id="inherit"/>
+			
+			<children>
+			
+				<componentref id="anjo2"/>
+				<componentref id="anjo1"/>
+			
+			</children>
+		
+		</component>
+		
+		<component id="anjo1">
+			
+			<transformation>
+				<scale x="0.2" y="0.2" z="0.2"/>
+			</transformation>
+			
+			<materials>
+				<material id="material1" />
+			</materials>
+			
+			<texture id="inherit"/>
+			
+			<children>
+			
+				<componentref id="compAureolaAnjo"/>
+				<componentref id="compCabecaAnjo"/>
+				<primitiveref id="corpoAnjo"/>
+			
+			</children>
+		
+		</component>
+		
+		<component id="anjo2">
+			
+			<transformation>
+				<scale x="0.2" y="0.2" z="0.2"/>
+				<rotate axis="y" angle="-45" />
+				<translate x="4.0" y="0.0" z="4.0" />
+			</transformation>
+			
+			<materials>
+				<material id="material1" />
+			</materials>
+			
+			<texture id="inherit"/>
+			
+			<children>
+			
+				<componentref id="compAureolaAnjo"/>
+				<componentref id="compCabecaAnjo"/>
+				<primitiveref id="corpoAnjo"/>
+			
+			</children>
+		
+		</component>
+		
+		<component id="compCabecaAnjo">
+		
+			<transformation>
+				<translate x="0.0" y="4.5" z="0.0" />
+			</transformation>
+		
+			<materials>
+				<material id="inherit" />
+			</materials>
+			
+			<texture id="inherit"/>
+			
+			<children>
+				<primitiveref id="cabecaAnjo"/>
+			</children>
+		
+		</component>
+		
+		<component id="compAureolaAnjo">
+		
+			<transformation>
+				<translate x="0.0" y="5.5" z="0.0" />
+			</transformation>
+		
+			<materials>
+				<material id="inherit" />
+			</materials>
+			
+			<texture id="inherit"/>
+			
+			<children>
+				<primitiveref id="aureolaAnjo"/>
+			</children>
+		
+		</component>
+
+		<component id="torusFino">
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0" />
+            </transformation>
+
+            <materials>
+				<material id="material1" />
+            </materials>
+
+            <texture id="textura2" />
+
+            <children>
+
+                <primitiveref id="prim2" />
 
             </children>
 
