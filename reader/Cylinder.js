@@ -95,57 +95,44 @@ Cylinder.prototype.calculateNormal = function(angle){
  	this.indices = [];
  	this.normals = [];
  	this.texCoords = [];
-
-    var radius_decrease = (this.top - this.base) / this.stacks;
-    var radius = this.base;
-    var z_increase = this.height / this.stacks;
-	var offset = this.slices % 2;
-	var ang = 0;
-	for(var z = 0 ; z <= this.stacks ; z ++){
-		for(var i = 0 ; i < this.slices; i++){
-			
-			var z2 = z * z_increase;
-			var radius2 = z/this.stacks * (this.top - this.base) + this.base;
-			
-			var x = radius2 * Math.cos(ang);
-			var y = radius2 * Math.sin(ang);
-
-			this.vertices.push(x,z2,y);
-
-			var normal = this.calculateNormal(ang);
 	
-			this.normals.push(normal.x,normal.y, normal.z);	
+	
+    
+    for(var i = 0; i <= this.stacks; i++){
+		var h = i/this.stacks;
 
-			//this.normals.push(x, 0 , y);	
+    	for(var j = 0; j <= this.slices; j++){
 
-			var s = i/(this.slices + offset);
+    		var ang = Math.PI * 2 * (j/this.slices);
+
+			var radius = (this.top-this.base)* h + this.base;
+			var x = radius * Math.cos(ang);
+			var z = radius * Math.sin(ang);
 			
-			if(s >= 0.5){
-				s = 1.0 - s;
-			}
+			this.vertices.push(x,this.height * h, z);
+			var normal = this.calculateNormal(ang);
+			this.normals.push(normal.x,normal.y,normal.z);
 
-			var v = 1 - (z/this.stacks); 
+			var s = j/this.slices;
 
+			this.texCoords.push(s,1-h);
+    	}
+    }
+	
 
-			this.texCoords.push(s,v);
+	var incr1 = this.slices+1;
 
-            
-			ang += this.aRad;
+	for(var i = 0; i < this.stacks; i++){
+		for(var k = 0 ; k < this.slices; k++){
+			var index = i * (incr1) + k;
+
+			this.indices.push(index + 1, index, index + incr1);
+			this.indices.push( index + incr1 + 1 , index + 1, index + incr1);
 		}
-	}
+		
 
-	for(var i = 0 ; i < this.stacks; i++){
-		var limit = (i * this.slices) + this.slices;
-		for(var j = i * this.slices ; j < limit ; j++){
-			if(j == (limit-1)){
-				this.indices.push(j,j+this.slices,j+1);
-				this.indices.push(j,j+1,(j+1)-this.slices);
-				continue;
-			}
-			this.indices.push(j,j+this.slices + 1,j+1);
-			this.indices.push(j, j + this.slices,j+1+this.slices);
-		}
 	}
+	
 
 	this.createCircle(this.base,0,0);
 	this.createCircle(this.top,this.height,1);

@@ -39,7 +39,7 @@
         </omni>
 
         <omni id="omni2" enabled="1" >
-            <location x="10.0" y="0.0" z="-2.0" w="1.0" />
+            <location x="0.0" y="2.0" z="0.0" w="1.0" />
             <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
@@ -73,6 +73,8 @@
         <texture id="textura1" file="../pics/teste.png" length_s="1.0" length_t="1.0" />
         <texture id="textura2" file="../pics/checkers.png" length_s="1.0" length_t="1.0" />
 		<texture id="folha" file="../pics/leaf.png" length_s="1.0" length_t="1.0" />
+		<texture id="face" file="../pics/face1.png" length_s="1.0" length_t="1.0" />
+		<texture id="bottom" file="../pics/bottom.png" length_s="1.0" length_t="1.0" />
     </textures>
 
 
@@ -95,8 +97,8 @@
             <shininess value="1.0" />
         </material>
 		<material id="folhas" >
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
-            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
             <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
             <shininess value="1.0" />
@@ -115,6 +117,14 @@
             <specular r="0.5" g="0.5" b="0.5" a="1.0" />
             <shininess value="1.0" />
         </material>
+		<material id="corpo1" >
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+            <diffuse r="0.85" g="0.51" b="0.54" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+            <shininess value="1.0" />
+        </material>
+		
 
     </materials>
 
@@ -127,10 +137,9 @@
            <!-- instrucoes a usar sem limite nem ordem -->
            <!-- deve existir pelo menos uma transformacao -->
 
-           <translate x="1" y="0" z="0" />
-           <scale x="2" y="2" z="2" />
-		   <rotate axis="y" angle="90" />
-
+           <translate x="0" y="0" z="0" />
+           <scale x="1.0" y="1.0" z="1.0" />
+			
         </transformation>
 
     </transformations>
@@ -157,6 +166,11 @@
 		<primitive id="cone">
 
             <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+
+        </primitive>
+		<primitive id="cabeca">
+
+            <cylinder base="1.0" top="0.0" height="1.0" slices="10" stacks="5" />
 
         </primitive>
 		<primitive id="arvore1">
@@ -214,6 +228,12 @@
         
 		</primitive>
 
+		<primitive id="bottom">
+
+			<cylinder base="0.3" top="0.2" height="1.0" slices="10" stacks="3" />
+
+        </primitive>
+		
     </primitives>
 
 
@@ -260,132 +280,60 @@
                 <!-- deve existir uma ou mais tags "componentref" e/ou -->
                 <!-- "primitiveref", identificando outros -->
                 <!-- componentes ou primitivas -->
-                <componentref id="rute2" />
-				<componentref id="rute3" />
 				<componentref id="mastercheckers" />
-                <!-- <componentref id="torusFino" /> -->
-				<componentref id="CilindroGrosso" />
-                <componentref id="arvore-total" />
-				<primitiveref id="prim1" />
-				<primitiveref id="prim5" />
-
+				<componentref id="arvores" />
+				<componentref id="patrick"/>
 
 
             </children>
 
         </component>
-
-		<component id="torusFino">
-
-            <transformation>
-                <translate x="0.0" y="0.0" z="0" />
-            </transformation>
-
-            <materials>
-				<material id="material1" />
-            </materials>
-
-            <texture id="textura2" />
-
-            <children>
-
-                <primitiveref id="prim2" />
-
-            </children>
-
-        </component>
-
-		<component id="CilindroGrosso">
+		
+				
+		<component id="mastercheckers">
 
             <transformation>
-                <translate x="0.0" y="0.0" z="0" />
-            </transformation>
+               
+				<scale x="2.0" y="2.0" z="2.0"/>
+				<translate x="-2.0" y="0.0" z="2.0" />
+				<rotate axis="x" angle="-90" />
 
-            <materials>
-				<material id="material1" />
-				<material id="material2" />
-            </materials>
-
-            <texture id="textura2" />
-
-            <children>
-
-                <primitiveref id="prim3" />
-				<componentref id="trianguloPiqueno" />
-
-            </children>
-
-        </component>
-
-		<component id="trianguloPiqueno">
-
-            <transformation>
-                <translate x="0.0" y="10.0" z="0.0" />
-            </transformation>
-
-            <materials>
-				<material id="material1" />
-            </materials>
-
-            <texture id="textura2" />
-
-            <children>
-
-                <primitiveref id="prim4" />
-
-            </children>
-
-        </component>
-
-
-		<component id="rute2">
-
-            <transformation>
-                <translate x="1.0" y="0.0" z="0" />
-                <rotate axis="y" angle="-90" />
-                <scale x="1.0" y="1.0" z="1.0" />
-            </transformation>
-
-            <materials>
-                <material id="material2" />
-				<material id="material1" />
-            </materials>
-
-            <texture id="none" />
-
-            <children>
-
-                <primitiveref id="prim1" />
-
-            </children>
-
-        </component>
-
-		<component id="rute3">
-
-            <transformation>
-                <translate x="0.0" y="1.0" z="0.0" />
             </transformation>
 
             <materials>
                 <material id="inherit" />
-				<material id="material2" />
             </materials>
 
-            <texture id="inherit" />
-
+            <texture id="none" />
             <children>
-
-                <primitiveref id="prim1" />
-
+                <componentref id="mastercheckersA" />
+				<componentref id="mastercheckersB" />
             </children>
 
         </component>
-
-		<component id="mastercheckers">
+		
+		<component id="mastercheckersA">
 
             <transformation>
-                <translate x="1.0" y="0.0" z="1.0" />
+                <translate x="0.0" y="2.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+            <children>
+                <componentref id="mastercheckers1" />
+				<componentref id="mastercheckers2" />
+            </children>
+
+        </component>
+		
+		<component id="mastercheckersB">
+
+            <transformation>
+                <translate x="0.0" y="0.0" z="0.0" />
             </transformation>
 
             <materials>
@@ -626,11 +574,86 @@
             </children>
 
         </component>
+		
+		<component id="arvores">
 
+            <transformation>
+                <translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore1" />
+				<componentref id="arvore2" />
+				<componentref id="arvore3" />
+            </children>
+
+        </component>
+		
+		<component id="arvore1">
+
+            <transformation>
+                <translate x="2.0" y="0.0" z="3.0" />
+            </transformation>
+
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore-total" />
+            </children>
+
+        </component>
+		<component id="arvore2">
+
+            <transformation>
+                <translate x="-1.0" y="0.0" z="2.0" />
+            </transformation>
+
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore-total" />
+            </children>
+
+        </component>
+		
+		<component id="arvore3">
+
+            <transformation>
+                <translate x="-0.4" y="0.0" z="-2.0" />
+				<rotate axis="y" angle="35" />
+				<scale x="1.0" y="0.8" z="1.0"/>
+            </transformation>
+
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore-total" />
+            </children>
+
+        </component>
+		
 		<component id="arvore-total">
 
             <transformation>
-                <translate x="6.0" y="0.0" z="0.0" />
+                <translate x="0.0" y="0.0" z="0.0" />
             </transformation>
 
             <materials>
@@ -828,7 +851,189 @@
             </children>
 
         </component>
+		
+		<component id="patrick">
 
+            <transformation>
+				<translate x="1.2" y="0.2" z="-1" />
+				<scale x="1.0" y="1.0" z="1.0" />
+				<rotate axis="y" angle="35" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <componentref id="corpo" />
+				<componentref id="braco1" />
+				<componentref id="braco2" />
+				<componentref id="bottom-1" />
+				<componentref id="perna1" />
+				<componentref id="perna2" />
+            </children>	
+
+        </component>
+		
+		<component id="corpo">
+
+            <transformation>
+				<scale x="0.3" y="1.0" z="0.3" />
+
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <componentref id="cabeca" />
+            </children>	
+
+        </component>
+		
+		<component id="bottom-1">
+
+            <transformation>
+				
+				<rotate axis="x" angle="-180" /> 
+				<scale x="1.0" y="0.2" z="1.0" /> 
+				
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="bottom" />
+
+            <children>
+
+                <primitiveref id="bottom" />
+
+            </children>
+
+        </component>
+		
+		<component id="braco2">
+
+            <transformation>
+				<translate x="0.05" y="0.3" z="0.0" />
+				<rotate axis="x" angle="-90" />
+				<scale x="0.15" y="0.5" z="0.15" />
+
+            </transformation>
+
+            <materials>
+                <material id="corpo1" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <primitiveref id="cone" />
+
+            </children>
+
+        </component>
+		
+		<component id="braco1">
+
+            <transformation>
+				<translate x="0.05" y="0.3" z="0.0" />
+				<rotate axis="x" angle="90" />
+				<scale x="0.15" y="0.5" z="0.15" />
+
+            </transformation>
+
+            <materials>
+                <material id="corpo1" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <primitiveref id="cone" />
+
+            </children>
+
+        </component>
+		
+		<component id="perna1">
+
+            <transformation>
+				<translate x="0.0" y="-0.00" z="0.1" />
+				<rotate axis="y" angle="-80" />
+				<rotate axis="x" angle="120" />
+				<scale x="0.15" y="0.6" z="0.15" />
+
+            </transformation>
+
+            <materials>
+                <material id="corpo1" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <primitiveref id="cone" />
+
+            </children>
+
+        </component>
+		
+		<component id="perna2">
+
+            <transformation>
+				<translate x="0.0" y="-0.00" z="-0.1" />
+				<rotate axis="y" angle="-100" />
+				<rotate axis="x" angle="120" />
+				<scale x="0.15" y="0.6" z="0.15" />
+
+            </transformation>
+
+            <materials>
+                <material id="corpo1" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+
+                <primitiveref id="cone" />
+
+            </children>
+
+        </component>
+		
+		<component id="cabeca">
+
+            <transformation>
+				<scale x="1.0" y="1.0" z="1.0" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="face" />
+
+            <children>
+
+                <primitiveref id="cabeca" />
+
+            </children>
+
+        </component>
 
 
     </components>
