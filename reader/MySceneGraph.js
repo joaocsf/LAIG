@@ -1,6 +1,6 @@
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
-	
+
 	this.illumination = { 	ambient : {r: 0.1, g: 0.1, b: 0.1, a: 1} ,
 							background : {r: 0, g: 0, b: 0, a: 1},
 							local : 0,
@@ -21,8 +21,8 @@ function MySceneGraph(filename, scene) {
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
-		
-	// File reading 
+
+	// File reading
 	this.reader = new CGFXMLreader();
 
 	/*
@@ -31,7 +31,7 @@ function MySceneGraph(filename, scene) {
 	 * If any error occurs, the reader calls onXMLError on this object, with an error message
 	 */
 	console.log("Opening Scene:" + filename);
-	this.reader.open('scenes/'+filename, this);  
+	this.reader.open('scenes/'+filename, this);
 }
 
 MySceneGraph.prototype.getRoot = function(){
@@ -43,24 +43,24 @@ MySceneGraph.prototype.checkError=function(error){
 		this.onXMLError(error);
 		return 1;
 	}
-} 
+}
 
 /*
  * Callback to be executed on any read error
  */
 MySceneGraph.prototype.onXMLError=function (message) {
-	console.error("XML Loading Error: "+message);	
+	console.error("XML Loading Error: "+message);
 	this.loadedOk=false;
 }
 
 /*
  * Callback to be executed after successful reading
  */
-MySceneGraph.prototype.onXMLReady=function() 
+MySceneGraph.prototype.onXMLReady=function()
 {
 	console.log("XML Loading finished.");
 	var rootElement = this.reader.xmlDoc.documentElement;
-	
+
 	// Here should go the calls for different functions to parse the various blocks
 	if(this.checkError(this.parseScene(rootElement)))
 		return;
@@ -80,11 +80,11 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	if(this.checkError(this.parseComponents(rootElement)))
 		return;
-	
+
 	this.startAssociation();
 
 	this.loadedOk=true;
-	
+
 	// As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
 	this.scene.onGraphLoaded();
 
@@ -110,7 +110,7 @@ MySceneGraph.prototype.getCamera = function(){
 
 }
 
-//-------------------------- 
+//--------------------------
 //--------INITIALIZE--------
 //--------------------------
 MySceneGraph.prototype.associateIDs = function(component){
@@ -167,7 +167,7 @@ MySceneGraph.prototype.getRGBAFromElement = function(element){
 MySceneGraph.prototype.ComputeTransformation = function(element){
 
 	var childs = element.children;
-	
+
     var trans = [	1.0, 0.0, 0.0, 0.0,
                     0.0, 1.0, 0.0, 0.0,
                     0.0, 0.0, 1.0, 0.0,
@@ -201,7 +201,7 @@ MySceneGraph.prototype.ComputeTransformation = function(element){
 			 	var scaling = this.getVector3FromElement(child);
 			 	console.log("Read scaling : " + this.printVector3(scaling));
 			 	mat4.scale(trans,trans,[scaling.x,scaling.y,scaling.z]);
-				break;	
+				break;
 		}
 	}
 
@@ -209,8 +209,8 @@ MySceneGraph.prototype.ComputeTransformation = function(element){
 }
 //Function that Returns a string with the values of a RGBA structure
 MySceneGraph.prototype.printRGBA = function(element){
-	
-	return ("(R: " + element.r + " , G: " + element.g + " , B: " + element.b + " , A: " + element.a + " )" ); 
+
+	return ("(R: " + element.r + " , G: " + element.g + " , B: " + element.b + " , A: " + element.a + " )" );
 }
 
 //[/RGBA]
@@ -218,16 +218,16 @@ MySceneGraph.prototype.printRGBA = function(element){
 //[VECTOR3]
 //Function that get a vector3 from an Element
 MySceneGraph.prototype.getVector3FromElement = function (element){
-	
+
 	var point = {
 		x : 0,
 		y : 0,
 		z : 0
 	};
-	
+
 	if(element == null)
 		return point;
-	
+
 	point.x = this.reader.getFloat(element, "x");
 	point.y = this.reader.getFloat(element, "y");
 	point.z = this.reader.getFloat(element, "z");
@@ -237,7 +237,7 @@ MySceneGraph.prototype.getVector3FromElement = function (element){
 //Function that Returns a string with the values of a vector3
 MySceneGraph.prototype.printVector3 = function (vector){
 
-	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " )"; 
+	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " )";
 	return res;
 
 }
@@ -246,17 +246,17 @@ MySceneGraph.prototype.printVector3 = function (vector){
 //[VECTOR4]
 //Function that get a vector4 from an Element
 MySceneGraph.prototype.getVector4FromElement = function (element){
-	
+
 	var point = {
 		x : 0,
 		y : 0,
 		z : 0,
 		w : 1.0
 	};
-	
+
 	if(element == null)
 		return point;
-	
+
 	point.x = this.reader.getFloat(element, "x");
 	point.y = this.reader.getFloat(element, "y");
 	point.z = this.reader.getFloat(element, "z");
@@ -268,7 +268,7 @@ MySceneGraph.prototype.getVector4FromElement = function (element){
 //Function that Returns a string with the values of a vector4
 MySceneGraph.prototype.printVector4 = function (vector){
 
-	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " W: " + vector.w + " )"; 
+	var res = "(X: " + vector.x + " , Y: " + vector.y  + " Z: " + vector.z + " W: " + vector.w + " )";
 	return res;
 
 }
@@ -286,11 +286,15 @@ Parses the following attributes:
 	axis_length : ff - length of the scenes axis
 */
 MySceneGraph.prototype.parseScene = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('scene');
-	
+
 	if(elems == null || elems.length != 1){
 		return "scene element is MISSING or more than one element";
+	}
+
+	if(elems[0] != rootElement.children[0]){
+		return "Expected 'scene' (first element) but got : " + elems[0].nodeName;
 	}
 
 	var scene = elems[0];
@@ -308,7 +312,7 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 
 /*Function to parse the element: Prespective
 Parses the following attributes:
-	near : ff 
+	near : ff
 	far : ff
 	angle : ff
 	from : vector3
@@ -324,8 +328,8 @@ Parses the following attributes:
 	//Check de erro (TODO)
 	var view = {
 		near : this.reader.getFloat(element, "near") || 0.0,
-		far : this.reader.getFloat(element, "far") || 0.0, 
-		angle : this.reader.getFloat(element, "angle") || 0.0, 
+		far : this.reader.getFloat(element, "far") || 0.0,
+		angle : this.reader.getFloat(element, "angle") || 0.0,
 		from : this.getVector3FromElement(from),
 		to :  this.getVector3FromElement(to)
 	};
@@ -335,7 +339,7 @@ Parses the following attributes:
 	if(element.id === this.views.default)
 		this.views.defaultID = this.views.childs.length;
 	this.views.childs.push(view);
-	
+
 }
 /* Function to parse the element: Views
 Parses the following attributes:
@@ -344,27 +348,31 @@ And the following elements:
 	prespective :
 */
 MySceneGraph.prototype.parseViews = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('views');
-	
+
 	if(elems == null || elems.length != 1){
 		return "views element is MISSING or more than one element";
+	}
+
+	if(elems[0] != rootElement.children[1]){
+		return "Expected 'views' (second element) but got : " + elems[0].nodeName;
 	}
 
 	var views = elems[0];
 	this.views.default = this.reader.getString(views,'default');
 
 	console.log("Default View is: " + this.views.default);
-	
+
 	var nNodes = views.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++){
 		var child = views.children[i];
 		switch(child.tagName){
 			case "perspective":
 				this.parsePerspective(child);
 				break;
-		}	
+		}
 	}
 }
 //**************************
@@ -379,25 +387,29 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 
 /* Function to parse the element: illumination
 Parses the following elements:
-	ambient : rgb 
+	ambient : rgb
 	background : rgb
 */
 MySceneGraph.prototype.parseIllumination = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('illumination');
-	
+
 	if(elems == null || elems.length != 1){
 		return "Illumination element is MISSING or more than one element";
+	}
+
+	if(elems[0] != rootElement.children[2]){
+		return "Expected 'illumination' (third element) but got : " + elems[0].nodeName;
 	}
 
 	var illum = elems[0];
 	this.illumination.doubleSided = this.reader.getInteger(illum, "doublesided");
 	this.illumination.local = this.reader.getInteger(illum, "local");
-	
+
 	console.log("Illum DoubleSided is: " + this.illumination.doubleSided  + " Illum Local" + this.illumination.local + "\n");
 
 	var nNodes = illum.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++){
 		var child = illum.children[i];
 		switch(child.tagName){
@@ -407,7 +419,7 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 			case "ambient":
 				this.illumination.ambient = this.getRGBAFromElement(child);
 				break;
-		}	
+		}
 	}
 
 	console.log("BG:" + this.printRGBA(this.illumination.background) + " , Ambient: " + this.printRGBA(this.illumination.ambient));
@@ -432,16 +444,16 @@ Parses the following attributes:
 	specular :	rgb
 */
 MySceneGraph.prototype.parseOmniLights = function(element){
-	
+
 	if(element == null)
 		return;
 
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
 	var omni = this.scene.lights[this.lightIndex];
-	
+
 	omni.disable();
 	omni.setVisible(true);
-	
+
 
 	if(enable == 1){
 		this.scene.lights[this.lightIndex].enable();
@@ -462,7 +474,7 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 
 	//Check de erro (TODO)
 	console.log("Omni Added: id: " + omni.id + " enable : " + enable + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
-	
+
 	this.lights[element.id] = this.scene.lights[this.lightIndex];
 	this.lightIndex++;
 	omni.update();
@@ -482,7 +494,7 @@ Parses the following attributes:
 	specular :	rgb
 */
 MySceneGraph.prototype.parseSpotLights = function(element){
-	
+
 	if(element == null)
 		return;
 	var spot = this.scene.lights[this.lightIndex];
@@ -492,9 +504,9 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 
 
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
-	
+
 	spot.disable();
-	
+
 	if(enable == 1){
 		spot.enable();
 	}
@@ -502,7 +514,7 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	var angle = this.reader.getFloat(element,"angle") || 0.0;
 	angle *= Math.PI/180;
 	spot.setSpotCutOff(angle);
-	
+
 	var exponent = this.reader.getFloat(element,"exponent") || 0.0;
 	spot.setSpotExponent(exponent);
 
@@ -527,7 +539,7 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 
 	//Check de erro (TODO)
 	console.log("Spot Added: id: " + spot.id + " enable : " + enable + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
-	
+
 	this.lights[element.id] = spot;
 	this.lightIndex++;
 	spot.update();
@@ -540,20 +552,24 @@ Parses the following elements:
 	spot :
 */
 MySceneGraph.prototype.parseLights = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('lights');
-	
+
 	if(elems == null || elems.length != 1){
 		return "Lights element is MISSING or more than one element";
 	}
 
+	if(elems[0] != rootElement.children[3]){
+		return "Expected 'lights' (forth element) but got : " + elems[0].nodeName;
+	}
+
 	var lights = elems[0];
-	
+
 	if(lights.children.length < 1){
 		return "Missing lights please specify at least one 'omni' and/or 'spot'";
 	}
 	var nNodes = lights.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++){
 		var child = lights.children[i];
 		switch(child.tagName){
@@ -563,7 +579,7 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 			case "spot":
 				this.parseSpotLights(child);
 				break;
-		}	
+		}
 	}
 }
 
@@ -584,24 +600,28 @@ Parses the following attributes:
 	length_t : ff
 */
 MySceneGraph.prototype.parseTextures = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('textures');
-	
+
 	if(elems == null || elems.length != 1){
 		return "Textures element is MISSING or more than one element";
+	}
+
+	if(elems[0] != rootElement.children[4]){
+		return "Expected 'textures' (fifth element) but got : " + elems[0].nodeName;
 	}
 
 	var texts = elems[0];
 
 	var nNodes = texts.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++){
 		var child = texts.children[i];
 		var texture = {
 			id : this.reader.getString(child,"id"),
 			textData : new CGFtexture(this.scene,this.reader.getString(child,"file")),
 			length_s : this.reader.getFloat(child,"length_s"),
-			length_t : this.reader.getFloat(child,"length_t") 
+			length_t : this.reader.getFloat(child,"length_t")
 		};
 		console.log("Texture read with id: " + texture.id + " path: " + texture.textData.path + " length_s: " + texture.length_s + " length_t: " + texture.length_t);
 		this.textures[texture.id] = texture;
@@ -618,7 +638,7 @@ MySceneGraph.prototype.parseTextures = function(rootElement){
 
 /*Function to parse the element: Material
 Parses the following attributes:
-	emission : rgba 
+	emission : rgba
 	ambient : rgba
 	diffuse : rgba
 	specular : rgba
@@ -636,7 +656,7 @@ Parses the following attributes:
 	var shininess = this.reader.getFloat(element.getElementsByTagName("shininess")[0],"value");
 
 	console.log("Material read with id: " + element.id + " emission: " + this.printRGBA(emission) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular) + " shininess: " + shininess);
-	
+
 	var appear = new CGFappearance(this.scene);
 	appear.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
 	appear.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
@@ -652,7 +672,7 @@ Parses the following elements:
 	material :
 */
 MySceneGraph.prototype.parseMaterials = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('materials');
 
 	if(elems[0] == null || elems[0].parentNode != rootElement){
@@ -663,9 +683,9 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 		return "There should be at least 1 or more material blocks";
 
 	var materials = elems[0];
-	
+
 	var nNodes = materials.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++)
 		this.parseMaterial(materials.children[i]);
 }
@@ -680,7 +700,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 
 /*Function to parse the element: Material
 Parses the following attributes:
-	emission : rgba 
+	emission : rgba
 	ambient : rgba
 	diffuse : rgba
 	specular : rgba
@@ -690,7 +710,7 @@ Parses the following attributes:
 
 	if(element == null)
 		return;
-	console.log("Reading transformation " + element.id);	
+	console.log("Reading transformation " + element.id);
 	var trans = this.ComputeTransformation(element);
 
 	this.transformations[element.id] = trans;
@@ -701,7 +721,7 @@ Parses the following elements:
 	material :
 */
 MySceneGraph.prototype.parseTransformations = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('transformations');
 
 	if(elems == null || elems.length != 1){
@@ -712,9 +732,9 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 		return "There should be at least 1 or more transformation blocks";
 
 	var transformations = elems[0];
-	
+
 	var nNodes = transformations.children.length;
-	
+
 	for(var i = 0; i < nNodes; i++)
 		this.parseTransformation(transformations.children[i]);
 }
@@ -730,9 +750,9 @@ Parses the following elements:
 	primitive :
 */
 MySceneGraph.prototype.parsePrimitives = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('primitives');
-	
+
 	if(elems == null || elems.length != 1){
 		return "primitives element is MISSING or more than one element";
 	}
@@ -742,13 +762,13 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 	if(primitives.children == null || primitives.children.length == 0){
 		return "There must be one or more <primitive> inside <primitives>";
 	}
-	
+
 	var nnodes = primitives.children.length;
 	var error;
 	for(var i = 0; i < nnodes; i++){
 
 		var child = primitives.children[i];
-		
+
 		if(child.tagName != "primitive")
 			return "Parsing <primitive> instead got: <" + child.tagName + ">";
 
@@ -768,7 +788,7 @@ Parses the following elements:
 	torus
 */
 MySceneGraph.prototype.parsePrimitive = function(element){
-	
+
 	if(element.children == null || element.children.length != 1){
 		return ("There must be ONLY ONE (<rectangle>,<triangle>,<cylinder>,<sphere>,<torus>) inside <primitive> : " + element.id);
 	}
@@ -793,7 +813,7 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		primitive = this.parseSphere(child);
 		break;
 	}
-	
+
 	this.primitives[element.id] = primitive;
 
 }
@@ -848,7 +868,7 @@ MySceneGraph.prototype.parseTorus = function(element){
 	var outer = 0;
 	var slices = 0;
 	var loops = 0;
-	
+
 	inner = this.reader.getFloat(element,"inner");
 	outer = this.reader.getFloat(element,"outer");
 	slices = this.reader.getInteger(element,"slices");
@@ -856,7 +876,7 @@ MySceneGraph.prototype.parseTorus = function(element){
 
 	console.log("New Torus inner:" + inner, "outer:" + outer + "slices:" + slices + "loops:" + loops);
 	return new Torus(this.scene,inner, outer, slices, loops);
-	
+
 }
 /* Function to parse the element: Cylinder
 Parses the following attributes:
@@ -872,7 +892,7 @@ MySceneGraph.prototype.parseCylinder = function(element){
 	var height = 0;
 	var slices = 0;
 	var stacks = 0;
-	
+
 	base = this.reader.getFloat(element,"base");
 	top = this.reader.getFloat(element,"top");
 	height = this.reader.getFloat(element,"height");
@@ -881,7 +901,7 @@ MySceneGraph.prototype.parseCylinder = function(element){
 
 	console.log("New Cylinder base:" + base, " top:" + top + " height:" + height +  " slices:" + slices + " stacks:" + stacks);
 	return new Cylinder(this.scene,base,top,height,slices,stacks);
-	
+
 }
 /* Function to parse the element: Triangle
 Parses the following attributes:
@@ -905,7 +925,7 @@ MySceneGraph.prototype.parseTriangle = function(element){
 	var x3 = 0;
 	var y3 = 0;
 	var z3 = 0;
-	
+
 	x1 = this.reader.getFloat(element,"x1");
 	y1 = this.reader.getFloat(element,"y1");
 	z1 = this.reader.getFloat(element,"z1");
@@ -920,7 +940,7 @@ MySceneGraph.prototype.parseTriangle = function(element){
 							" p2:" + x2 + "," + y2 + "," + z2 + ")" +
 							" p3:" + x3 + "," + y3 + "," + z3 + ")");
 	return new Triangle(this.scene,x1,y1,z1,x2,y2,z2,x3,y3,z3);
-	
+
 }
 //********************************
 //************</PRIMITIVES>*******
@@ -933,21 +953,21 @@ Parses the following elements:
 	component :
 */
 MySceneGraph.prototype.parseComponents = function(rootElement){
-	
+
 	var elems = rootElement.getElementsByTagName('components');
-	
+
 	if(elems == null || elems.length != 1){
 		return "components element is MISSING or more than one element";
 	}
 
 	var components = elems[0];
-	
+
 	var nnodes = components.children.length;
 	var error;
 	for(var i = 0; i < nnodes; i++){
 
 		var child = components.children[i];
-		
+
 		if(child.tagName != "component")
 			return "Expecting <component> instead got: <" + child.tagName + ">";
 
@@ -962,28 +982,28 @@ Parses the following attributes:
 	id : ss
 Parses the following elements:
 	transformation :
-	materials 
+	materials
 	texture
 	children
 */
 MySceneGraph.prototype.parseComponent = function(element){
-	
+
 	console.log ("Parsing Component:" + element.id);
 
 	var transformation = element.getElementsByTagName("transformation");
 
 	if(transformation.length > 1 || transformation.length == 0)
 		return "Only ONE <transformation> block is required";
-	
+
 	transformation = this.parseCTransform(transformation[0]);
 
 	var materials = element.getElementsByTagName("materials");
-	
+
 	if(materials == null || materials.length > 1 || materials.length == 0)
 		return "Only ONE <materials> block is required";
 
-	materials = this.parseCMat(materials[0]); 
-	
+	materials = this.parseCMat(materials[0]);
+
 	if(materials.length == 0)
 		return "Component need at least one material";
 
@@ -991,32 +1011,32 @@ MySceneGraph.prototype.parseComponent = function(element){
 
 	if(texture.length > 1 || texture.length == 0)
 		return "Only ONE <texture> block is required";
-	
+
 	texture = texture[0].id;
-	
+
 	if(texture != "none" && texture != "inherit"){
-		texture = this.textures[texture].textData; 
+		texture = this.textures[texture].textData;
 	}
-	
+
 	var comp = new Component(this.scene);
 	comp.texture = texture;
 	comp.materials = materials;
 	comp.material = materials[0];
 	comp.matrix = transformation;
-	
+
 	console.log("Component" + element.id + " materials:" + materials.length);
 	//leitura de childern
 
 	var childern = element.getElementsByTagName("children");
 	if(childern.length > 1 || childern.length == 0 || childern == null)
 		return "Only ONE <texture> block is required";
-		
+
 	children = childern[0];
-	
+
 	var nnodes = children.children.length;
 
 	for(var i = 0; i < nnodes; i++){
-		
+
 		var child = children.children[i];
 		switch(child.tagName){
 
@@ -1025,7 +1045,7 @@ MySceneGraph.prototype.parseComponent = function(element){
 			break;
 			case "primitiveref":
 				comp.primitivesID.push(child.id);
-			break; 
+			break;
 		}
 	}
 
@@ -1036,7 +1056,7 @@ Parses the following elements:
 	material
 */
 MySceneGraph.prototype.parseCTransform = function(element){
-	
+
 	var transformRef = element.getElementsByTagName("transformationref");
 
 	if(transformRef != null && transformRef.length == 1)
@@ -1050,7 +1070,7 @@ Parses the following elements:
 	material
 */
 MySceneGraph.prototype.parseCMat = function(element){
-	
+
 	var res = [];
 
 	var nnodes = element.children.length;
@@ -1075,10 +1095,10 @@ MySceneGraph.prototype.parseCMat = function(element){
 //********************************
 
 /** Example of method that parses elements of one block and stores information in a specific data structure
- 
- 
+
+
 MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
-	
+
 	var elems =  rootElement.getElementsByTagName('globals');
 	if (elems == null) {
 		return "globals element is missing.";
@@ -1102,14 +1122,14 @@ MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 	if (tempList == null  || tempList.length==0) {
 		return "list element is missing.";
 	}
-	
+
 	this.list=[];
 	// iterate over every element
 	var nnodes=tempList[0].children.length;
 	for (var i=0; i< nnodes; i++)
 	{
 		var e=tempList[0].children[i];
-		
+
 		// process each element and store its information
 		this.list[e.id]=e.attributes.getNamedItem("coords").value;
 		console.log("Read list item id "+ e.id+" with value "+this.list[e.id]);
