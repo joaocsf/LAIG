@@ -48,8 +48,13 @@ XMLscene.prototype.initCameras = function () {
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
+    
+	this.setAmbient(	this.graph.illumination.ambient.r,
+						this.graph.illumination.ambient.g,
+						this.graph.illumination.ambient.b,
+						this.graph.illumination.ambient.a);
+
+	this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
     this.setShininess(10.0);	
 };
