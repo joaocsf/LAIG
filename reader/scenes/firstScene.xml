@@ -75,7 +75,7 @@
         <!-- Nao necessario aplicar fatores de escala em  Alterar o UV antes de desenhar? -->
         <!-- quadricas (esfera, ciclindro...) -->
         <texture id="textura1" file="../resources/images/teste.png" length_s="1.0" length_t="1.0" />
-        <texture id="textura2" file="../resources/images/checkers.png" length_s="1.0" length_t="1.0" />
+        <texture id="textura2" file="../resources/images/checkers.png" length_s="5.0" length_t="1.0" />
 		<texture id="folha" file="../resources/images/leaf.png" length_s="1.0" length_t="1.0" />
 		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
 		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />

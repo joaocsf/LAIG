@@ -14,6 +14,15 @@ function Rectangle(scene, x1, x2, y1, y2) {
 Rectangle.prototype = Object.create(CGFobject.prototype);
 Rectangle.prototype.constructor=Rectangle;
 
+Rectangle.prototype.updateUV = function(length_s, length_t){
+	this.texCoords = [0.0, this.b / length_t,
+					 this.a / length_s, this.b/length_t,
+					 this.a / length_s, 0.0,
+					 0.0, 0.0];
+
+	this.updateTexCoordsGLBuffers();
+}
+
 Rectangle.prototype.initBuffers = function () {
 	this.vertices = [
             this.x1, this.y1, 0,

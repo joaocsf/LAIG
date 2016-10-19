@@ -1081,7 +1081,7 @@ MySceneGraph.prototype.parseComponent = function(element){
 	texture = texture[0].id;
 
 	if(texture != "none" && texture != "inherit"){
-		texture = this.textures[texture].textData;
+		texture = this.textures[texture];
 	}
 
 	var comp = new Component(this.scene);
