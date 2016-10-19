@@ -60,7 +60,7 @@ Cylinder.prototype.calculateCross = function(A,B){
 
 	var cross = {
 		x: A.y * B.z - A.z * B.y,
-		y: A.z * B.x - A.x - B.z,
+		y: A.z * B.x - A.x * B.z,
 		z: A.x * B.y - A.y * B.x
 	};
 
@@ -75,8 +75,8 @@ Cylinder.prototype.calculateCross = function(A,B){
 Cylinder.prototype.calculateNormal = function(angle){
 
 	var tangent ={
-		x: Math.sin(angle) ,
-		y: -Math.cos(angle),
+		x: -Math.sin(angle) ,
+		y: Math.cos(angle),
 		z: 0
 		};
 
