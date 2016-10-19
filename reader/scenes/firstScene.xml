@@ -83,7 +83,6 @@
    
 	</textures>
 
-
     <materials>
 
         <!-- Deve existir um ou mais blocos "material" -->
@@ -141,7 +140,6 @@
 
     </materials>
 
-
     <transformations>
 
         <!-- Deve existir um ou mais blocos "transformation" -->
@@ -156,7 +154,6 @@
         </transformation>
 
     </transformations>
-
 
     <primitives>
 

@@ -8,6 +8,7 @@ function MySceneGraph(filename, scene) {
 	this.views = { default : "" , childs : [], defaultID : 0};
 
 	this.sceneInfo = { root : "", axis_length : 0.0};
+	this.lightsName = [];
 	this.lights = {};
 	this.lightIndex = 0;
 	this.textures = {};
@@ -156,9 +157,21 @@ MySceneGraph.prototype.getRGBAFromElement = function(element){
 		return color;
 
 	color.r = this.reader.getFloat(element, "r");
+	if(color.r < 0.0 || color.r > 1.0){
+		console.warn("Value from " + element.parentNode.nodeName + " -> " + element.parentNode.id +  " -> " + element.nodeName + " -> " + " r is out of bounds [0.0 .... 1.0]");
+	}
 	color.g = this.reader.getFloat(element, "g");
+	if(color.g < 0.0 || color.g > 1.0){
+		console.warn("Value from " + element.parentNode.nodeName + " -> " + element.parentNode.id +  " -> " + element.nodeName + " -> " + " g is out of bounds [0.0 .... 1.0]");
+	}
 	color.b = this.reader.getFloat(element, "b");
+	if(color.b < 0.0 || color.b > 1.0){
+		console.warn("Value from " + element.parentNode.nodeName + " -> " + element.parentNode.id +  " -> " + element.nodeName + " -> " + " b is out of bounds [0.0 .... 1.0]");
+	}
 	color.a = this.reader.getFloat(element, "a");
+	if(color.a < 0.0 || color.a > 1.0){
+		console.warn("Value from " + element.parentNode.nodeName + " -> " + element.parentNode.id +  " -> " + element.nodeName + " -> " + " a is out of bounds [0.0 .... 1.0]");
+	}
 
 	return color;
 }
@@ -261,6 +274,9 @@ MySceneGraph.prototype.getVector4FromElement = function (element){
 	point.y = this.reader.getFloat(element, "y");
 	point.z = this.reader.getFloat(element, "z");
 	point.w = this.reader.getFloat(element, "w");
+	if(point.w < 0.0 || point.w > 1.0){
+		console.warn("Value from " + element.parentNode.nodeName + " -> " + element.parentNode.id +  " -> " + element.nodeName + " -> " + " w is out of bounds [0.0 .... 1.0]");
+	}
 
 	return point;
 }
@@ -294,7 +310,7 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[0]){
-		return "Expected 'scene' (first element) but got : " + elems[0].nodeName;
+		return "Expected 'scene' (first element) but got : " + rootElement.children[0].nodeName;
 	}
 
 	var scene = elems[0];
@@ -323,18 +339,25 @@ Parses the following attributes:
 	if(element == null)
 		return;
 
+	for(var i = 0; i < this.views.childs.length; i++)
+		if(this.views.childs[i].id === element.id){
+			console.error("Duplicate id found : " + element.id);
+		}
+
 	var from = element.getElementsByTagName("from")[0];
 	var to = element.getElementsByTagName("to")[0];
-	//Check de erro (TODO)
+
 	var view = {
+		id : element.id,
 		near : this.reader.getFloat(element, "near") || 0.0,
 		far : this.reader.getFloat(element, "far") || 0.0,
 		angle : this.reader.getFloat(element, "angle") || 0.0,
 		from : this.getVector3FromElement(from),
 		to :  this.getVector3FromElement(to)
 	};
+
 	view.angle *= Math.PI/180;
-	console.log("View Added: near: " + view.near + " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
+	console.log("View Added: near: " + view.near + " id : " + view.id +  " far: " + view.far + " angle: " + view.angle + " from: " + this.printVector3(view.from) + " to: " + this.printVector3(view.to) );
 	console.log(" ------------CAMERA " + element.id + " TMP " + this.views.default);
 	if(element.id === this.views.default)
 		this.views.defaultID = this.views.childs.length;
@@ -356,7 +379,7 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[1]){
-		return "Expected 'views' (second element) but got : " + elems[0].nodeName;
+		return "Expected 'views' (second element) but got : " + rootElement.children[1].nodeName;
 	}
 
 	var views = elems[0];
@@ -399,7 +422,7 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[2]){
-		return "Expected 'illumination' (third element) but got : " + elems[0].nodeName;
+		return "Expected 'illumination' (third element) but got : " + rootElement.children[2].nodeName;
 	}
 
 	var illum = elems[0];
@@ -448,6 +471,10 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	if(element == null)
 		return;
 
+	if(this.lights[element.id] != null){
+		console.error("Duplicate light id found : " + element.id);
+	}
+
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
 	var omni = this.scene.lights[this.lightIndex];
 
@@ -475,6 +502,7 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	//Check de erro (TODO)
 	console.log("Omni Added: id: " + omni.id + " enable : " + enable + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
+	this.lightsName.push(element.id);
 	this.lights[element.id] = this.scene.lights[this.lightIndex];
 	this.lightIndex++;
 	omni.update();
@@ -497,6 +525,11 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 
 	if(element == null)
 		return;
+
+	if(this.lights[element.id] != null){
+		console.error("Duplicate light id found : " + element.id);
+	}
+
 	var spot = this.scene.lights[this.lightIndex];
 
 	spot.disable();
@@ -540,6 +573,7 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	//Check de erro (TODO)
 	console.log("Spot Added: id: " + spot.id + " enable : " + enable + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
+	this.lightsName.push(element.id);
 	this.lights[element.id] = spot;
 	this.lightIndex++;
 	spot.update();
@@ -560,7 +594,7 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[3]){
-		return "Expected 'lights' (forth element) but got : " + elems[0].nodeName;
+		return "Expected 'lights' (forth element) but got : " + rootElement.children[3].nodeName;
 	}
 
 	var lights = elems[0];
@@ -607,8 +641,12 @@ MySceneGraph.prototype.parseTextures = function(rootElement){
 		return "Textures element is MISSING or more than one element";
 	}
 
+	if(elems[0].children.length < 1){
+		return "There should be at least one texture!";
+	}
+
 	if(elems[0] != rootElement.children[4]){
-		return "Expected 'textures' (fifth element) but got : " + elems[0].nodeName;
+		return "Expected 'textures' (fifth element) but got : " + rootElement.children[4].nodeName;
 	}
 
 	var texts = elems[0];
@@ -624,6 +662,11 @@ MySceneGraph.prototype.parseTextures = function(rootElement){
 			length_t : this.reader.getFloat(child,"length_t")
 		};
 		console.log("Texture read with id: " + texture.id + " path: " + texture.textData.path + " length_s: " + texture.length_s + " length_t: " + texture.length_t);
+
+		if(this.textures[texture.id] != null){
+			console.error("Duplicate texture id found : " + element.id);
+		}
+
 		this.textures[texture.id] = texture;
 	}
 }
@@ -664,8 +707,10 @@ Parses the following attributes:
 	appear.setSpecular(specular.r,specular.g,specular.b,specular.a);
 	appear.setShininess(shininess);
 
+	if(this.materials[element.id] != null){
+		console.error("Duplicate material id found : " + element.id);
+	}
 	this.materials[element.id] = appear;
-	//Check de erro (TODO)
 }
 /* Function to parse the element: Materials
 Parses the following elements:
@@ -681,6 +726,10 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 
 	if(elems[0].children.length < 1)
 		return "There should be at least 1 or more material blocks";
+
+	if(elems[0] != rootElement.children[5]){
+		return "Expected 'materials' (sixth element) but got : " + rootElement.children[5].nodeName;
+	}
 
 	var materials = elems[0];
 
@@ -713,8 +762,10 @@ Parses the following attributes:
 	console.log("Reading transformation " + element.id);
 	var trans = this.ComputeTransformation(element);
 
+	if(this.transformations[element.id] != null){
+		console.error("Duplicate transformation id found : " + element.id);
+	}
 	this.transformations[element.id] = trans;
-	//Check de erro (TODO)
 }
 /* Function to parse the element: Materials
 Parses the following elements:
@@ -730,6 +781,10 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 
 	if(elems[0].children.length < 1)
 		return "There should be at least 1 or more transformation blocks";
+
+	if(elems[0] != rootElement.children[6]){
+		return "Expected 'transformations' (seventh element) but got : " + rootElement.children[6].nodeName;
+	}
 
 	var transformations = elems[0];
 
@@ -761,6 +816,10 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 
 	if(primitives.children == null || primitives.children.length == 0){
 		return "There must be one or more <primitive> inside <primitives>";
+	}
+
+	if(elems[0] != rootElement.children[7]){
+		return "Expected 'primitives' (eigth element) but got : " + rootElement.children[7].nodeName;
 	}
 
 	var nnodes = primitives.children.length;
@@ -814,6 +873,9 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		break;
 	}
 
+	if(this.primitives[element.id] != null){
+		console.error("Duplicate primitive id found : " + element.id);
+	}
 	this.primitives[element.id] = primitive;
 
 }
@@ -960,6 +1022,10 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 		return "components element is MISSING or more than one element";
 	}
 
+	if(elems[0] != rootElement.children[8]){
+		return "Expected 'components' (ninth element) but got : " + rootElement.children[8].nodeName;
+	}
+
 	var components = elems[0];
 
 	var nnodes = components.children.length;
@@ -1029,12 +1095,16 @@ MySceneGraph.prototype.parseComponent = function(element){
 
 	var childern = element.getElementsByTagName("children");
 	if(childern.length > 1 || childern.length == 0 || childern == null)
-		return "Only ONE <texture> block is required";
+		return "Only ONE <children> block is required";
 
 	children = childern[0];
 
 	var nnodes = children.children.length;
 
+	if(nnodes < 1){
+		return "Need at least one componentref OR primitiveref";
+	}
+	
 	for(var i = 0; i < nnodes; i++){
 
 		var child = children.children[i];
@@ -1049,6 +1119,9 @@ MySceneGraph.prototype.parseComponent = function(element){
 		}
 	}
 
+	if(this.components[element.id] != null){
+		console.error("Duplicate component id found : " + element.id);
+	}
 	this.components[element.id] = comp;
 }
 /* Function to parse the element: transformation inside component
@@ -1093,46 +1166,3 @@ MySceneGraph.prototype.parseCMat = function(element){
 //********************************
 //************</COMPONENTS>*******
 //********************************
-
-/** Example of method that parses elements of one block and stores information in a specific data structure
-
-
-MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
-
-	var elems =  rootElement.getElementsByTagName('globals');
-	if (elems == null) {
-		return "globals element is missing.";
-	}
-
-	if (elems.length != 1) {
-		return "either zero or more than one 'globals' element found.";
-	}
-
-	// various examples of different types of access
-	var globals = elems[0];
-	this.background = this.reader.getRGBA(globals, 'background');
-	this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill","line","point"]);
-	this.cullface = this.reader.getItem(globals, 'cullface', ["back","front","none", "frontandback"]);
-	this.cullorder = this.reader.getItem(globals, 'cullorder', ["ccw","cw"]);
-
-	console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
-
-	var tempList=rootElement.getElementsByTagName('list');
-
-	if (tempList == null  || tempList.length==0) {
-		return "list element is missing.";
-	}
-
-	this.list=[];
-	// iterate over every element
-	var nnodes=tempList[0].children.length;
-	for (var i=0; i< nnodes; i++)
-	{
-		var e=tempList[0].children[i];
-
-		// process each element and store its information
-		this.list[e.id]=e.attributes.getNamedItem("coords").value;
-		console.log("Read list item id "+ e.id+" with value "+this.list[e.id]);
-	};
-
-}*/
