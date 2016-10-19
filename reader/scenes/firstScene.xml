@@ -75,7 +75,7 @@
         <!-- Nao necessario aplicar fatores de escala em  Alterar o UV antes de desenhar? -->
         <!-- quadricas (esfera, ciclindro...) -->
         <texture id="textura1" file="../resources/images/teste.png" length_s="1.0" length_t="1.0" />
-        <texture id="textura2" file="../resources/images/checkers.png" length_s="5.0" length_t="1.0" />
+        <texture id="textura2" file="../resources/images/checkers.png" length_s="4.0" length_t="1.0" />
 		<texture id="folha" file="../resources/images/leaf.png" length_s="1.0" length_t="1.0" />
 		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
 		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />
@@ -236,7 +236,7 @@
 
 		<primitive id="prim4">
 
-            <triangle x1="0.0" y1="0.0" z1="0.0" x2="1.0" y2="0.0" z2="0.0" x3="0.0" y3="1.0" z3="0.0" />
+            <triangle x1="4.0" y1="2.0" z1="0.0" x2="0.0" y2="0.0" z2="0.0" x3="8.0" y3="0.0" z3="0.0" />
 
         </primitive>
 
@@ -285,7 +285,7 @@
             <!-- o material muda para o proximo material da lista; do -->
             <!-- ultimo material da lista volta ao primeiro -->
             <materials>
-                <material id="material1" />
+                <material id="material2" />
             </materials>
 
             <!-- declaracao obrigatoria de texture -->
@@ -293,7 +293,7 @@
             <!-- id="none" remove a textura recebida do pai -->
             <!-- a textura declarada sobrepoe a textura recebida do -->
             <!-- objecto "pai" -->
-            <texture id="textura1" />
+            <texture id="textura2" />
 
             <!-- bloco "children" obrigatorio num "component" -->
             <children>
@@ -307,10 +307,31 @@
 				<componentref id="anjos" />
 				<componentref id="cubo" />
 				<componentref id="ceuzinho" />
+				<componentref id="tri" />
+				
             </children>
 
         </component>
+		
 
+		<component id="tri">
+
+			<transformation>
+				<translate x="-4.0" y="0.0" z="-4.0" />
+			</transformation>
+
+			<materials>
+				<material id="material1" />
+			</materials>
+
+			<texture id="inherit"/>
+
+			<children>
+				<primitiveref id="prim4" />
+			</children>
+
+		</component>
+	
 		<component id="anjos">
 
 			<transformation>
@@ -424,10 +445,10 @@
 			</transformation>
 
 			<materials>
-				<material id="material1" />
+				<material id="estrela" />
 			</materials>
 
-			<texture id="inherit"/>
+			<texture id="none"/>
 
 			<children>
 				<primitiveref id="aureolaAnjo"/>

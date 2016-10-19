@@ -32,6 +32,18 @@ function Triangle(scene, x1, y1, z1, x2, y2, z2, x3, y3, z3) {
 Triangle.prototype = Object.create(CGFobject.prototype);
 Triangle.prototype.constructor=Triangle;
 
+Triangle.prototype.updateUV = function(length_s, length_t){
+	
+	this.texCoords = [
+    	this.mid/length_s, 1.0 - this.halt/length_t,
+		0.0, 1.0,
+		this.c/length_s, 1.0
+    ];
+
+	this.updateTexCoordsGLBuffers();
+
+}	
+
 Triangle.prototype.initBuffers = function () {
 	
 	this.vertices = [
@@ -74,10 +86,14 @@ Triangle.prototype.initBuffers = function () {
             0, 1, 2, 
         ];
 
+    this.halt = this.a * Math.sin(this.beta);
+    this.mid = this.c - this.a*Math.cos(this.beta);
+    this.comp = this.c;
+
     this.texCoords = [
-		this.c - (this.a * Math.cos(this.beta)), this.a * Math.sin(this.beta),
-		0.0, 0.0,
-		this.c, 0.0
+    	this.mid, 1.0 - this.halt,
+		0.0, 1.0,
+		this.c, 1.0
     ];
 		
 	this.primitiveType=this.scene.gl.TRIANGLES;
