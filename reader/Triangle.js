@@ -36,8 +36,8 @@ Triangle.prototype.updateUV = function(length_s, length_t){
 	
 	this.texCoords = [
     	this.mid/length_s, 1.0 - this.halt/length_t,
-		0.0, 1.0,
-		this.c/length_s, 1.0
+		0.0, 1.0/length_t,
+		this.c/length_s, 1.0/length_t
     ];
 
 	this.updateTexCoordsGLBuffers();

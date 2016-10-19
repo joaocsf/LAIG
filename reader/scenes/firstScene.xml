@@ -74,7 +74,7 @@
         <!-- objetos respetivos podem a violar esta regra.         -->
         <!-- Nao necessario aplicar fatores de escala em  Alterar o UV antes de desenhar? -->
         <!-- quadricas (esfera, ciclindro...) -->
-        <texture id="textura1" file="../resources/images/teste.png" length_s="1.0" length_t="1.0" />
+        <texture id="textura1" file="../resources/images/teste.png" length_s="8.0" length_t="1.0" />
         <texture id="textura2" file="../resources/images/checkers.png" length_s="4.0" length_t="1.0" />
 		<texture id="folha" file="../resources/images/leaf.png" length_s="1.0" length_t="1.0" />
 		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
@@ -308,11 +308,32 @@
 				<componentref id="cubo" />
 				<componentref id="ceuzinho" />
 				<componentref id="tri" />
+				<componentref id="tri2" />
 				
             </children>
 
         </component>
 		
+
+		<component id="tri2">
+
+			<transformation>
+				
+				<translate x="4.0" y="0.0" z="4.0" />
+				<rotate axis="y" angle="180" />
+			</transformation>
+
+			<materials>
+				<material id="material1" />
+			</materials>
+
+			<texture id="textura1"/>
+
+			<children>
+				<primitiveref id="prim4" />
+			</children>
+
+		</component>
 
 		<component id="tri">
 
