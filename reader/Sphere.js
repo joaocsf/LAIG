@@ -21,11 +21,11 @@ Sphere.prototype.drawPoints = function(yCoord, radius) {
 
     for (var i = 0; i < this.slices; i++)
     {
-        var x = radius * Math.cos(this.aRad * i);
-        var z = radius * Math.sin(this.aRad * i); 
-        this.vertices.push(x,yCoord,z);
-        this.normals.push(x/radius,yCoord/radius,z/radius);
-        this.texCoords.push(((x/radius) + 1) / 2,((z/radius) + 1) / 2);
+        var x = Math.cos(this.aRad * i);
+        var z = Math.sin(this.aRad * i); 
+        this.vertices.push(x * radius,yCoord,z * radius);
+        this.normals.push(x,yCoord/radius,z);
+        this.texCoords.push(((x*radius/this.radius) + 1) / 2,((z*radius/this.radius) + 1) / 2);
     }
 }
 
