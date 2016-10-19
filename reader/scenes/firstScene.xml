@@ -188,7 +188,7 @@
 
 		<primitive id="aureolaAnjo">
 
-			<torus inner="0.8" outer="1" slices="60" loops="60" />
+			<torus inner="0.8" outer="1" slices="10" loops="20" />
 
 		</primitive>
 
@@ -396,7 +396,7 @@
 			</transformation>
 
 			<materials>
-				<material id="inherit" />
+				<material id="material1" />
 			</materials>
 
 			<texture id="inherit"/>
