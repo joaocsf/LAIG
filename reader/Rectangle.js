@@ -15,10 +15,12 @@ Rectangle.prototype = Object.create(CGFobject.prototype);
 Rectangle.prototype.constructor=Rectangle;
 
 Rectangle.prototype.updateUV = function(length_s, length_t){
-	this.texCoords = [0.0, this.b / length_t,
-					 this.a / length_s, this.b/length_t,
-					 this.a / length_s, 0.0,
-					 0.0, 0.0];
+	this.texCoords = [
+		0.0, 1.0,
+		this.a/length_s, 1.0,
+		this.a/length_s, 1 - this.b/length_t,
+		0.0, 1 - this.b/length_t
+    ];
 
 	this.updateTexCoordsGLBuffers();
 }
@@ -43,10 +45,10 @@ Rectangle.prototype.initBuffers = function () {
 			0, 2, 3,
         ];
     this.texCoords = [
-		0.0, this.b,
-		this.a, this.b,
-		this.a, 0.0,
-		0.0, 0.0
+		0.0, 1.0,
+		this.a, 1.0,
+		this.a, 1 - this.b,
+		0.0, 1 - this.b
     ];
 	/*
     this.texCoords = [
