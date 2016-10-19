@@ -26,6 +26,8 @@ function MySceneGraph(filename, scene) {
 	// File reading
 	this.reader = new CGFXMLreader();
 
+	filename = prompt("Choose the scene you want from scenes/",filename);
+
 	/*
 	 * Read the contents of the xml file, and refer to this class for loading and error handlers.
 	 * After the file is read, the reader calls onXMLReady on this object.
@@ -1104,7 +1106,7 @@ MySceneGraph.prototype.parseComponent = function(element){
 	if(nnodes < 1){
 		return "Need at least one componentref OR primitiveref";
 	}
-	
+
 	for(var i = 0; i < nnodes; i++){
 
 		var child = children.children[i];
