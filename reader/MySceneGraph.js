@@ -26,8 +26,6 @@ function MySceneGraph(filename, scene) {
 	// File reading
 	this.reader = new CGFXMLreader();
 
-	filename = prompt("Choose the scene you want from scenes/",filename);
-
 	/*
 	 * Read the contents of the xml file, and refer to this class for loading and error handlers.
 	 * After the file is read, the reader calls onXMLReady on this object.
