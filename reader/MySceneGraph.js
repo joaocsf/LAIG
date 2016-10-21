@@ -510,8 +510,6 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
 	omni.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
-
-	//Check de erro (TODO)
 	console.log("Omni Added: id: " + omni.id + " enable : " + enable + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
 	this.lightsName.push(element.id);
@@ -582,7 +580,6 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
 	spot.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
-	//Check de erro (TODO)
 	console.log("Spot Added: id: " + spot.id + " enable : " + enable + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
 	this.lightsName.push(element.id);
@@ -613,7 +610,9 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 
 	if(lights.children.length < 1){
 		return "Missing lights please specify at least one 'omni' and/or 'spot'";
-	}
+	} else if (lights.children.length > this.scene.lights.length)
+		return "Lights limit is " + this.scene.lights.length + ", please remove some lights.";
+		
 	var nNodes = lights.children.length;
 
 	for(var i = 0; i < nNodes; i++){
