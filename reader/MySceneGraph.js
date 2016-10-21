@@ -118,17 +118,29 @@ MySceneGraph.prototype.associateIDs = function(component){
 
 	for(var i = 0; i < component.componentsID.length; i++){
 		var key = component.componentsID[i];
+
+		if(this.components[key] == null)
+			console.error("Component with id : " + key + " does not exist!");
+
 		console.log("--with component ID: " + key);
 		component.components.push(this.components[key]);
 	}
 
 	for(var i = 0; i < component.primitivesID.length; i++){
 		var key = component.primitivesID[i];
+
+		if(this.primitives[key] == null)
+			console.error("Primitive with id : " + key + " does not exist!");
+
 		console.log("--with primitive ID: " + key);
 		component.primitives.push(this.primitives[key]);
 	}
 }
 MySceneGraph.prototype.startAssociation = function(element){
+
+	if(this.components[this.sceneInfo.root] == null)
+		console.error("Root must be an existing component! Root is : " + this.sceneInfo.root);
+
 	for(var key in this.components){
 		var component = this.components[key];
 		component.id = key;

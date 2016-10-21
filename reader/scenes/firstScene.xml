@@ -80,7 +80,7 @@
 		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
 		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />
 		<texture id="ceu" file="../resources/images/sky12.png" length_s="1.0" length_t="1.0" />
-   
+
 	</textures>
 
     <materials>
@@ -309,16 +309,16 @@
 				<componentref id="ceuzinho" />
 				<componentref id="tri" />
 				<componentref id="tri2" />
-				
+
             </children>
 
         </component>
-		
+
 
 		<component id="tri2">
 
 			<transformation>
-				
+
 				<translate x="4.0" y="0.0" z="4.0" />
 				<rotate axis="y" angle="180" />
 			</transformation>
@@ -352,7 +352,7 @@
 			</children>
 
 		</component>
-	
+
 		<component id="anjos">
 
 			<transformation>
@@ -372,7 +372,7 @@
 			</children>
 
 		</component>
-		
+
 		<component id="anjo1">
 
 			<transformation>
@@ -393,7 +393,7 @@
 			</children>
 
 		</component>
-		
+
 		<component id="anjoB">
 
 			<transformation>
@@ -626,7 +626,7 @@
             </children>
 
         </component>
-		
+
 		<component id="ceuzinho">
 
             <transformation>
@@ -643,7 +643,7 @@
             </children>
 
         </component>
-		
+
 		<component id="checkers1">
 
             <transformation>
@@ -744,7 +744,7 @@
 				<rotate axis="x" angle="-90" />
                 <translate x="0.0" y="0.0" z="1.0" />
 				<scale x="0.8" y="0.8" z="0.8" />
-				
+
             </transformation>
 
             <materials>
@@ -1130,10 +1130,10 @@
 		<component id="bottom-1">
 
             <transformation>
-			
-				<scale x="1.0" y="0.2" z="1.0" />			
+
+				<scale x="1.0" y="0.2" z="1.0" />
 				<rotate axis="x" angle="90" />
-			
+
             </transformation>
 
             <materials>
@@ -1243,7 +1243,7 @@
             </children>
 
         </component>
-		
+
 		<component id="coneBom">
 
             <transformation>
@@ -1265,7 +1265,7 @@
             </children>
 
         </component>
-		
+
 		<component id="cubo">
 
             <transformation>
