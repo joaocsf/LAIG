@@ -73,7 +73,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 						this.graph.illumination.background.b,
 						this.graph.illumination.background.a);
 	
-	this.setAmbient(	this.graph.illumination.ambient.r,
+
+	this.setGlobalAmbientLight(	this.graph.illumination.ambient.r,
 						this.graph.illumination.ambient.g,
 						this.graph.illumination.ambient.b,
 						this.graph.illumination.ambient.a);
