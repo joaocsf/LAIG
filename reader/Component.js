@@ -13,6 +13,12 @@ function Component(scene) {
     this.components = [];  //Lista de Componentes
     this.primitives = []; //Lista de Componentes
     
+    this.animations = []; //Anims
+    
+    this.time= 0;
+
+    this.firstTime = 0;
+
     this.material = null;
     this.texture = "none";
     this.materials = [];
@@ -23,10 +29,51 @@ function Component(scene) {
  Component.prototype = Object.create(CGFobject.prototype);
  Component.prototype.constructor = Component;
 
+ Component.prototype.update = function(currTime){
+    if(this.firstTime == 0){
+        this.firstTime = currTime;
+        return;
+    }
+    
+    this.time = currTime - this.firstTime;
+ }
+
+ Component.prototype.getFinalMatrix = function(){
+     
+    if(this.animations == null || this.animations.length == 0)
+        return this.matrix;
+    
+    var tempT = 0;
+    var animIndex = 0;
+    var animTime = this.time;
+
+    for(var i = 0; i < this.animations.length; i++){
+        tempT += this.animations[i].getTime();
+        animIndex = i;
+        
+        if(this.time <= tempT){
+            animTime = this.animations[i].getTime() - (tempT - this.time);
+            break;
+        }
+      
+    }
+    
+
+    var matAnim = this.animations[animIndex].getTransformation(animTime);
+
+    var tempMat = [1, 0, 0, 0,
+                   0, 1, 0, 0,
+                   0, 0, 1, 0,
+                   0, 0, 0, 1];
+
+     mat4.multiply(tempMat,this.matrix,matAnim);
+
+     return tempMat;
+ }
+
  Component.prototype.display2 = function(material, texture){
      this.scene.pushMatrix();
-        this.scene.multMatrix(this.matrix);
-
+        this.scene.multMatrix(this.getFinalMatrix());
         var mat = this.material;
 
         if(this.material == "inherit")

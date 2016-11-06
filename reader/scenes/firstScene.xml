@@ -154,6 +154,30 @@
         </transformation>
 
     </transformations>
+	
+	<!-- novo bloco de animacao -->
+	<animations>
+		<!-- podem existir zero ou mais nós "animation" -->
+		<!-- span é o tempo, em segundos, que a animação deve -->
+		<!-- demorar. Nesta versão do formato DSX, type pode ter -->
+		<!-- o valor "linear" ou "circular"; na animacao circular -->
+		<!-- os angulos sao expressos em graus  -->
+		<animation id="movimentoQuadratico" span="3" type="linear">
+			<controlpoint xx="2" yy="-1" zz="2" />
+			<controlpoint xx="1" yy="1" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="movimentoSalteado" span="1" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0.01" yy="1" zz="0" />
+			<controlpoint xx="0" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="ss" span="ff" type="circular" center="ff ff ff"
+				   radius="ff" startang="ff" rotang="ff" />
+	</animations>
+	
 
     <primitives>
 
@@ -303,7 +327,7 @@
                 <!-- componentes ou primitivas -->
 				<componentref id="mastercheckers" />
 				<componentref id="arvores" />
-				<componentref id="patrick"/>
+				<componentref id="patrickAnimadoA"/>
 				<componentref id="anjos" />
 				<componentref id="cubo" />
 				<componentref id="ceuzinho" />
@@ -1080,21 +1104,65 @@
             </children>
 
         </component>
-
-		<component id="patrick">
+		
+		<component id="patrickAnimadoA">
 
             <transformation>
 				<translate x="1.2" y="0.70" z="-1" />
 				<scale x="1.0" y="1.0" z="1.0" />
 				<rotate axis="y" angle="35" />
+
             </transformation>
 
+			
+			
             <materials>
                 <material id="inherit" />
             </materials>
 
             <texture id="none" />
+				
+            <children>
 
+                <componentref id="patrickAnimado" />
+            </children>
+
+        </component>
+		
+		<component id="patrickAnimado">
+
+            <transformation>
+				<translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+
+			<animationref id="movimentoQuadratico" />
+			<animationref id="movimentoSalteado" />
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+				
+            <children>
+
+                <componentref id="patrick" />
+            </children>
+
+        </component>
+		
+		<component id="patrick">
+
+            <transformation>
+				<translate x="0.0" y="0.0" z="0.0" />
+				<rotate axis="y" angle="180" />
+            </transformation>
+			
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+				
             <children>
 
                 <componentref id="corpo" />

@@ -24,6 +24,8 @@ XMLscene.prototype.init = function (application) {
     this.enableTextures(true);
 	this.materialDefault = new CGFappearance(this);
 	this.axis=new CGFaxis(this);
+
+	this.setUpdatePeriod(1);
 };
 
 XMLscene.prototype.setInterface = function (interface) {
@@ -40,6 +42,12 @@ XMLscene.prototype.initLights = function () {
 
 
 };
+
+XMLscene.prototype.update = function(currTime){
+
+	this.graph.update(currTime/1000);
+
+}
 
 XMLscene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.1, 500,

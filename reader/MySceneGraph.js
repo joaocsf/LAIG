@@ -16,6 +16,7 @@ function MySceneGraph(filename, scene) {
 	this.transformations = {};
 	this.primitives = {};
 	this.components = {};
+	this.animations = {};
 
 	this.cameraIndex = 0;
 
@@ -77,6 +78,8 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	if(this.checkError(this.parseTransformations(rootElement)))
 		return;
+	if(this.checkError(this.parseAnimations(rootElement)))
+		return;
 	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
 	if(this.checkError(this.parseComponents(rootElement)))
@@ -97,6 +100,14 @@ MySceneGraph.prototype.changeMaterials=function() {
 		component.changeMaterial();
 	}
 }
+
+MySceneGraph.prototype.update=function(currTime) {
+	for(var key in this.components){
+		var component = this.components[key];
+		component.update(currTime);
+	}
+}
+
 
 //Function that Returns a CGFCamera() using the defaultCameraID
 MySceneGraph.prototype.getCamera = function(){
@@ -252,10 +263,26 @@ MySceneGraph.prototype.getVector3FromElement = function (element){
 
 	if(element == null)
 		return point;
-
 	point.x = this.reader.getFloat(element, "x");
 	point.y = this.reader.getFloat(element, "y");
 	point.z = this.reader.getFloat(element, "z");
+	return point;
+}
+
+//Function that get a vector3 from an Element
+MySceneGraph.prototype.getVector3FromElement2 = function (element){
+
+	var point = {
+		x : 0,
+		y : 0,
+		z : 0
+	};
+
+	if(element == null)
+		return point;
+	point.x = this.reader.getFloat(element, "xx");
+	point.y = this.reader.getFloat(element, "yy");
+	point.z = this.reader.getFloat(element, "zz");
 	return point;
 }
 
@@ -322,7 +349,7 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[0]){
-		return "Expected 'scene' (first element) but got : " + rootElement.children[0].nodeName;
+		console.warn("Expected 'scene' (first element) but got : " + rootElement.children[0].nodeName);
 	}
 
 	var scene = elems[0];
@@ -391,7 +418,7 @@ MySceneGraph.prototype.parseViews = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[1]){
-		return "Expected 'views' (second element) but got : " + rootElement.children[1].nodeName;
+		console.warn("Expected 'views' (second element) but got : " + rootElement.children[1].nodeName);
 	}
 
 	var views = elems[0];
@@ -434,7 +461,7 @@ MySceneGraph.prototype.parseIllumination = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[2]){
-		return "Expected 'illumination' (third element) but got : " + rootElement.children[2].nodeName;
+		console.warn( "Expected 'illumination' (third element) but got : " + rootElement.children[2].nodeName);
 	}
 
 	var illum = elems[0];
@@ -603,7 +630,7 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[3]){
-		return "Expected 'lights' (forth element) but got : " + rootElement.children[3].nodeName;
+		console.warn("Expected 'lights' (forth element) but got : " + rootElement.children[3].nodeName);
 	}
 
 	var lights = elems[0];
@@ -657,7 +684,7 @@ MySceneGraph.prototype.parseTextures = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[4]){
-		return "Expected 'textures' (fifth element) but got : " + rootElement.children[4].nodeName;
+		console.warn("Expected 'textures' (fifth element) but got : " + rootElement.children[4].nodeName);
 	}
 
 	var texts = elems[0];
@@ -739,7 +766,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 		return "There should be at least 1 or more material blocks";
 
 	if(elems[0] != rootElement.children[5]){
-		return "Expected 'materials' (sixth element) but got : " + rootElement.children[5].nodeName;
+		console.warn("Expected 'materials' (sixth element) but got : " + rootElement.children[5].nodeName);
 	}
 
 	var materials = elems[0];
@@ -794,7 +821,7 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 		return "There should be at least 1 or more transformation blocks";
 
 	if(elems[0] != rootElement.children[6]){
-		return "Expected 'transformations' (seventh element) but got : " + rootElement.children[6].nodeName;
+		console.warn("Expected 'transformations' (seventh element) but got : " + rootElement.children[6].nodeName);
 	}
 
 	var transformations = elems[0];
@@ -807,6 +834,89 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 
 //***************************
 //*******</transformation>***
+//***************************
+//---------------------------
+//--------<ANIMATIONS>-------
+//---------------------------
+
+/*Function to parse the element: Material
+Parses the following attributes:
+	type : string
+*/
+ MySceneGraph.prototype.parseAnimations = function(element){
+	
+	if(element == null)
+		return;
+	console.log("Reading Animations!");
+	var elems = element.getElementsByTagName("animations");
+
+	if(elems == null || elems > 1){
+		return "There must be only one <animations> block!";
+	}
+
+	var block = elems[0];
+	console.log("Childs:" + block.children.length);
+	for(var i = 0; i < block.children.length; i++){
+
+		var child = block.children[i];
+
+		if(child.tagName != "animation")
+			return "There must be one or more blocks of <animation> inside <animations>!";
+		
+		var type = this.reader.getString(child,'type');
+
+		switch(type){
+			case 'linear':
+				var error = this.parseAnimationLinear(child);
+				if(error) return error; 
+				break;
+			case 'circular':
+				break;
+		}
+
+	}
+	
+	
+}
+
+/*Function to parse the element: Material
+Parses the following attributes:
+	type : string
+*/
+ MySceneGraph.prototype.parseAnimationLinear = function(element){
+	
+	if(element == null)
+		return "Element <animation> is null!";
+	
+	if(element.children.length < 2)
+		return "Error in animarion id:[ " + element.id + " ] There must be more than one <controlpoint>!";
+	
+	console.log("Parsing animation:" + element.id);
+
+	var span = this.reader.getFloat(element, 'span');
+	
+	var points = [];
+	
+	for(var i = 0; i < element.children.length; i++){
+		
+		var child = element.children[i];
+
+		if(child.tagName != 'controlpoint')
+			return "Error! in animation id:[ " + element.id + " ] Expecting controlpoint, got " + child.tagName;
+
+		
+		points.push(this.getVector3FromElement2(child));
+		
+	}
+	console.log("Animation Parsed: " + element.id );
+	this.animations[element.id] = new LinearAnimation(points, span);
+	
+	return null;
+
+}
+
+//***************************
+//*******</ANIMATIONS>********
 //***************************
 //--------------------------------
 //-----------<PRIMITIVES>---------
@@ -830,7 +940,7 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[7]){
-		return "Expected 'primitives' (eigth element) but got : " + rootElement.children[7].nodeName;
+		console.warn("Expected 'primitives' (eigth element) but got : " + rootElement.children[7].nodeName);
 	}
 
 	var nnodes = primitives.children.length;
@@ -1034,7 +1144,7 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 	}
 
 	if(elems[0] != rootElement.children[8]){
-		return "Expected 'components' (ninth element) but got : " + rootElement.children[8].nodeName;
+		console.warn("Expected 'components' (ninth element) but got : " + rootElement.children[8].nodeName);
 	}
 
 	var components = elems[0];
@@ -1129,6 +1239,8 @@ MySceneGraph.prototype.parseComponent = function(element){
 			break;
 		}
 	}
+	
+	comp.animations = this.parseCAnimation(element);
 
 	if(this.components[element.id] != null){
 		console.error("Duplicate component id found : " + element.id);
@@ -1171,6 +1283,30 @@ MySceneGraph.prototype.parseCMat = function(element){
 			console.error("Material:" + child.id + " don't exist");
 		else
 			res.push(mat);
+	}
+	return res;
+}
+/* Function to parse the element: materials inside component
+Parses the following elements:
+	material
+*/
+MySceneGraph.prototype.parseCAnimation = function(element){
+
+	var res = [];
+	
+	var anims = element.getElementsByTagName('animationref');
+
+	var nnodes = anims.length;
+
+	for(var i = 0; i < nnodes; i++){
+		var animref = anims[i];
+		
+		var animation = this.animations[animref.id];
+		
+		if(animation == null){ 
+			console.error("Animation ID:"+ animref.id + " don't exist!");
+		}else
+			res.push(animation);
 	}
 	return res;
 }
