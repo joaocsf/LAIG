@@ -839,7 +839,7 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 //--------<ANIMATIONS>-------
 //---------------------------
 
-/*Function to parse the element: Material
+/*Function to parse the element: Animations
 Parses the following attributes:
 	type : string
 */
@@ -871,6 +871,8 @@ Parses the following attributes:
 				if(error) return error; 
 				break;
 			case 'circular':
+				var error = this.parseAnimationCircular(child);
+				if(error) return error; 
 				break;
 		}
 
@@ -879,9 +881,13 @@ Parses the following attributes:
 	
 }
 
-/*Function to parse the element: Material
+/*Function to parse the element: Animation
 Parses the following attributes:
-	type : string
+	id : ss
+	span : ff
+	type : linear
+Parses the following element:
+	controlpoint
 */
  MySceneGraph.prototype.parseAnimationLinear = function(element){
 	
@@ -910,6 +916,36 @@ Parses the following attributes:
 	}
 	console.log("Animation Parsed: " + element.id );
 	this.animations[element.id] = new LinearAnimation(points, span);
+	
+	return null;
+
+}
+/*Function to parse the element: Animation
+Parses the following attributes:
+	id : ss
+	span : ff
+	type : circular
+	center : ff ff ff
+	radius : ff
+	startang : ff
+	rotang : ff
+
+*/
+ MySceneGraph.prototype.parseAnimationCircular = function(element){
+	
+	if(element == null)
+		return "Element <animation> is null!";
+	
+	console.log("Parsing animation:" + element.id);
+
+	var span = this.reader.getFloat(element, 'span');
+	var center = this.reader.getVector3(element,'center');
+	var radius = this.reader.getFloat(element,'radius');
+	var startAng = this.reader.getFloat(element,'startang');
+	var rotAng = this.reader.getFloat(element,'rotang');
+
+	console.log("Animation Parsed: " + element.id );
+	this.animations[element.id] = new CircularAnimation(span,center, radius, startAng, rotAng);
 	
 	return null;
 
