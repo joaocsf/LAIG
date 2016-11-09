@@ -270,7 +270,7 @@ MySceneGraph.prototype.getVector3FromElement = function (element){
 }
 
 //Function that get a vector3 from an Element
-MySceneGraph.prototype.getVector3FromElement2 = function (element){
+MySceneGraph.prototype.getVector3FromElement2 = function (element,stringx,stringy,stringz){
 
 	var point = {
 		x : 0,
@@ -280,9 +280,9 @@ MySceneGraph.prototype.getVector3FromElement2 = function (element){
 
 	if(element == null)
 		return point;
-	point.x = this.reader.getFloat(element, "xx");
-	point.y = this.reader.getFloat(element, "yy");
-	point.z = this.reader.getFloat(element, "zz");
+	point.x = this.reader.getFloat(element, stringx);
+	point.y = this.reader.getFloat(element, stringy);
+	point.z = this.reader.getFloat(element, stringz);
 	return point;
 }
 
@@ -911,7 +911,7 @@ Parses the following element:
 			return "Error! in animation id:[ " + element.id + " ] Expecting controlpoint, got " + child.tagName;
 
 
-		points.push(this.getVector3FromElement2(child));
+		points.push(this.getVector3FromElement2(child,"xx","yy","zz"));
 
 	}
 	console.log("Animation Parsed: " + element.id );
@@ -939,7 +939,7 @@ Parses the following attributes:
 	console.log("Parsing animation:" + element.id);
 
 	var span = this.reader.getFloat(element, 'span');
-	var center = this.reader.getVector3(element,'center');
+	var center = this.getVector3FromElement2(element,"centerx","centery","centerz");
 	var radius = this.reader.getFloat(element,'radius');
 	var startAng = this.reader.getFloat(element,'startang');
 	var rotAng = this.reader.getFloat(element,'rotang');
