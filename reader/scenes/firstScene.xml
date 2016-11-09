@@ -154,7 +154,7 @@
         </transformation>
 
     </transformations>
-	
+
 	<!-- novo bloco de animacao -->
 	<animations>
 		<!-- podem existir zero ou mais nós "animation" -->
@@ -167,30 +167,30 @@
 			<controlpoint xx="1" yy="1" zz="1" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
-		
+
 		<animation id="movimentoSalteado" span="1" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="0.01" yy="1" zz="0" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
-		
+
 		<animation id="idle" span="4" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="0" yy="0.0001" zz="0" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
-		
-		
+
+
 		<animation id="movimentoRotacional" span="2" type="circular" center="-1 0 0"
 				   radius="1" startang="0" rotang="90" />
-				   
+
 		<animation id="movimentoRotacionalBack" span="2" type="circular" center="-1 0 0"
 				   radius="1" startang="90" rotang="-90" />
-				   
+
 		<animation id="full360" span="4" type="circular" center="0 0 0"
 				   radius="0.001" startang="180" rotang="720" />
 	</animations>
-	
+
 
     <primitives>
 
@@ -1116,7 +1116,7 @@
             </children>
 
         </component>
-		
+
 		<component id="patrickAnimadoA">
 
             <transformation>
@@ -1126,78 +1126,80 @@
 
             </transformation>
 
-			
-			
+
+
             <materials>
                 <material id="inherit" />
             </materials>
 
             <texture id="none" />
-				
+
             <children>
 
                 <componentref id="patrickAnimadoComCaixa" />
             </children>
 
         </component>
-		
+
 		<component id="patrickAnimadoComCaixa">
 
             <transformation>
 				<translate x="0.0" y="0.0" z="0.0" />
             </transformation>
-			
-			<animationref id="idle"/>
-			<animationref id="movimentoRotacional"/>
-			<animationref id="movimentoRotacionalBack"/>
+			<animation>
+    			<animationref id="idle"/>
+        		<animationref id="movimentoRotacional"/>
+        		<animationref id="movimentoRotacionalBack"/>
+            </animation>
             <materials>
                 <material id="inherit" />
             </materials>
 
             <texture id="none" />
-				
+
             <children>
 				<componentref id="cubo" />
                 <componentref id="patrickAnimado" />
             </children>
 
         </component>
-		
+
 		<component id="patrickAnimado">
 
             <transformation>
 				<translate x="0.0" y="0.0" z="0.0" />
             </transformation>
-
-			<animationref id="movimentoQuadratico" />
-			<animationref id="movimentoSalteado" />
-			<animationref id="full360" />
+            <animation>
+    			<animationref id="movimentoQuadratico" />
+    			<animationref id="movimentoSalteado" />
+    			<animationref id="full360" />
+            </animation>
             <materials>
                 <material id="inherit" />
             </materials>
 
             <texture id="none" />
-				
+
             <children>
 
                 <componentref id="patrick" />
             </children>
 
         </component>
-		
+
 		<component id="patrick">
 
             <transformation>
 				<translate x="0.0" y="0.0" z="0.0" />
 				<rotate axis="y" angle="180" />
             </transformation>
-			
+
             <materials>
                 <material id="inherit" />
             </materials>
 
             <texture id="none" />
-				
+
             <children>
 
                 <componentref id="corpo" />
@@ -1368,9 +1370,9 @@
             </children>
 
         </component>
-		
-		
-		
+
+
+
 		<component id="cubo">
 
             <transformation>

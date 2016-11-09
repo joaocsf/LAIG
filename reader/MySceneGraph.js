@@ -639,7 +639,7 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 		return "Missing lights please specify at least one 'omni' and/or 'spot'";
 	} else if (lights.children.length > this.scene.lights.length)
 		return "Lights limit is " + this.scene.lights.length + ", please remove some lights.";
-		
+
 	var nNodes = lights.children.length;
 
 	for(var i = 0; i < nNodes; i++){
@@ -844,7 +844,7 @@ Parses the following attributes:
 	type : string
 */
  MySceneGraph.prototype.parseAnimations = function(element){
-	
+
 	if(element == null)
 		return;
 	console.log("Reading Animations!");
@@ -862,23 +862,23 @@ Parses the following attributes:
 
 		if(child.tagName != "animation")
 			return "There must be one or more blocks of <animation> inside <animations>!";
-		
+
 		var type = this.reader.getString(child,'type');
 
 		switch(type){
 			case 'linear':
 				var error = this.parseAnimationLinear(child);
-				if(error) return error; 
+				if(error) return error;
 				break;
 			case 'circular':
 				var error = this.parseAnimationCircular(child);
-				if(error) return error; 
+				if(error) return error;
 				break;
 		}
 
 	}
-	
-	
+
+
 }
 
 /*Function to parse the element: Animation
@@ -890,33 +890,33 @@ Parses the following element:
 	controlpoint
 */
  MySceneGraph.prototype.parseAnimationLinear = function(element){
-	
+
 	if(element == null)
 		return "Element <animation> is null!";
-	
+
 	if(element.children.length < 2)
 		return "Error in animarion id:[ " + element.id + " ] There must be more than one <controlpoint>!";
-	
+
 	console.log("Parsing animation:" + element.id);
 
 	var span = this.reader.getFloat(element, 'span');
-	
+
 	var points = [];
-	
+
 	for(var i = 0; i < element.children.length; i++){
-		
+
 		var child = element.children[i];
 
 		if(child.tagName != 'controlpoint')
 			return "Error! in animation id:[ " + element.id + " ] Expecting controlpoint, got " + child.tagName;
 
-		
+
 		points.push(this.getVector3FromElement2(child));
-		
+
 	}
 	console.log("Animation Parsed: " + element.id );
 	this.animations[element.id] = new LinearAnimation(points, span);
-	
+
 	return null;
 
 }
@@ -932,10 +932,10 @@ Parses the following attributes:
 
 */
  MySceneGraph.prototype.parseAnimationCircular = function(element){
-	
+
 	if(element == null)
 		return "Element <animation> is null!";
-	
+
 	console.log("Parsing animation:" + element.id);
 
 	var span = this.reader.getFloat(element, 'span');
@@ -946,7 +946,7 @@ Parses the following attributes:
 
 	console.log("Animation Parsed: " + element.id );
 	this.animations[element.id] = new CircularAnimation(span,center, radius, startAng, rotAng);
-	
+
 	return null;
 
 }
@@ -1275,7 +1275,7 @@ MySceneGraph.prototype.parseComponent = function(element){
 			break;
 		}
 	}
-	
+
 	comp.animations = this.parseCAnimation(element);
 
 	if(this.components[element.id] != null){
@@ -1329,17 +1329,26 @@ Parses the following elements:
 MySceneGraph.prototype.parseCAnimation = function(element){
 
 	var res = [];
-	
-	var anims = element.getElementsByTagName('animationref');
 
-	var nnodes = anims.length;
+	var anims = element.getElementsByTagName('animation');
+
+	if(anims == null || anims.length == 0)
+		return res;
+
+	if(anims.length > 1){
+		console.error("There must be only 1 animation block per component!");
+		return res;
+	}
+
+	var childs = anims[0].children;
+	var nnodes = childs.length;
 
 	for(var i = 0; i < nnodes; i++){
-		var animref = anims[i];
-		
+		var animref = childs[i];
+
 		var animation = this.animations[animref.id];
-		
-		if(animation == null){ 
+
+		if(animation == null){
 			console.error("Animation ID:"+ animref.id + " don't exist!");
 		}else
 			res.push(animation);
