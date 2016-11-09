@@ -1,6 +1,6 @@
 <dsx>
 
-    <scene root="rute" axis_length="1.0" />
+    <scene root="plahco" axis_length="1.0" />
 
 
     <views default="vista1" >
