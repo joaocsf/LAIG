@@ -180,7 +180,25 @@
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
 
-
+		<animation id="carroAnda" span="2" type="linear">
+			<controlpoint xx="-5" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="carroIdle" span="2" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0.0001" zz="0" />
+			<controlpoint xx="0" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="carroSobe" span="0.01" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0" yy="200" zz="0" />
+		</animation>
+		
+		<animation id="carroRoda" span="0.1" type="circular" center="0 0 0"
+				   radius="0.001" startang="0" rotang="15" />
+		
 		<animation id="movimentoRotacional" span="2" type="circular" center="-1 0 0"
 				   radius="1" startang="0" rotang="90" />
 
@@ -345,6 +363,9 @@
 				<componentref id="ceuzinho" />
 				<componentref id="tri" />
 				<componentref id="tri2" />
+				<componentref id="patrickNoCarro" />
+				<componentref id="arvoreCarro" />
+				
 
             </children>
 
@@ -851,7 +872,7 @@
             <texture id="none" />
 
             <children>
-				<componentref id="arvore1" />
+		
 				<componentref id="arvore2" />
 				<componentref id="arvore3" />
             </children>
@@ -1186,6 +1207,28 @@
             </children>
 
         </component>
+		
+		<component id="patrickCarro">
+
+            <transformation>
+				<translate x="0.0" y="0.0" z="0.0" />
+            </transformation>
+            <animation>
+				<animationref id="full360" />
+    			<animationref id="full360" />
+            </animation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <componentref id="patrick" />
+            </children>
+
+        </component>
+		
 
 		<component id="patrick">
 
@@ -1540,6 +1583,142 @@
 
                 <primitiveref id="cabeca" />
 
+            </children>
+
+        </component>
+		
+		<component id="patrickNoCarro">
+
+            <transformation>
+				<translate x="2.3" y="0.74" z="1.0" />
+				<rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="face" />
+
+            <children>
+				
+                <componentref id="carro" />
+            </children>
+
+        </component>
+		
+		<component id="capoA">
+
+            <transformation>
+				<translate x="0.5" y="0.0" z="0.0" />
+            </transformation>
+			
+			<animation>
+				<animationref id="carroIdle"/>
+				<animationref id="carroSobe"/>
+			</animation>
+			
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="face" />
+
+            <children>
+				
+                <componentref id="cubo" />
+            </children>
+
+        </component>
+		
+		<component id="arvoreCarro">
+
+            <transformation>
+                <translate x="2.0" y="0.0" z="3.0" />
+            </transformation>
+
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore1Carro" />
+            </children>
+
+        </component>
+
+		<component id="arvore1Carro">
+
+            <transformation>
+				<rotate axis="y" angle="120" />
+				<rotate axis="z" angle="90" />
+            </transformation>
+			
+			<animation>
+				<animationref id="carroIdle"/>
+				<animationref id="carroRoda"/>
+			</animation>
+			
+			
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvoreCaidaCarro" />
+            </children>
+
+        </component>
+	
+		<component id="arvoreCaidaCarro">
+
+            <transformation>
+				<rotate axis="z" angle="-90" />
+            </transformation>
+			
+			<animation>
+				<animationref id="carroIdle"/>
+				<animationref id="carroRoda"/>
+			</animation>
+			
+			
+            <materials>
+                <material id="tronco" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+				<componentref id="arvore-total" />
+            </children>
+
+        </component>
+		
+		
+		<component id="carro">
+
+            <transformation>
+				<rotate axis="z" angle="0" />
+            </transformation>
+			
+			<animation>
+				<animationref id="carroAnda"/>
+			</animation>
+			
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="face" />
+
+            <children>
+				<componentref id="cubo" />
+                <componentref id="capoA" />
+				<componentref id="patrickCarro" />
             </children>
 
         </component>
