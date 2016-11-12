@@ -40,7 +40,7 @@ Patch.prototype.getControlPoints = function() {
         var controlVerts = new Array();
         for(var v = 0; v <= this.orderV; v++){
             var i = v + u * (this.orderV + 1);
-            controlVerts.push([this.controlP[i].x,this.controlP[i].y,this.controlP[i].z,1]);
+            controlVerts.push([this.controlP[i][0],this.controlP[i][1],this.controlP[i][2],1]);
         }
         res.push(controlVerts);
     }

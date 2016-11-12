@@ -1038,6 +1038,9 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		case "patch":
 		primitive = this.parsePatch(child);
 		break;
+		case "vehicle":
+		primitive = new Vehicle(this.scene);
+		break;
 	}
 
 	if(this.primitives[element.id] != null){
@@ -1070,7 +1073,8 @@ MySceneGraph.prototype.parseRectangle = function(element){
 MySceneGraph.prototype.parseControlPoints = function (controlPoints) {
 	var res = [];
 	for(var i = 0; i < controlPoints.length;i++){
-		res.push(this.getVector3FromElement(controlPoints[i]));
+		var point = this.getVector3FromElement(controlPoints[i]);
+		res.push([point.x,point.y,point.z]);
 	}
 	return res;
 };

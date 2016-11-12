@@ -97,14 +97,14 @@ function Component(scene) {
             if(this.components[i] != null)
             this.components[i].display2(mat,tex);
         }
-
-        if(tex != null)
-            mat.setTexture(tex.textData);
-        else
-            mat.setTexture(tex);
-        mat.apply();
-
+        
         for(var i = 0; i < this.primitives.length; i++){
+            if(tex != null)
+                mat.setTexture(tex.textData);
+            else
+                mat.setTexture(tex);
+            mat.apply();
+
             if(tex != null)
                 if(this.primitives[i].updateUV != null)
                     this.primitives[i].updateUV(tex.length_s, tex.length_t);

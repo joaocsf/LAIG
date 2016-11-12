@@ -80,6 +80,7 @@
 		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
 		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />
 		<texture id="ceu" file="../resources/images/sky12.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeira" file="../resources/images/wood1.png" length_s="1.0" length_t="1.0" />
 
 	</textures>
 
@@ -211,6 +212,10 @@
 		<animation id="full360" span="4" type="circular"
 			   	centerx="0" centery="0" centerz="0"
 				radius="0.001" startang="180" rotang="720" />
+
+        <animation id="barco" span="60" type="circular"
+                centerx="0" centery="0" centerz="0"
+                radius="8" startang="0" rotang="360" />
 	</animations>
 
 
@@ -274,6 +279,13 @@
                 <controlpoint x="2.0" y="2.0" z="2.0" />
                 <controlpoint x="1.5" y="1.5" z="0.0" />
               </patch>
+        </primitive>
+
+        <primitive id="itsSuperman">
+            <!-- Nova primitiva: corresponde a um veículo voador -->
+            <!-- Inclui pelo menos uma superfície não-plana -->
+            <!-- gerada utilizando evaluators -->
+            <vehicle />
         </primitive>
 
 		<primitive id="corpoAnjo">
@@ -412,13 +424,58 @@
 				<componentref id="tri2" />
 				<componentref id="patrickNoCarro" />
 				<componentref id="arvoreCarro" />
+                <!--
                 <primitiveref id="isItAPlane" />
                 <primitiveref id="isItABird" />
-
+            -->
+                <componentref id="sailorMan" />
             </children>
 
         </component>
 
+        <component id="sailorMan">
+            <transformation>
+                <translate x="0.0" y="1.7" z="0.0"/>
+            </transformation>
+
+            <materials>
+                <material id="material1" />
+            </materials>
+
+            <animation>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+                <animationref id="barco"/>
+            </animation>
+
+            <texture id="madeira"/>
+
+            <children>
+                <componentref id="frontFacingBoat" />
+            </children>
+        </component>
+
+        <component id="frontFacingBoat">
+            <transformation>
+                <rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit"/>
+
+            <children>
+                <primitiveref id="itsSuperman" />
+            </children>
+        </component>
 
 		<component id="tri2">
 
