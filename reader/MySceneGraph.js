@@ -843,15 +843,19 @@ MySceneGraph.prototype.parseTransformations = function(rootElement){
 Parses the following attributes:
 	type : string
 */
- MySceneGraph.prototype.parseAnimations = function(element){
+ MySceneGraph.prototype.parseAnimations = function(rootElement){
 
-	if(element == null)
+	if(rootElement == null)
 		return;
 	console.log("Reading Animations!");
-	var elems = element.getElementsByTagName("animations");
+	var elems = rootElement.getElementsByTagName("animations");
 
 	if(elems == null || elems > 1){
 		return "There must be only one <animations> block!";
+	}
+
+	if(elems[0] != rootElement.children[7]){
+		console.warn("Expected 'components' (eigth element) but got : " + rootElement.children[8].nodeName);
 	}
 
 	var block = elems[0];
@@ -975,8 +979,8 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 		return "There must be one or more <primitive> inside <primitives>";
 	}
 
-	if(elems[0] != rootElement.children[7]){
-		console.warn("Expected 'primitives' (eigth element) but got : " + rootElement.children[7].nodeName);
+	if(elems[0] != rootElement.children[8]){
+		console.warn("Expected 'primitives' (ninth element) but got : " + rootElement.children[7].nodeName);
 	}
 
 	var nnodes = primitives.children.length;
@@ -1028,6 +1032,12 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		case "sphere":
 		primitive = this.parseSphere(child);
 		break;
+		case "plane":
+		primitive = this.parsePlane(child);
+		break;
+		case "patch":
+		primitive = this.parsePatch(child);
+		break;
 	}
 
 	if(this.primitives[element.id] != null){
@@ -1056,6 +1066,59 @@ MySceneGraph.prototype.parseRectangle = function(element){
 	tmp.y2 = this.reader.getFloat(element,"y2");
 	console.log("New Rectangle X1:" + tmp.x1, "Y1:" + tmp.y1 + "X2:" + tmp.x2 + "Y2:" + tmp.y2 );
 	return new Rectangle(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2);
+}
+MySceneGraph.prototype.parseControlPoints = function (controlPoints) {
+	var res = [];
+	for(var i = 0; i < controlPoints.length;i++){
+		res.push(this.getVector3FromElement(controlPoints[i]));
+	}
+	return res;
+};
+/* Function to parse the element: Plane
+Parses the following attributes:
+	orderU : ff
+	orderV : ff
+	partsU : ii
+	partsV : ii
+*/
+MySceneGraph.prototype.parsePatch = function(element){
+	var tmp = {
+		x1:0,
+		y1:0,
+		x2:0,
+		y2:0
+	}
+	tmp.x1 = this.reader.getInteger(element,"orderU");
+	tmp.x2 = this.reader.getInteger(element,"orderV");
+	tmp.y1 = this.reader.getInteger(element,"partsU");
+	tmp.y2 = this.reader.getInteger(element,"partsV");
+	console.log("New Plane orderU:" + tmp.x1, "orderV:" + tmp.y1 + "partsU:" + tmp.x2 + "partsV:" + tmp.y2 );
+	var nPoints = (tmp.x1 + 1)*(tmp.x2 + 1);
+	if (nPoints != element.children.length)
+		console.error("The number of control points on primitive " + element.parentNode.id + " must be equal to " + nPoints);
+	var controlP = this.parseControlPoints(element.children);
+	return new Patch(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2, controlP);
+}
+/* Function to parse the element: Plane
+Parses the following attributes:
+	dimX : ff
+	dimY : ff
+	partsX : ii
+	partsY : ii
+*/
+MySceneGraph.prototype.parsePlane = function(element){
+	var tmp = {
+		x1:0,
+		y1:0,
+		x2:0,
+		y2:0
+	}
+	tmp.x1 = this.reader.getFloat(element,"dimX");
+	tmp.x2 = this.reader.getFloat(element,"dimY");
+	tmp.y1 = this.reader.getInteger(element,"partsX");
+	tmp.y2 = this.reader.getInteger(element,"partsY");
+	console.log("New Plane dimX:" + tmp.x1, "dimY:" + tmp.y1 + "partsX:" + tmp.x2 + "partsY:" + tmp.y2 );
+	return new Plane(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2);
 }
 /* Function to parse the element: Sphere
 Parses the following attributes:
@@ -1179,8 +1242,8 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 		return "components element is MISSING or more than one element";
 	}
 
-	if(elems[0] != rootElement.children[8]){
-		console.warn("Expected 'components' (ninth element) but got : " + rootElement.children[8].nodeName);
+	if(elems[0] != rootElement.children[9]){
+		console.warn("Expected 'components' (tenth element) but got : " + rootElement.children[8].nodeName);
 	}
 
 	var components = elems[0];

@@ -184,22 +184,22 @@
 			<controlpoint xx="-5" yy="0" zz="0" />
 			<controlpoint xx="1" yy="0" zz="0" />
 		</animation>
-		
+
 		<animation id="carroIdle" span="2" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="0" yy="0.0001" zz="0" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
-		
+
 		<animation id="carroSobe" span="0.01" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="0" yy="200" zz="0" />
 		</animation>
-		
-		<animation id="carroRoda" span="0.1" type="circular" 
+
+		<animation id="carroRoda" span="0.1" type="circular"
 			   	centerx="0" centery="0" centerz="0"
 				radius="0.001" startang="0" rotang="15" />
-		
+
 		<animation id="movimentoRotacional" span="2" type="circular"
 			   	centerx="-1" centery="0" centerz="0"
 				radius="1" startang="0" rotang="90" />
@@ -208,7 +208,7 @@
 			   	centerx="-1" centery="0" centerz="0"
 				radius="1" startang="90" rotang="-90" />
 
-		<animation id="full360" span="4" type="circular" 
+		<animation id="full360" span="4" type="circular"
 			   	centerx="0" centery="0" centerz="0"
 				radius="0.001" startang="180" rotang="720" />
 	</animations>
@@ -225,12 +225,55 @@
             <!-- os parametros devem ser interpretados, genericamente como-->
             <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
             <rectangle x1="0.0" y1="0.0" x2="1.0" y2="1.0" />
-
             <!-- <triangle x1="ff" y1="ff" z1="ff" x2="ff" y2="ff" z2="ff" x3="ff" y3="ff" z3="ff" />
             <cylinder base="ff" top="ff" height="ff" slices="ii" stacks="ii" />
             <sphere radius="ff" slices="ii" stacks="ii" />
             <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
 
+        </primitive>
+
+        <primitive id="isItAPlane">
+            <!-- Nova primitiva: plano, discretizado em grelha -->
+            <!-- exemplo:                                -->
+            <!-- <plane dimX="3" dimY="2" partsX="10" partsY="7"/> -->
+            <!-- gera um plano de dimensões 3 x 2 unidades -->
+            <!-- assente em XY, centrado na origem, com a -->
+            <!-- face visível apontando para +Z e discretizado -->
+            <!-- em 10 partes no eixo XX e 7 partes no YY  -->
+
+            <plane dimX="5" dimY="3" partsX="5" partsY="5"/>
+        </primitive>
+
+        <primitive id="isItABird">
+            <!-- Nova primitiva: patch, discretizado em grelha -->
+            <!-- Exemplo:                                   -->
+            <!-- <patch orderU="2" orderV="3" partsU="7" partsV="9" > -->
+            <!--     <controlpoint x=0.0 y=0.0 z=0.0 />   -->
+            <!--     <controlpoint x=2.0 y=1.0 z=0.0 />   -->
+            <!--     etc, total de 12 pontos              -->
+            <!-- O exemplo gera um patch com              -->
+            <!--     Direcao U: ordem=2 (3 pontos por curva), -->
+            <!--                discretizacao em 7 partes -->
+            <!--     Direcao V: ordem=3 (4 pontos por curva), -->
+            <!--                discretizacao em 9 partes. -->
+            <!-- O numero total de pontos a fornecer e' -->
+            <!--      (2+1)*(3+1)=12 pontos              -->
+            <patch orderU="2" orderV="3" partsU="15" partsV="20" >
+                <controlpoint x="-1.5" y="-1.5" z="0.0" />
+                <controlpoint x="-2.0" y="-2.0" z="2.0" />
+                <controlpoint x="-2.0" y="2.0" z="2.0" />
+                <controlpoint x="-1.5" y="1.5" z="0.0" />
+
+                <controlpoint x="0" y="0" z="3.0" />
+                <controlpoint x="0" y="-2.0" z="3.0" />
+                <controlpoint x="0" y="2.0" z="3.0" />
+                <controlpoint x="0" y="0" z="3.0" />
+
+                <controlpoint x="1.5" y="-1.5" z="0.0" />
+                <controlpoint x="2.0" y="-2.0" z="2.0" />
+                <controlpoint x="2.0" y="2.0" z="2.0" />
+                <controlpoint x="1.5" y="1.5" z="0.0" />
+              </patch>
         </primitive>
 
 		<primitive id="corpoAnjo">
@@ -369,7 +412,8 @@
 				<componentref id="tri2" />
 				<componentref id="patrickNoCarro" />
 				<componentref id="arvoreCarro" />
-				
+                <primitiveref id="isItAPlane" />
+                <primitiveref id="isItABird" />
 
             </children>
 
@@ -876,7 +920,7 @@
             <texture id="none" />
 
             <children>
-		
+
 				<componentref id="arvore2" />
 				<componentref id="arvore3" />
             </children>
@@ -1211,7 +1255,7 @@
             </children>
 
         </component>
-		
+
 		<component id="patrickCarro">
 
             <transformation>
@@ -1232,7 +1276,7 @@
             </children>
 
         </component>
-		
+
 
 		<component id="patrick">
 
@@ -1590,7 +1634,7 @@
             </children>
 
         </component>
-		
+
 		<component id="patrickNoCarro">
 
             <transformation>
@@ -1605,23 +1649,23 @@
             <texture id="face" />
 
             <children>
-				
+
                 <componentref id="carro" />
             </children>
 
         </component>
-		
+
 		<component id="capoA">
 
             <transformation>
 				<translate x="0.5" y="0.0" z="0.0" />
             </transformation>
-			
+
 			<animation>
 				<animationref id="carroIdle"/>
 				<animationref id="carroSobe"/>
 			</animation>
-			
+
             <materials>
                 <material id="folhas" />
             </materials>
@@ -1629,12 +1673,12 @@
             <texture id="face" />
 
             <children>
-				
+
                 <componentref id="cubo" />
             </children>
 
         </component>
-		
+
 		<component id="arvoreCarro">
 
             <transformation>
@@ -1659,13 +1703,13 @@
 				<rotate axis="y" angle="120" />
 				<rotate axis="z" angle="90" />
             </transformation>
-			
+
 			<animation>
 				<animationref id="carroIdle"/>
 				<animationref id="carroRoda"/>
 			</animation>
-			
-			
+
+
             <materials>
                 <material id="tronco" />
             </materials>
@@ -1677,19 +1721,19 @@
             </children>
 
         </component>
-	
+
 		<component id="arvoreCaidaCarro">
 
             <transformation>
 				<rotate axis="z" angle="-90" />
             </transformation>
-			
+
 			<animation>
 				<animationref id="carroIdle"/>
 				<animationref id="carroRoda"/>
 			</animation>
-			
-			
+
+
             <materials>
                 <material id="tronco" />
             </materials>
@@ -1701,18 +1745,18 @@
             </children>
 
         </component>
-		
-		
+
+
 		<component id="carro">
 
             <transformation>
 				<rotate axis="z" angle="0" />
             </transformation>
-			
+
 			<animation>
 				<animationref id="carroAnda"/>
 			</animation>
-			
+
             <materials>
                 <material id="folhas" />
             </materials>
