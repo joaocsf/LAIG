@@ -1101,7 +1101,7 @@ MySceneGraph.prototype.parseChessboard = function(element){
 	console.log("Read cs :" + this.printRGBA(corS));
 	console.log("New Chessboard du: " + tmp.du, " dv: " + tmp.dv + " textureref: " + tmp.textref + " su: " + tmp.su + " sv: " + tmp.sv);
 
-	return new Chessboard(this.scene,tmp.du,tmp.dv,tmp.textref,tmp.su,tmp.sv,cor1,cor2,corS);
+	return new Chessboard(this.scene,tmp.du,tmp.dv, this.textures[tmp.textref] ,tmp.su,tmp.sv,cor1,cor2,corS);
 }
 /* Function to parse the element: Rectangle
 Parses the following attributes:

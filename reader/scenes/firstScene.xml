@@ -81,6 +81,8 @@
 		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />
 		<texture id="ceu" file="../resources/images/sky12.png" length_s="1.0" length_t="1.0" />
 		<texture id="madeira" file="../resources/images/wood1.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeiraP" file="../resources/images/wood.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeiraA" file="../resources/images/wood2.png" length_s="1.0" length_t="1.0" />
 
 	</textures>
 
@@ -245,10 +247,10 @@
                           (dimensões potências de 2)       -->
             <!--   - a posição da casa selecionada (su,sv) -->
             <!--   - as três cores a utilizar              -->
-            <chessboard du="5" dv="5" textureref="potatoe" su="2" sv="2">
+            <chessboard du="8" dv="8" textureref="madeira" su="0" sv="0">
                        <c1 r="1.0" g="1.0" b="1.0" a="1.0" />
-                       <c2 r="0.0" g="0.0" b="0.0" a="1.0" />
-                       <cs r="1.0" g="0.1" b="0.3" a="1.0" />
+                       <c2 r="0.5" g="0.3" b="1.0" a="1.0" />
+                       <cs r="0.7" g="0.1" b="0.5" a="1.0" />
             </chessboard>
         </primitive>
 
@@ -439,6 +441,7 @@
 				<componentref id="tri2" />
 				<componentref id="patrickNoCarro" />
 				<componentref id="arvoreCarro" />
+				<primitiveref id="chessboard1" />
                 <!--
                 <primitiveref id="isItAPlane" />
                 <primitiveref id="isItABird" />
