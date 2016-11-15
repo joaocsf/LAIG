@@ -237,6 +237,21 @@
 
         </primitive>
 
+        <primitive id="chessboard1">
+            <!-- Nova primitiva: tabuleiro de xadrez       -->
+            <!-- parâmetros:                               -->
+            <!--   - dimensões em u e em v (du,dv)         -->
+            <!--   - o id da textura de base
+                          (dimensões potências de 2)       -->
+            <!--   - a posição da casa selecionada (su,sv) -->
+            <!--   - as três cores a utilizar              -->
+            <chessboard du="5" dv="5" textureref="potatoe" su="2" sv="2">
+                       <c1 r="1.0" g="1.0" b="1.0" a="1.0" />
+                       <c2 r="0.0" g="0.0" b="0.0" a="1.0" />
+                       <cs r="1.0" g="0.1" b="0.3" a="1.0" />
+            </chessboard>
+        </primitive>
+
         <primitive id="isItAPlane">
             <!-- Nova primitiva: plano, discretizado em grelha -->
             <!-- exemplo:                                -->

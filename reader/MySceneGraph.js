@@ -1041,6 +1041,9 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 		case "vehicle":
 		primitive = new Vehicle(this.scene);
 		break;
+		case "chessboard":
+		primitive = this.parseChessboard(child);
+		break;
 	}
 
 	if(this.primitives[element.id] != null){
@@ -1048,6 +1051,57 @@ MySceneGraph.prototype.parsePrimitive = function(element){
 	}
 	this.primitives[element.id] = primitive;
 
+}
+/*Function to parse the colors of the chessboard colors
+*/
+MySceneGraph.prototype.getChildFromElem = function (element,childName) {
+	var childs = element.getElementsByTagName(childName);
+	if(childs.length > 1){
+		console.error("You can only specificy on element " + childName + " in primitive with id " + element.parentNode.id);
+		return;
+	}
+	var child = childs[0];
+	if(child == null){
+		console.error("You have to specify a " + childName + " element to the chessboard with id: " + element.parentNode.id);
+		return;
+	}
+
+	return this.getRGBAFromElement(child);
+};
+/* Function to parse the element: Chessboard
+Parses the following attributes:
+	du : ii
+	dv : ii
+	textureref : ss
+	su : ii
+	sv : ii
+	c1 : rgba
+	c2 : rgba
+	cs : rgba
+*/
+MySceneGraph.prototype.parseChessboard = function(element){
+	var tmp = {
+		du:0,
+		dv:0,
+		textref:0,
+		su:0,
+		sv:0
+	}
+	tmp.du = this.reader.getInteger(element,"du");
+	tmp.dv = this.reader.getInteger(element,"dv");
+	tmp.textref = this.reader.getString(element,"textureref");
+	tmp.su = this.reader.getInteger(element,"su");
+	tmp.sv = this.reader.getInteger(element,"sv");
+	var cor1 = this.getChildFromElem(element,"c1");
+	var cor2 = this.getChildFromElem(element,"c2");
+	var corS = this.getChildFromElem(element,"cs");
+
+	console.log("Read c1 :" + this.printRGBA(cor1));
+	console.log("Read c2 :" + this.printRGBA(cor2));
+	console.log("Read cs :" + this.printRGBA(corS));
+	console.log("New Chessboard du: " + tmp.du, " dv: " + tmp.dv + " textureref: " + tmp.textref + " su: " + tmp.su + " sv: " + tmp.sv);
+
+	return new Chessboard(this.scene,tmp.du,tmp.dv,tmp.textref,tmp.su,tmp.sv,cor1,cor2,corS);
 }
 /* Function to parse the element: Rectangle
 Parses the following attributes:
@@ -1070,6 +1124,8 @@ MySceneGraph.prototype.parseRectangle = function(element){
 	console.log("New Rectangle X1:" + tmp.x1, "Y1:" + tmp.y1 + "X2:" + tmp.x2 + "Y2:" + tmp.y2 );
 	return new Rectangle(this.scene,tmp.x1, tmp.x2, tmp.y1, tmp.y2);
 }
+/*Function to parse the control points of a patch
+*/
 MySceneGraph.prototype.parseControlPoints = function (controlPoints) {
 	var res = [];
 	for(var i = 0; i < controlPoints.length;i++){
