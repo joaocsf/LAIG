@@ -9,24 +9,12 @@ uniform mat4 uNMatrix;//Matrix relativa ao objecto
 uniform float time;
 
 varying vec2 vTextureCoord;//Parametro a ser partilhado com o fragment shader
-varying float newY;
+varying float newY;//Parametro da nova altura do vertice para determinar a sua cor
 
 
 void main( void ) {
-/*
-    vec2 res = aTextureCoord * size;
 
-    float multi = 0.0;
-
-
-    if(selected.x <= floor(res.x - 0.0) && selected.y <= floor(res.y - 0.0))
-        if(selected.x >= floor(res.x -0.1) && selected.y >= floor(res.y -0.1))
-        multi = altura;
-
-
-    vTextureCoord = aTextureCoord;
-    */
-    float h = cos(time + aVertexPosition.x) * 0.5 * sin(time + aVertexPosition.y);
+    float h = cos(3.5 * (time + aVertexPosition.x)) * 0.3 * sin( 2.0 * (time + aVertexPosition.y));
     gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + aVertexNormal * h, 1.0);
     newY = h + 0.5;
 
