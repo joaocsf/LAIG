@@ -2,11 +2,11 @@ function Vehicle(scene) {
  	CGFobject.call(this,scene);
     this.scene = scene;
     this.texVela = new CGFappearance(scene);
-    this.texVela.loadTexture("../resources/images/pirate.png");
+    this.texVela.loadTexture("../../resources/images/pirate.png");
     this.texWood = new CGFappearance(scene);
-    this.texWood.loadTexture("../resources/images/wood.png");
+    this.texWood.loadTexture("../../resources/images/wood.png");
     this.defaultTexture = new CGFappearance(scene);
-    this.defaultTexture.loadTexture("../resources/images/face1.png");
+    this.defaultTexture.loadTexture("../../resources/images/face1.png");
     this.sea = new Sea(scene,8,4);
 
     this.vela = new Patch(scene,2, 3, 15, 20,
