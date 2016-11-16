@@ -8,9 +8,7 @@ function Vehicle(scene) {
     this.defaultTexture = new CGFappearance(scene);
     this.defaultTexture.loadTexture("../resources/images/face1.png");
     this.sea = new Sea(scene,8,4);
-    //this.seaShader = new CGFshader(this.scene.gl, "shaders/sea.vert", "shaders/sea.frag");
 
-    //this.shader.setUniformsValues({ variavel : valor});
     this.vela = new Patch(scene,2, 3, 15, 20,
         [
 			 [ -1.5, -1.5, 0.0],
