@@ -80,7 +80,7 @@ LinearAnimation.prototype.getAngle = function(p1, p2){
         y: p2.z - p1.z
     }
 
-    return -Math.atan2(vect.y, vect.x);
+    return (-Math.atan2(vect.y, vect.x) + Math.PI/2);
 }
 
 

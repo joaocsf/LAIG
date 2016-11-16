@@ -7,6 +7,10 @@ function Vehicle(scene) {
     this.texWood.loadTexture("../resources/images/wood.png");
     this.defaultTexture = new CGFappearance(scene);
     this.defaultTexture.loadTexture("../resources/images/face1.png");
+    this.sea = new Sea(scene,8,4);
+    //this.seaShader = new CGFshader(this.scene.gl, "shaders/sea.vert", "shaders/sea.frag");
+
+    //this.shader.setUniformsValues({ variavel : valor});
     this.vela = new Patch(scene,2, 3, 15, 20,
         [
 			 [ -1.5, -1.5, 0.0],
@@ -159,6 +163,10 @@ Vehicle.prototype.drawMastro = function (nVelas,hMastro) {
         this.drawMastro(4,6.5);
         this.scene.translate(-3,0,0);
         this.drawMastro(3,6);
-
+        this.scene.pushMatrix();
+            this.scene.rotate(-(Math.PI/2),1,0,0);
+            this.scene.translate(1.0,0,-1.4);
+            this.sea.display();
+        this.scene.popMatrix();
     this.scene.popMatrix();
  };

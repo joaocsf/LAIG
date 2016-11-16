@@ -7,6 +7,7 @@ var CircularAnimation = function(time, center, radius, startAng, rotAng) {
 
     this.radius = radius;
 
+    this.rotAng = rotAng;
 
     this.totalDist = radius * rotAng;
 
@@ -46,10 +47,13 @@ CircularAnimation.prototype.getTransformation = function(time) {
                   0, 0, 1, 0,
                   0, 0, 0, 1];
 
+    var diff = 1;
+    if(this.rotAng < 0 ) diff = 0;
+
     mat4.translate(matrix,matrix,[this.center.x,this.center.y,this.center.z]);
     mat4.rotate(matrix,matrix,angle,[0,1,0]);
     mat4.translate(matrix,matrix,[this.radius,0,0]);
-    //mat4.rotate(matrix,matrix,-angle,[0,1,0]);
+    mat4.rotate(matrix,matrix,diff * Math.PI,[0,1,0]);
 
     return matrix;
 }
