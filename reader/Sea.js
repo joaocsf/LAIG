@@ -20,9 +20,14 @@ Sea.prototype.update = function(time){
     this.currTime = time - this.lastTime;
 }
 
+Sea.prototype.setTime = function () {
+    this.shader.setUniformsValues({time : this.currTime});
+};
+
 Sea.prototype.display = function(){
 
     this.scene.setActiveShader(this.shader);
+    this.setTime();
     this.plane.display();
     this.scene.setActiveShader(this.scene.defaultShader);
 }

@@ -6,7 +6,10 @@ uniform mat4 uMVMatrix;//Matrix relativa ao objecto
 uniform mat4 uPMatrix;//Matrix relativa ao objecto
 uniform mat4 uNMatrix;//Matrix relativa ao objecto
 
+uniform float time;
+
 varying vec2 vTextureCoord;//Parametro a ser partilhado com o fragment shader
+varying float newY;
 
 
 void main( void ) {
@@ -23,6 +26,8 @@ void main( void ) {
 
     vTextureCoord = aTextureCoord;
     */
-    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    float h = cos(time + aVertexPosition.x) * 0.5 * sin(time + aVertexPosition.y);
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + aVertexNormal * h, 1.0);
+    newY = h + 0.5;
 
 }

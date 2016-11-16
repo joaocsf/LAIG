@@ -4,8 +4,10 @@ precision highp float;
 
 uniform sampler2D uSampler;//Referencia da textura
 
-varying vec2 vTextureCoord;//Variavel recebida do vertex shader
+uniform float time;
 
+varying vec2 vTextureCoord;//Variavel recebida do vertex shader
+varying float newY;
 
 void main( void ) {
 /*
@@ -29,6 +31,8 @@ void main( void ) {
 
     pixelColor.rgba *= overlay.rgba;
 */
-    gl_FragColor = vec4(0.0,0.0,0.61,1.0);
+    float coisa = mod(floor(newY + 0.3),2.0);
+    vec4 color = vec4(newY * coisa,newY * coisa, newY, 1.0);
+    gl_FragColor = color;
 
 }
