@@ -176,22 +176,26 @@
 			<controlpoint xx="0.01" yy="1" zz="0" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
-
-		<animation id="idle" span="4" type="linear">
-			<controlpoint xx="0" yy="0" zz="0" />
-			<controlpoint xx="0" yy="0.0001" zz="0" />
-			<controlpoint xx="0" yy="0" zz="0" />
+		
+		<animation id="teste" span="1" type="linear">
+			<controlpoint xx="0" yy="1" zz="0" />
+			<controlpoint xx="1" yy="1" zz="1" />
+			<controlpoint xx="0" yy="1" zz="0" />
 		</animation>
 
+		<animation id="idle" span="4" type="circular"
+			   	centerx="-1" centery="0" centerz="0"
+				radius="1" startang="0" rotang="0.000001" />
+
 		<animation id="carroAnda" span="2" type="linear">
-			<controlpoint xx="-5" yy="0" zz="0" />
-			<controlpoint xx="1" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="3" />
+			<controlpoint xx="0" yy="0" zz="-1" />
 		</animation>
 
 		<animation id="carroIdle" span="2" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
-			<controlpoint xx="0" yy="0.0001" zz="0" />
-			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0.0001" zz="0.0001" />
+			
 		</animation>
 
 		<animation id="carroSobe" span="0.01" type="linear">
@@ -201,7 +205,7 @@
 
 		<animation id="carroRoda" span="0.1" type="circular"
 			   	centerx="0" centery="0" centerz="0"
-				radius="0.001" startang="0" rotang="15" />
+				radius="0.001" startang="180" rotang="15" />
 
 		<animation id="movimentoRotacional" span="2" type="circular"
 			   	centerx="-1" centery="0" centerz="0"
@@ -213,11 +217,19 @@
 
 		<animation id="full360" span="4" type="circular"
 			   	centerx="0" centery="0" centerz="0"
-				radius="0.001" startang="180" rotang="720" />
+				radius="0.001" startang="90" rotang="720" />
 
         <animation id="barco" span="60" type="circular"
                 centerx="0" centery="0" centerz="0"
                 radius="8" startang="0" rotang="360" />
+				
+		<animation id="testeRot" span="2" type="circular"
+			   	centerx="0" centery="1" centerz="1"
+				radius="1" startang="90" rotang="90" />
+				
+		<animation id="testeRot2" span="2" type="circular"
+			   	centerx="0" centery="1" centerz="1"
+				radius="1" startang="180" rotang="-90" />
 	</animations>
 
 
@@ -441,7 +453,7 @@
 				<componentref id="tri2" />
 				<componentref id="patrickNoCarro" />
 				<componentref id="arvoreCarro" />
-				<primitiveref id="chessboard1" />
+				<componentref id="chessboard1" />
                 <!--
                 <primitiveref id="isItAPlane" />
                 <primitiveref id="isItABird" />
@@ -450,7 +462,27 @@
             </children>
 
         </component>
+		
 
+		
+		
+		 <component id="chessboard1">
+            <transformation>
+                <translate x="1" y="0.001" z="1"/>
+				<rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="material1" />
+            </materials>
+
+            <texture id="madeira"/>
+
+            <children>
+                <primitiveref id="chessboard1" />
+            </children>
+        </component>
+		
         <component id="sailorMan">
             <transformation>
                 <translate x="0.0" y="1.7" z="0.0"/>
@@ -481,7 +513,7 @@
 
         <component id="frontFacingBoat">
             <transformation>
-                <rotate axis="y" angle="-90" />
+                <rotate axis="y" angle="90" />
             </transformation>
 
             <materials>
@@ -1334,7 +1366,7 @@
 		<component id="patrickCarro">
 
             <transformation>
-				<translate x="0.0" y="0.0" z="0.0" />
+				<rotate axis="y" angle="0"/>
             </transformation>
             <animation>
 				<animationref id="full360" />
@@ -1357,7 +1389,7 @@
 
             <transformation>
 				<translate x="0.0" y="0.0" z="0.0" />
-				<rotate axis="y" angle="180" />
+				<rotate axis="y" angle="90" />
             </transformation>
 
             <materials>
@@ -1821,11 +1853,30 @@
 
         </component>
 
+		<component id="carroTmp">
+
+            <transformation>
+				<rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="folhas" />
+            </materials>
+
+            <texture id="face" />
+
+            <children>
+				<componentref id="cubo" />
+                <componentref id="capoA" />
+				<componentref id="patrickCarro" />
+            </children>
+
+        </component>
 
 		<component id="carro">
 
             <transformation>
-				<rotate axis="z" angle="0" />
+				<rotate axis="y" angle="-90" />
             </transformation>
 
 			<animation>
@@ -1839,9 +1890,7 @@
             <texture id="face" />
 
             <children>
-				<componentref id="cubo" />
-                <componentref id="capoA" />
-				<componentref id="patrickCarro" />
+				<componentref id="carroTmp" />
             </children>
 
         </component>
