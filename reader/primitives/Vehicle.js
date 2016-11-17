@@ -167,7 +167,9 @@ Vehicle.prototype.drawMastro = function (nVelas,hMastro) {
         this.scene.pushMatrix();
             this.scene.rotate(-(Math.PI/2),1,0,0);
             this.scene.translate(1.0,0,-1.4);
-            this.sea.display(1.0);
+            this.sea.display(0);
+			this.scene.scale(1.0,-1.0,1.0);
+			this.sea.display(1.0);
         this.scene.popMatrix();
     this.texWood.apply();
     this.scene.popMatrix();

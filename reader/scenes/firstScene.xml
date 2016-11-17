@@ -521,7 +521,7 @@
             </materials>
 
             <animation>
-                <!--
+               
                 <animationref id="barco"/>
                 <animationref id="barco"/>
                 <animationref id="barco"/>
@@ -531,7 +531,7 @@
                 <animationref id="barco"/>
                 <animationref id="barco"/>
                 <animationref id="barco"/>
-            -->
+            
             </animation>
 
             <texture id="madeira"/>
