@@ -16,6 +16,6 @@ void main( void ) {
 
     float h = cos(3.5 * (time + aVertexPosition.x)) * 0.3 * sin( 2.0 * (time + aVertexPosition.y));
     gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + aVertexNormal * h, 1.0);
-    newY = h + 0.5;
+    newY = h + 0.35;
 
 }
