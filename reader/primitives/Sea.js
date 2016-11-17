@@ -20,14 +20,14 @@ Sea.prototype.update = function(time){
     this.currTime = time - this.lastTime;
 }
 
-Sea.prototype.setTime = function () {
-    this.shader.setUniformsValues({time : this.currTime});
+Sea.prototype.setTime = function (inverso) {
+    this.shader.setUniformsValues({time : this.currTime, inv : inverso});
 };
 
-Sea.prototype.display = function(){
+Sea.prototype.display = function(inv){
 
+    this.setTime(inv);
     this.scene.setActiveShader(this.shader);
-    this.setTime();
     this.plane.display();
     this.scene.setActiveShader(this.scene.defaultShader);
 }

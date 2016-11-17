@@ -8,6 +8,8 @@ function Vehicle(scene) {
     this.defaultTexture = new CGFappearance(scene);
     this.defaultTexture.loadTexture("../../resources/images/face1.png");
     this.sea = new Sea(scene,8,4);
+    this.carpetTex = new CGFappearance(scene);
+    this.carpetTex.loadTexture("../../resources/images/carpet.png");
 
     this.vela = new Patch(scene,2, 3, 15, 20,
         [
@@ -161,10 +163,12 @@ Vehicle.prototype.drawMastro = function (nVelas,hMastro) {
         this.drawMastro(4,6.5);
         this.scene.translate(-3,0,0);
         this.drawMastro(3,6);
+        this.carpetTex.apply();
         this.scene.pushMatrix();
             this.scene.rotate(-(Math.PI/2),1,0,0);
             this.scene.translate(1.0,0,-1.4);
-            this.sea.display();
+            this.sea.display(1.0);
         this.scene.popMatrix();
+    this.texWood.apply();
     this.scene.popMatrix();
  };
