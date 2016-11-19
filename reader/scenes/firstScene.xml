@@ -231,6 +231,20 @@
 		<animation id="testeRot2" span="2" type="circular"
 			   	centerx="0" centery="1" centerz="1"
 				radius="1" startang="180" rotang="-90" />
+		
+		<animation id="anjoAnda" span="3" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="-1" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="anjoVolta" span="1" type="linear">
+			<controlpoint xx="0" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+		</animation>
+		
+		<animation id="anjoRot" span="2" type="circular"
+			   	centerx="-1" centery="0" centerz="1"
+				radius="1" startang="90" rotang="270" />
 
 	</animations>
 
@@ -658,18 +672,15 @@
 
 		</component>
 
-
-		<component id="anjo2">
+		<component id="anjoAnim">
 
 			<transformation>
 				<scale x="0.2" y="0.2" z="0.2"/>
-				<rotate axis="y" angle="-45" />
-				<translate x="4.0" y="0.0" z="4.0" />
-				<rotate axis="x" angle="-90" />
+				<rotate axis="x" angle="-90"/>
 			</transformation>
 
 			<materials>
-				<material id="material1" />
+				<material id="estrela" />
 			</materials>
 
 			<texture id="inherit"/>
@@ -677,6 +688,51 @@
 			<children>
 
 				<componentref id="anjoB"/>
+
+			</children>
+
+		</component>
+		
+		<component id="anjo2">
+
+			<transformation>
+				<translate x="0.0" y="0.0" z="1.0"/>
+				
+			</transformation>
+
+			<materials>
+				<material id="estrela" />
+			</materials>
+			
+			<texture id="inherit"/>
+
+			<children>
+
+				<componentref id="anjoAnimated"/>
+
+			</children>
+		</component>
+		
+		<component id="anjoAnimated">
+
+			<transformation>
+				<scale x="1.0" y="1.0" z="1.0"/>
+				
+			</transformation>
+
+			<materials>
+				<material id="estrela" />
+			</materials>
+			<animation> 
+				<animationref id="anjoAnda" />
+				<animationref id="anjoRot" />
+				<animationref id="anjoVolta" />
+			</animation>
+			<texture id="inherit"/>
+
+			<children>
+
+				<componentref id="anjoAnim"/>
 
 			</children>
 
