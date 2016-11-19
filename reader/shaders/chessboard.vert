@@ -20,10 +20,10 @@ void main( void ) {
     
     float multi = 0.0;
 
-
-    if(selected.x <= floor(res.x - 0.0) && selected.y <= floor(res.y - 0.0))
-        if(selected.x >= floor(res.x -0.1) && selected.y >= floor(res.y -0.1))
-        multi = altura;
+	if(selected.x >= 0.0 && selected.y >= 0.0)
+		if(selected.x <= floor(res.x - 0.0) && selected.y <= floor(res.y - 0.0))
+			if(selected.x >= floor(res.x -0.1) && selected.y >= floor(res.y -0.1))
+			multi = altura;
 
 
     vTextureCoord = aTextureCoord;

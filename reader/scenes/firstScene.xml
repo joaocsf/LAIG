@@ -289,7 +289,7 @@
                           (dimensões potências de 2)       -->
             <!--   - a posição da casa selecionada (su,sv) -->
             <!--   - as três cores a utilizar              -->
-            <chessboard du="4" dv="4" textureref="madeiraA" su="5" sv="0">
+            <chessboard du="4" dv="4" textureref="madeiraA" su="-1" sv="-1">
                        <c1 r="0.3" g="0.5" b="1.0" a="1.0" />
                        <c2 r="1.0" g="0.5" b="0.3" a="1.0" />
                        <cs r="1.0" g="1.0" b="1.0" a="1.0" />
