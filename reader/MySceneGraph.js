@@ -149,7 +149,7 @@ MySceneGraph.prototype.associateIDs = function(component){
 MySceneGraph.prototype.startAssociation = function(element){
 
 	if(this.components[this.sceneInfo.root] == null)
-		return "Graph must have a root element please specify one in your dsx file";
+		console.error("Graph must have a root element please specify one in your dsx file");
 
 	if(this.components[this.sceneInfo.root].material === null)
 		console.error("Root element (" + this.sceneInfo.root + ") must have a valid material");
