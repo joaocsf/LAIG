@@ -129,32 +129,19 @@ MySceneGraph.prototype.associateIDs = function(component){
 
 	for(var i = 0; i < component.componentsID.length; i++){
 		var key = component.componentsID[i];
-<<<<<<< Updated upstream
-
 		if(this.components[key] == null)
 			console.error("Component with id : " + key + " does not exist!");
 
-=======
-		if(this.components[key] === null){
-			console.error("Cannot find componentRef with id : " + key);
-		}
->>>>>>> Stashed changes
 		console.log("--with component ID: " + key);
 		component.components.push(this.components[key]);
 	}
 
 	for(var i = 0; i < component.primitivesID.length; i++){
 		var key = component.primitivesID[i];
-<<<<<<< Updated upstream
 
 		if(this.primitives[key] == null)
 			console.error("Primitive with id : " + key + " does not exist!");
 
-=======
-		if(this.primitives[key] === null){
-			console.error("Cannot find primitivesRef with id : " + key);
-		}
->>>>>>> Stashed changes
 		console.log("--with primitive ID: " + key);
 		component.primitives.push(this.primitives[key]);
 	}
@@ -162,14 +149,10 @@ MySceneGraph.prototype.associateIDs = function(component){
 MySceneGraph.prototype.startAssociation = function(element){
 
 	if(this.components[this.sceneInfo.root] == null)
-<<<<<<< Updated upstream
-		console.error("Root must be an existing component! Root is : " + this.sceneInfo.root);
-=======
 		return "Graph must have a root element please specify one in your dsx file";
 
 	if(this.components[this.sceneInfo.root].material === null)
 		console.error("Root element (" + this.sceneInfo.root + ") must have a valid material");
->>>>>>> Stashed changes
 
 	for(var key in this.components){
 		var component = this.components[key];
