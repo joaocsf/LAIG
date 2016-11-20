@@ -4,14 +4,15 @@ serialInclude=function(a){var b=console,c=serialInclude.l;if(a.length>0)c.splice
 
 function getUrlVars() {
     var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
     function(m,key,value) {
       vars[decodeURIComponent(key)] = decodeURIComponent(value);
     });
     return vars;
-}	 
+}
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'Component.js', 'Rectangle.js', 'SceneInterface.js', 'Torus.js', 'Triangle.js', 'Cylinder.js', 'Sphere.js',
+serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'primitives/Component.js', 'primitives/Rectangle.js', 'SceneInterface.js', 'primitives/Torus.js', 'primitives/Triangle.js', 'primitives/Cylinder.js', 'primitives/Sphere.js',
+                'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'primitives/Plane.js', 'primitives/Patch.js', 'primitives/Vehicle.js','primitives/Chessboard.js', 'primitives/Sea.js',
 
 
 
@@ -29,15 +30,15 @@ main=function()
 	myScene.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
 
-	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
-	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
-	
+	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
+	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
+
 	var filename=getUrlVars()['file'] || "demo.xml";
 
-	// create and load graph, and associate it to scene. 
+	// create and load graph, and associate it to scene.
 	// Check console for loading errors
 	var myGraph = new MySceneGraph(filename, myScene);
-	
+
 	// start
     app.run();
 }

@@ -129,15 +129,11 @@ Cylinder.prototype.calculateNormal = function(angle){
 			this.indices.push(index + 1, index + incr1, index);
 			this.indices.push( index + incr1 + 1 , index + incr1, index + 1);
 		}
-
-
 	}
-
 
 	this.createCircle(this.base,0,0);
 	this.createCircle(this.top,this.height,1);
 
-
  	this.primitiveType = this.scene.gl.TRIANGLES;
- 	this.initGLBuffers();
+    this.initGLBuffers();
  };
