@@ -129,7 +129,6 @@ MySceneGraph.prototype.associateIDs = function(component){
 
 	for(var i = 0; i < component.componentsID.length; i++){
 		var key = component.componentsID[i];
-
 		if(this.components[key] == null)
 			console.error("Component with id : " + key + " does not exist!");
 
@@ -150,7 +149,10 @@ MySceneGraph.prototype.associateIDs = function(component){
 MySceneGraph.prototype.startAssociation = function(element){
 
 	if(this.components[this.sceneInfo.root] == null)
-		console.error("Root must be an existing component! Root is : " + this.sceneInfo.root);
+		console.error("Graph must have a root element please specify one in your dsx file");
+
+	if(this.components[this.sceneInfo.root].material === null)
+		console.error("Root element (" + this.sceneInfo.root + ") must have a valid material");
 
 	for(var key in this.components){
 		var component = this.components[key];
