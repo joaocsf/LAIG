@@ -11,7 +11,7 @@ XMLscene.prototype.init = function (application) {
     this.initCameras();
 
     this.initLights();
-
+	this.animator = new Animator(this);
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
@@ -24,7 +24,20 @@ XMLscene.prototype.init = function (application) {
     this.enableTextures(true);
 	this.materialDefault = new CGFappearance(this);
 	this.axis=new CGFaxis(this);
-
+	
+	this.obj = new Sphere(this, 0.5, 3, 3);
+	
+	this.obj.position = {x:0 , y:0 , z:0};
+	
+	var animation = new Animation();
+	
+	this.animator.addAnimation(animation);
+	//function Keyframe(time, object, attribute, value, lerpFunction) 
+	animation.addKeyframe("movimento", new Keyframe(0, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe(5, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe(10, this.obj,"position", {x:3, y:5, z:3}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe(20, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
+	
 	this.setUpdatePeriod(1);
 };
 
@@ -49,6 +62,7 @@ XMLscene.prototype.update = function(currTime){
     if(this.sea != null)
         this.sea.update(currTime/1000);
 
+	this.animator.update(currTime/1000);
 }
 
 XMLscene.prototype.initCameras = function () {
@@ -139,6 +153,13 @@ XMLscene.prototype.display = function () {
 	this.setDefaultAppearance();
 	this.materialDefault.apply();
 	// Draw axis
+	
+	this.pushMatrix();
+	
+	this.translate(this.obj.position.x,this.obj.position.y,this.obj.position.z);
+	this.obj.display();
+	this.popMatrix();
+	
 	this.axis.display();
 
 	// ---- END Background, camera and axis setup
