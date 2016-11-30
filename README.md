@@ -1,8 +1,9 @@
 # Graphics Engine for browser
 
-### Project 2 for Laboratory of Graphic Aplications class at FEUP.
+### Final Project for Laboratory of Graphic Aplications class at FEUP.
 
-In this project we start based on what we have done in the previous project and add new features which include: animations(linear and circular), patches (nurb surface) and shading. Using a teacher made library ([WebCGF](https://paginas.fe.up.pt/~ruirodrig/pub/sw/webcgf/docs/#)) as a mediator for webGL.
+Now that we have a functional graphics engine that has some primitives aswell as animations, the goal is to create a user interface for the game that the group implemented using the language _Prolog_ for the Logic Programming class. (You can find that project [here](https://github.com/PeaceOff/PLOG)).
+
 
 ####Made by :
 
