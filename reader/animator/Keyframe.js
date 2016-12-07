@@ -6,10 +6,8 @@
 	-Value:			the value of the attribute at that time.
 	-lerpFunction:	the transtition function to animate between two frames.
 */
-function Keyframe(time, object, attribute, value, lerpFunction) {
+function Keyframe(time, value, lerpFunction) {
 	this.time = time;
-	this.object = object;
-	this.attribute = attribute;
 	this.value = value;
 	this.lerpFunction = lerpFunction;
 };
@@ -18,7 +16,7 @@ function Keyframe(time, object, attribute, value, lerpFunction) {
 * Each keyframe have the information about object that will be changed
 	-maybe change that information to the sequence to optimize!
 */
-Keyframe.prototype.lerp = function(keyframe2, t){
+Keyframe.prototype.lerp = function(object, attribute, keyframe2, t){
 	
 	var localTime = t - this.time;
 	
@@ -30,13 +28,7 @@ Keyframe.prototype.lerp = function(keyframe2, t){
 		time = localTime/deltaTime;
 	
 	
-	this.object[this.attribute] = this.lerpFunction(this.value, keyframe2.value, time);
-	console.log("FROM:" + time);
-	console.log(this.value);
-	console.log("TO:");
-	console.log(keyframe2.value);
-	
-	console.log(this.object[this.attribute]);
+	object[attribute] = this.lerpFunction(this.value, keyframe2.value, time);
 }
 
 Keyframe.prototype.getTime = function(){

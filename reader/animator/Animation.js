@@ -17,16 +17,28 @@ Animation.prototype.update = function(time){
 }
 
 /*Adding a keyframe to an sequence, needs an uniqueID and an keyframe
-* There is no need to create your own sequence class, this methos does that.
+* The sequence must be registered prior to this point.
 */
 Animation.prototype.addKeyframe = function(sequenceName, keyframe){
 	
 	if(!this.sequences[sequenceName]){
-		
-		this.sequences[sequenceName] = new Sequence(sequenceName);
+		console.error("Sequence don't exist :" + sequenceName);
+		return;
 	}
 	
 	this.sequences[sequenceName].addKeyframe(keyframe);
+}
+
+/* Method to register a sequence, each sequence need:
+* 	-UniqueID
+*	-the object to edit an it's attribute.
+*/
+Animation.prototype.registerSequence = function(sequenceName, object, attribute){
 	
+	if(!this.sequences[sequenceName]){
+		this.sequences[sequenceName] = new Sequence(sequenceName, object,attribute);
+	}else{
+		console.warn("Sequence already exists!" + sequenceName);
+	}
 	
 }

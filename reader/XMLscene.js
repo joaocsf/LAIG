@@ -28,15 +28,18 @@ XMLscene.prototype.init = function (application) {
 	this.obj = new Sphere(this, 0.5, 3, 3);
 	
 	this.obj.position = {x:0 , y:0 , z:0};
+	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
+	this.board = new Board(this, this.cylinder, null, 20, null, 0, null, 0); 
 	
 	var animation = new Animation();
 	
 	this.animator.addAnimation(animation);
 	//function Keyframe(time, object, attribute, value, lerpFunction) 
-	animation.addKeyframe("movimento", new Keyframe(0, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe(5, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe(10, this.obj,"position", {x:3, y:5, z:3}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe(20, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
+	animation.registerSequence("movimento", this.obj, "position");
+	animation.addKeyframe("movimento", new Keyframe( 0 , {x:1, y:1, z:1}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe( 5 , {x:1, y:1, z:1}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe( 10.5 ,{x:2, y:2, z:5}, transition_vector3));
+	animation.addKeyframe("movimento", new Keyframe( 20 ,{x:0, y:0, z:0}, transition_vector3));
 	
 	this.setUpdatePeriod(1);
 };
@@ -155,10 +158,13 @@ XMLscene.prototype.display = function () {
 	// Draw axis
 	
 	this.pushMatrix();
+	this.scale(this.obj.position.x,this.obj.position.y,this.obj.position.z);
 	
-	this.translate(this.obj.position.x,this.obj.position.y,this.obj.position.z);
-	this.obj.display();
+	this.board.display();
+	this.cylinder.display();
 	this.popMatrix();
+	
+
 	
 	this.axis.display();
 
