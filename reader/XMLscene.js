@@ -24,20 +24,23 @@ XMLscene.prototype.init = function (application) {
     this.enableTextures(true);
 	this.materialDefault = new CGFappearance(this);
 	this.axis=new CGFaxis(this);
-	
+
+    //PICKING
+    this.setPickEnabled(true);
+
 	this.obj = new Sphere(this, 0.5, 3, 3);
-	
+
 	this.obj.position = {x:0 , y:0 , z:0};
-	
+
 	var animation = new Animation();
-	
+
 	this.animator.addAnimation(animation);
-	//function Keyframe(time, object, attribute, value, lerpFunction) 
+	//function Keyframe(time, object, attribute, value, lerpFunction)
 	animation.addKeyframe("movimento", new Keyframe(0, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
 	animation.addKeyframe("movimento", new Keyframe(5, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
 	animation.addKeyframe("movimento", new Keyframe(10, this.obj,"position", {x:3, y:5, z:3}, transition_vector3));
 	animation.addKeyframe("movimento", new Keyframe(20, this.obj,"position", {x:0, y:0, z:0}, transition_vector3));
-	
+
 	this.setUpdatePeriod(1);
 };
 
@@ -153,15 +156,20 @@ XMLscene.prototype.display = function () {
 	this.setDefaultAppearance();
 	this.materialDefault.apply();
 	// Draw axis
-	
+
 	this.pushMatrix();
-	
+
 	this.translate(this.obj.position.x,this.obj.position.y,this.obj.position.z);
 	this.obj.display();
 	this.popMatrix();
-	
+
 	this.axis.display();
 
+
+    //PICKING
+    //this.logPicking();
+    //this.clearPickRegistration();
+    //this.registerForPick(INTEGER ID,OBJECT)
 	// ---- END Background, camera and axis setup
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.
@@ -174,3 +182,26 @@ XMLscene.prototype.display = function () {
 		this.root.display();
 	};
 };
+
+
+//Exemplo de logPicking
+/*
+LightingScene.prototype.logPicking = function ()
+{
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj)
+				{
+					var customId = this.pickResults[i][1];
+                    console.log(this.pickResults[i]);
+                    console.log(obj);
+					console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);//Limpa o array
+		}
+	}
+}
+*/
