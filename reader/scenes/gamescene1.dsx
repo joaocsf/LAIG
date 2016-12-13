@@ -1,0 +1,280 @@
+<dsx>
+
+  <scene root="rute" axis_length="1.0" />
+
+  <views default="vista1" >
+
+    <perspective id="vista1" near="0.01" far="100.0" angle="40.0">
+      <from x="5.5" y="5.5" z="4.5" />
+      <to x="0.0" y="0.0" z="-0.0" />
+    </perspective>
+
+    <perspective id="vista2" near="0.01" far="100.0" angle="40.0">
+      <from x="15.0" y="15.0" z="14.0" />
+      <to x="0.0" y="0.0" z="0.0" />
+    </perspective>
+
+		<perspective id="vista3" near="0.01" far="100.0" angle="40.0">
+      <from x="-2.0" y="1.0" z="-0.5" />
+      <to x="1.0" y="1.0" z="-1.0" />
+    </perspective>
+
+    <perspective id="vista4" near="0.01" far="100.0" angle="40.0">
+      <from x="2.0" y="0.5" z="0.5" />
+      <to x="0.0" y="0.5" z="0.5" />
+    </perspective>
+
+    <perspective id="vista5" near="0.01" far="100.0" angle="40.0">
+      <from x="-1.0" y="1.2" z="0.5" />
+      <to x="-5.0" y="0.5" z="0.5"/>
+    </perspective>
+
+  </views>
+
+  <illumination doublesided="1" local="1" >
+    <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+    <background r="0.5" g="0" b="0.1" a="1.0" />
+  </illumination>
+
+
+  <lights>
+        <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+    <omni id="omni1" enabled="0" >
+      <location x="0.0" y="1.0" z="-8.0" w="1.0" />
+      <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+    </omni>
+
+    <omni id="omni2" enabled="1" >
+      <location x="0.0" y="2.0" z="0.0" w="1.0" />
+      <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+    </omni>
+
+    <spot id="spot1" enabled="1" angle="2" exponent="1">
+      <!-- atencao, "target" e' diferente de "direction" -->
+      <target x="0.0" y="0.0" z="0.0" />
+      <location x="15.0" y="0.0" z="0.0" />
+      <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+    </spot>
+  </lights>
+
+
+  <textures>
+    <texture id="textura1" file="../resources/images/teste.png" length_s="8.0" length_t="1.0" />
+    <texture id="textura2" file="../resources/images/checkers.png" length_s="8.0" length_t="0.5" />
+		<texture id="folha" file="../resources/images/leaf.png" length_s="1.0" length_t="1.0" />
+		<texture id="face" file="../resources/images/face1.png" length_s="1.0" length_t="1.0" />
+		<texture id="bottom" file="../resources/images/bottom.png" length_s="1.0" length_t="1.0" />
+		<texture id="ceu" file="../resources/images/sky12.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeira" file="../resources/images/wood1.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeiraP" file="../resources/images/wood.png" length_s="1.0" length_t="1.0" />
+		<texture id="madeiraA" file="../resources/images/wood2.png" length_s="1.0" length_t="1.0" />
+
+	</textures>
+
+  <materials>
+    <material id="material1" >
+      <emission r="0.1" g="0.1" b="0.1" a="1.0" />
+      <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+      <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+      <shininess value="1.0" />
+    </material>
+
+		<material id="ceu" >
+      <emission r="0.5" g="0.5" b="0.5" a="1.0" />
+      <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+      <shininess value="1.0" />
+    </material>
+
+		<material id="folhas" >
+      <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+      <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+      <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+      <shininess value="1.0" />
+    </material>
+
+    <material id="estrela" >
+      <emission r="1.0" g="1.0" b="0.0" a="1.0" />
+      <ambient r="0.1" g="0.1" b="0.0" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="0.0" a="1.0" />
+      <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+      <shininess value="1.0" />
+    </material>
+
+  </materials>
+
+  <transformations>
+
+    <transformation id="movimento1">
+      <translate x="0" y="0" z="0" />
+      <scale x="1.0" y="1.0" z="1.0" />
+    </transformation>
+
+  </transformations>
+
+	<animations>
+		<animation id="anjoVolta" span="1" type="linear">
+			<controlpoint xx="0" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+		</animation>
+
+    <animation id="anjoRot" span="2" type="circular"
+      centerx="-1" centery="0" centerz="1"
+      radius="1" startang="90" rotang="270" />
+
+	</animations>
+
+  <primitives>
+
+    <primitive id="coneMid">
+
+      <cylinder base="0.2" top="5.0" height="1.0" slices="5" stacks="3" />
+
+    </primitive>
+
+    <primitive id="cone">
+
+      <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+
+    </primitive>
+
+    <primitive id="cyl">
+
+      <cylinder base="1.0" top="1.0" height="1.0" slices="5" stacks="3" />
+
+    </primitive>
+
+  </primitives>
+
+
+  <components>
+    <component id="rute">
+
+
+        <!-- bloco "transformation" obrigatorio -->
+      <transformation>
+      <transformationref id="movimento1" />
+      </transformation>
+      <materials>
+        <material id="material2" />
+      </materials>
+
+      <texture id="textura2" />
+
+      <!-- bloco "children" obrigatorio num "component" -->
+      <children>
+        <componentref id="sailorMan" />
+      </children>
+
+    </component>
+    <component id="clawC">
+      <transformation>
+        <rotate axis="x" angle="0" />
+      </transformation>
+
+      <materials>
+        <material id="materialID" />
+      </materials>
+
+      <texture id="textureID" />
+
+      <children>
+        <primitiveref id="cyl"/>
+      </children>
+
+    </component>
+
+    <component id="cellC">
+      <transformation>
+        <rotate axis="x" angle="-90" />
+      </transformation>
+
+      <materials>
+        <material id="materialID" />
+      </materials>
+
+      <texture id="textureID" />
+
+      <children>
+        <primitiveref id="cyl"/>
+      </children>
+
+    </component>
+
+    <component id="legC">
+      <transformation>
+        <rotate axis="x" angle="180" />
+      </transformation>
+
+      <materials>
+        <material id="materialID" />
+      </materials>
+
+      <texture id="textureID" />
+
+      <children>
+        <primitiveref id="cyl"/>
+      </children>
+
+    </component>
+
+    <component id="bodyC">
+      <transformation>
+        <rotate axis="x" angle="90" />
+      </transformation>
+
+      <materials>
+        <material id="materialID" />
+      </materials>
+
+      <texture id="textureID" />
+
+      <children>
+        <primitiveref id="coneMid"/>
+      </children>
+
+    </component>
+  <!--
+    <component id="carro">
+      <transformation>
+        <rotate axis="y" angle="-90" />
+        <translate x="2" y="1" z="2"/>
+        <scale x="2" y="1" z="2" />
+      </transformation>
+    	<animation>
+    		<animationref id="animationID"/>
+    	</animation>
+
+      <materials>
+        <material id="materialID" />
+      </materials>
+
+      <texture id="textureID" />
+
+      <children>
+        <componentref id="componentID" />
+        <primitiveref id="primitiveID" />
+      </children>
+
+    </component> -->
+  </components>
+
+  <gamecomponents>
+    <boardLocation component="rute" />
+    <body component="bodyC" />
+    <cell component="cellC" />
+    <claw component="clawC" />
+    <leg component="legC" />
+  </gamecomponents>
+
+</dsx>

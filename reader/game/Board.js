@@ -1,15 +1,13 @@
 /*		Class responsible to save the state of the client game
 *	and to display/store all the pieces used.
 */
-function Board(scene, cell, adaptoid, pieceNumber, leg, legNumber, claw, clawNumber) {
-	CGFobject.call(this,scene);
-	this.cell = cell;
-	this.adaptoid = adaptoid;
-	this.leg = leg;
-	this.claw = claw;
+function Board(scene, pieceNumber, legNumber, clawNumber) {
 
+	CGFobject.call(this,scene);
 	this.BLACK = 0;
 	this.WHITE = 1;
+
+	this.pieces =  null;
 
 	this.adaptoids = [];
 	this.adaptoids[0] = [];
@@ -24,17 +22,16 @@ function Board(scene, cell, adaptoid, pieceNumber, leg, legNumber, claw, clawNum
 	for(var i = 0; i < max; i++){
 
 		if(i < pieceNumber){
-			this.adaptoids[this.BLACK].push(0);
-			this.adaptoids[this.BLACK].push(new Body(this.scene, this.BLACK, this.adaptoid));
-			this.adaptoids[this.WHITE].push(new Body(this.scene, this.WHITE, this.adaptoid));
+			this.adaptoids[this.BLACK].push(new Body(this.scene, this, this.BLACK));
+			this.adaptoids[this.WHITE].push(new Body(this.scene, this, this.WHITE));
 		}
 		if(i < legNumber){
-			this.members[this.BLACK].push(new Element(this.scene, this.BLACK,'LEG', this.leg));
-			this.members[this.WHITE].push(new Element(this.scene, this.WHITE,'LEG', this.leg));
+			this.members[this.BLACK].push(new Element(this.scene, this, this.BLACK,'LEG'));
+			this.members[this.WHITE].push(new Element(this.scene, this, this.WHITE,'LEG'));
 		}
 		if(i < clawNumber){
-			this.members[this.BLACK].push(new Element(this.scene, this.BLACK,'CLAW', this.claw));
-			this.members[this.WHITE].push(new Element(this.scene, this.WHITE,'CLAW', this.claw));
+			this.members[this.BLACK].push(new Element(this.scene, this, this.BLACK,'CLAW'));
+			this.members[this.WHITE].push(new Element(this.scene, this, this.WHITE,'CLAW'));
 		}
 	}
 
@@ -74,49 +71,53 @@ Board.prototype.getPosition = function(radius,angle, team){
 
 }
 
-Board.prototype.display = function(){
+Board.prototype.initilizePositions = function(){
 
-	for(var y = 0; y < this.board.length; y++){
-		var neg = 0;
-		for(var x = 1; x < this.board[y].length; x++){
-
-			if(this.board[y][x] == -1){
-				neg++;
-				continue;
-			}
-
-			var dist = 0;
-			dist = this.board[y][0];
-
-			if(x != 0){
-				var k = dist + x * this.half * 2 - neg*this.half*2;
-			}
-			var j = y * this.half*2;
-			this.scene.pushMatrix();
-
-				this.scene.translate(-this.width/2 - this.half + k, 0,-this.width/2 + j);
-				this.cell.display();
-
-			this.scene.popMatrix();
-		}
-	}
+	var k =  x/this.adaptoids[this.BLACK].length
+	pos = this.getPosition(this.width,Math.PI * k, this.BLACK);
 
 	for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
 		var k =  x/this.adaptoids[this.BLACK].length
 		pos = this.getPosition(this.width,Math.PI * k, this.BLACK);
-		this.scene.pushMatrix();
+		this.adaptoids[this.BLACK][x].setPosition(pos);
+		pos = this.getPosition(this.width,Math.PI * k, this.WHITE);;
+		this.adaptoids[this.WHITE][x].setPosition(pos);
+	}
 
-			this.scene.translate(pos.x,pos.z, pos.y);
-			this.cell.display();
+}
 
-		this.scene.popMatrix();
-		pos = this.getPosition(this.width,Math.PI * k, this.WHITE);
-		this.scene.pushMatrix();
+Board.prototype.display = function(){
+	if(this.pieces != null){
+		for(var y = 0; y < this.board.length; y++){
+			var neg = 0;
+			for(var x = 1; x < this.board[y].length; x++){
 
-			this.scene.translate(pos.x,pos.z, pos.y);
-			this.cell.display();
+				if(this.board[y][x] == -1){
+					neg++;
+					continue;
+				}
 
-		this.scene.popMatrix();
+				var dist = 0;
+				dist = this.board[y][0];
 
+				if(x != 0){
+					var k = dist + x * this.half * 2 - neg*this.half*2;
+				}
+				var j = y * this.half*2;
+				this.scene.pushMatrix();
+
+					this.scene.translate(-this.width/2 - this.half + k, 0,-this.width/2 + j);
+					this.pieces['cell'].display();
+
+				this.scene.popMatrix();
+			}
+		}
+
+		for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
+			this.scene.pushMatrix();
+			this.adaptoids[this.BLACK][x].display();
+			this.adaptoids[this.WHITE][x].display();
+			this.scene.popMatrix();
+		}
 	}
 }

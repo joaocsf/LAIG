@@ -18,6 +18,9 @@ function MySceneGraph(filename, scene) {
 	this.components = {};
 	this.animations = {};
 
+	//Dic to store all game related components
+	this.gameComponents = {};
+
 	this.cameraIndex = 0;
 
 	// Establish bidirectional references between scene and graph
@@ -83,6 +86,8 @@ MySceneGraph.prototype.onXMLReady=function()
 	if(this.checkError(this.parsePrimitives(rootElement)))
 		return;
 	if(this.checkError(this.parseComponents(rootElement)))
+		return;
+	if(this.checkError(this.parseGameComponents(rootElement)))
 		return;
 
 	this.startAssociation();
@@ -1482,4 +1487,56 @@ MySceneGraph.prototype.parseCAnimation = function(element){
 }
 //********************************
 //************</COMPONENTS>*******
+//********************************
+//--------------------------------
+//-------<GAMECOMPONENTS>---------
+//--------------------------------
+/* Function to parse the element: GameComponents
+Parses the following elements:
+	boardPosition :
+	cell :
+	body :
+	claw :
+	leg :
+*/
+MySceneGraph.prototype.parseGameComponents = function(rootElement){
+
+	var elems = rootElement.getElementsByTagName('gamecomponents');
+
+	if(elems == null || elems.length != 1){
+		return "gamecomponents element is MISSING or more than one element";
+	}
+
+	var components = elems[0];
+
+	var nnodes = components.children.length;
+	var error;
+	for(var i = 0; i < nnodes; i++){
+
+		var child = components.children[i];
+		var componentID = this.reader.getString(child, 'component');
+		var component = this.components[componentID];
+
+		switch(child.tagName){
+			case 'boardLocation':
+			case 'claw':
+			case 'leg':
+			case 'body':
+			case 'cell':
+				break;
+			default:
+				component = null;
+				break;
+		}
+
+		if(component)
+			this.gameComponents[child.tagName] = component;
+
+		if(error)
+			return error;
+	}
+}
+
+//********************************
+//********</GAMECOMPONENTS>*******
 //********************************
