@@ -106,8 +106,7 @@ XMLscene.prototype.logPicking = function () {
                 {
                     var customId = this.pickResults[i][1];
                     console.log(this.pickResults[i]);
-                    console.log(obj);
-                    console.log("Picked object: " + obj + ", with pick id " + customId);
+                    console.log(obj.boardPosition);
                 }
             }
             this.pickResults.splice(0,this.pickResults.length);//Limpa o array

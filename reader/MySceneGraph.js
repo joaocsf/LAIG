@@ -1514,23 +1514,37 @@ MySceneGraph.prototype.parseGameComponents = function(rootElement){
 	for(var i = 0; i < nnodes; i++){
 
 		var child = components.children[i];
-		var componentID = this.reader.getString(child, 'component');
-		var component = this.components[componentID];
 
+		var component=null;
 		switch(child.tagName){
 			case 'boardLocation':
 			case 'claw':
 			case 'leg':
 			case 'body':
 			case 'cell':
+			var componentID = this.reader.getString(child, 'component');
+			component = this.components[componentID];
+			break;
+			case 'player1':
+			case 'player2':
+				component = { material:null, texture:null}
+				var materialID = this.reader.getString(child, 'material');
+				var textureID = this.reader.getString(child, 'texture');
+
+				component.material = this.materials[materialID];
+				component.texture = this.textures[textureID];
 				break;
 			default:
 				component = null;
 				break;
 		}
 
-		if(component)
-			this.gameComponents[child.tagName] = component;
+		if(component){
+			var index = (child.tagName == 'player1')? 0 :
+									(child.tagName == 'player2')? 1 :
+									child.tagName;
+			this.gameComponents[index] = component;
+		}
 
 		if(error)
 			return error;

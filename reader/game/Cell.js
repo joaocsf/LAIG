@@ -1,7 +1,8 @@
-function Cell(scene, board, x, z){
+function Cell(scene, board, x, z, bx, by){
 
 	CGFobject.call(this,scene);
 	this.board = board;
+	this.boardPosition = {x: bx, y:by};
   this.position = {x: x, y:0, z:z};
 	this.pickID = -1;
 };

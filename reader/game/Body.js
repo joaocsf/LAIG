@@ -37,7 +37,7 @@ Body.prototype.display = function(){
 
   this.scene.pushMatrix();
 		this.scene.translate(this.position.x, this.position.y, this.position.z);
-    this.board.pieces['body'].display();
+    this.board.pieces['body'].display2(this.board.pieces[this.team].material, this.board.pieces[this.team].texture);
   this.scene.popMatrix();
 
 	this.scene.clearPickRegistration();

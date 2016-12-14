@@ -115,7 +115,9 @@ Board.prototype.initializePositions = function(){
 				k = dist + x * this.half * 2 - neg*this.half*2;
 			}
 			var j = y * this.half*2;
-			this.cells.push(new Cell(this.scene, this, -this.width/2 - this.half + k, -this.width/2 + this.half + j));
+			this.cells.push(new Cell(this.scene, this,
+				-this.width/2 - this.half + k, -this.width/2 + this.half + j,
+			x,y));
 		}
 	}
 
@@ -128,7 +130,7 @@ Board.prototype.play = function(){
 
 Board.prototype.registerCellPicking = function(){
 	for(var i = 0; i < this.cells.length; i++){
-		this.cells[i].setPickID(i);
+		this.cells[i].setPickID(i + 1);
 	}
 }
 
@@ -136,7 +138,7 @@ Board.prototype.registerPicking = function(){
 	var members = this.members[this.playerTurn].length;
 
 	var max = Math.max(this.pieceNumber, members);
-	var idC = this.cells.length;
+	var idC = this.cells.length + 1;
 	for(var i = 0; i < max; i++){
 		idC++;
 
