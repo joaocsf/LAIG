@@ -12,7 +12,6 @@ Connection.handleError = function() {
     console.log("Error waiting for response");
 }
 
-
 /*Classe connection que realiza pedidos ao servidor Prolog
 e reencaminha as respostas*/
 
