@@ -32,12 +32,12 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 			this.adaptoids[this.WHITE].push(new Body(this.scene, this, this.WHITE));
 		}
 		if(i < legNumber){
-			this.members[this.BLACK].push(new Element(this.scene, this, this.BLACK,'LEG'));
-			this.members[this.WHITE].push(new Element(this.scene, this, this.WHITE,'LEG'));
+			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'LEG'));
+			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'LEG'));
 		}
 		if(i < clawNumber){
-			this.members[this.BLACK].push(new Element(this.scene, this, this.BLACK,'CLAW'));
-			this.members[this.WHITE].push(new Element(this.scene, this, this.WHITE,'CLAW'));
+			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'CLAW'));
+			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'CLAW'));
 		}
 	}
 
@@ -174,3 +174,47 @@ Board.prototype.display = function(){
 		}
 	}
 }
+
+Board.prototype.getGameString = function () {
+	var res = [];
+	res.push([zero,um,dois,tres,quatro]);
+	res.push([a,vazio,vazio,vazio,vazio,cinco]);
+	res.push([b,vazio,vazio,vazio,vazio,vazio,seis]);
+	res.push([c,vazio,vazio,vazio,vazio,vazio,vazio,sete]);
+	res.push([d,vazio,vazio,vazio,vazio,vazio,vazio,vazio]);
+	res.push([e,ht,vazio,vazio,vazio,vazio,vazio,vazio]);
+	res.push([f,ht,ht,vazio,vazio,vazio,vazio,vazio]);
+	res.push([g,ht,ht,ht,vazio,vazio,vazio,vazio]);
+	
+
+};
+
+/*	Atributos
+	this.BLACK = 0;
+	this.WHITE = 1;
+
+	this.pieces =  null;
+	this.cells = [];
+	this.adaptoids = [];
+	this.adaptoids[0] = [];
+	this.adaptoids[1] = [];
+
+	this.playerTurn = this.WHITE;
+
+	this.members = [];
+	this.members[this.BLACK] = [];
+	this.members[this.WHITE] = [];
+*/
+/*FORMATO TABULEIRO
+tabuleiro( [
+            [zero,um,dois,tres,quatro],
+            [a,vazio,vazio,vazio,vazio,cinco],
+      		[b,vazio,vazio,vazio,vazio,vazio,seis],
+      		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
+      		[d,vazio,[0,branco,0,0],vazio,vazio,vazio,[0,preto,0,0],vazio],
+			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
+      		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
+      		[g,ht,ht,ht,vazio,vazio,vazio,vazio]
+           ]
+          ).
+*/

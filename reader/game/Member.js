@@ -1,32 +1,32 @@
 /*		Class responsible to save the state of the client game
 *	and to display/store all the pieces used.
 */
-function Element(scene, body, team, type) {
+function Member(scene, board, team, type) {
 	CGFobject.call(this,scene);
   if(type != 'CLAW' && type != 'LEG'){
     console.error("ERROR! Type undifined!")
     return;
   }
-	this.body = body;
-  this.type = type;
-  this.team = team;
+	this.board = board;
+  	this.type = type;
+  	this.team = team;
 	this.pickID = -1;
 
 };
 
 
-Element.prototype = Object.create(CGFobject.prototype);
-Element.prototype.constructor = Element;
+Member.prototype = Object.create(CGFobject.prototype);
+Member.prototype.constructor = Member;
 
-Element.prototype.OnClick = function(){
+Member.prototype.OnClick = function(){
 	this.pickID = -1;
 }
 
-Element.prototype.setPickID = function(idC){
+Member.prototype.setPickID = function(idC){
 	this.pickID = idC;
 }
 
-Element.prototype.display = function(){
+Member.prototype.display = function(){
 	if(this.pickID > 0){
 		this.scene.registerForPick(this.pickID,this);
 	}

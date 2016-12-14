@@ -7,7 +7,7 @@ function Body(scene, board, team){
 	this.boardPosition = {x:-1, y:-1};
 	this.playing = false;
 	this.board = board;
-  this.team = team;
+  	this.team = team;
 	this.position = {x:0, y:0, z:0};
 	this.pickID = -1;
 
