@@ -97,7 +97,7 @@ function Component(scene) {
             if(this.components[i] != null)
             this.components[i].display2(mat,tex);
         }
-        
+
         for(var i = 0; i < this.primitives.length; i++){
             if(tex != null)
                 mat.setTexture(tex.textData);

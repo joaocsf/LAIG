@@ -138,19 +138,19 @@
 
     <primitive id="coneMid">
 
-      <cylinder base="0.2" top="5.0" height="1.0" slices="5" stacks="3" />
+      <cylinder base="0.3" top="0.2" height="0.2" slices="5" stacks="3" />
 
     </primitive>
 
     <primitive id="cone">
 
-      <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+      <cylinder base="0.3" top="0.0" height="0.5" slices="5" stacks="3" />
 
     </primitive>
 
     <primitive id="cyl">
 
-      <cylinder base="1.0" top="1.0" height="1.0" slices="5" stacks="3" />
+      <cylinder base="0.5" top="0.5" height="0.2" slices="10" stacks="3" />
 
     </primitive>
 
@@ -166,44 +166,44 @@
       <transformationref id="movimento1" />
       </transformation>
       <materials>
-        <material id="material2" />
+        <material id="folhas" />
       </materials>
 
       <texture id="textura2" />
 
       <!-- bloco "children" obrigatorio num "component" -->
       <children>
-        <componentref id="sailorMan" />
+        <componentref id="cellC" />
       </children>
 
     </component>
     <component id="clawC">
       <transformation>
-        <rotate axis="x" angle="0" />
+        <rotate axis="x" angle="-90" />
       </transformation>
 
       <materials>
-        <material id="materialID" />
+        <material id="material1" />
       </materials>
 
-      <texture id="textureID" />
+      <texture id="textura1" />
 
       <children>
-        <primitiveref id="cyl"/>
+        <primitiveref id="cone"/>
       </children>
 
     </component>
 
     <component id="cellC">
       <transformation>
-        <rotate axis="x" angle="-90" />
+        <rotate axis="x" angle="90" />
       </transformation>
 
       <materials>
-        <material id="materialID" />
+        <material id="material1" />
       </materials>
 
-      <texture id="textureID" />
+      <texture id="textura1" />
 
       <children>
         <primitiveref id="cyl"/>
@@ -213,14 +213,14 @@
 
     <component id="legC">
       <transformation>
-        <rotate axis="x" angle="180" />
+        <rotate axis="x" angle="-90" />
       </transformation>
 
       <materials>
-        <material id="materialID" />
+        <material id="material1" />
       </materials>
 
-      <texture id="textureID" />
+      <texture id="textura1" />
 
       <children>
         <primitiveref id="cyl"/>
@@ -230,14 +230,14 @@
 
     <component id="bodyC">
       <transformation>
-        <rotate axis="x" angle="90" />
+        <rotate axis="x" angle="-90" />
       </transformation>
 
       <materials>
-        <material id="materialID" />
+        <material id="material1" />
       </materials>
 
-      <texture id="textureID" />
+      <texture id="textura1" />
 
       <children>
         <primitiveref id="coneMid"/>

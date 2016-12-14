@@ -97,6 +97,24 @@ XMLscene.prototype.nextCamera = function(){
 	this.interface.setActiveCamera(this.camera);
 }
 
+XMLscene.prototype.logPicking = function () {
+    if (this.pickMode == false) {
+        if (this.pickResults != null && this.pickResults.length > 0) {
+            for (var i=0; i< this.pickResults.length; i++) {
+                var obj = this.pickResults[i][0];
+                if (obj)
+                {
+                    var customId = this.pickResults[i][1];
+                    console.log(this.pickResults[i]);
+                    console.log(obj);
+                    console.log("Picked object: " + obj + ", with pick id " + customId);
+                }
+            }
+            this.pickResults.splice(0,this.pickResults.length);//Limpa o array
+        }
+    }
+};
+
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function ()
@@ -129,6 +147,9 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_LOCAL_VIEWER, this.graph.illumination.local);
 	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_TWO_SIDED, this.graph.illumination.doubleSided);
+  //Assign Game Entities
+
+  this.board.setPieces(this.graph.gameComponents);
 
 
 };
@@ -147,6 +168,8 @@ XMLscene.prototype.updateLights = function(){
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
 
+  this.logPicking();
+
 	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -162,15 +185,6 @@ XMLscene.prototype.display = function () {
 	this.setDefaultAppearance();
 	this.materialDefault.apply();
 	// Draw axis
-
-	this.pushMatrix();
-
-	this.scale(this.obj.position.x,this.obj.position.y,this.obj.position.z);
-
-	this.board.display();
-	this.cylinder.display();
-	this.popMatrix();
-
 	this.axis.display();
 
 

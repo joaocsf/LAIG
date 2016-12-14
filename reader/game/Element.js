@@ -10,15 +10,30 @@ function Element(scene, body, team, type) {
 	this.body = body;
   this.type = type;
   this.team = team;
+	this.pickID = -1;
 
 };
+
 
 Element.prototype = Object.create(CGFobject.prototype);
 Element.prototype.constructor = Element;
 
+Element.prototype.OnClick = function(){
+	this.pickID = -1;
+}
+
+Element.prototype.setPickID = function(idC){
+	this.pickID = idC;
+}
 
 Element.prototype.display = function(){
+	if(this.pickID > 0){
+		this.scene.registerForPick(this.pickID,this);
+	}
+
   this.scene.pushMatrix();
     this.board.pieces['body'].display();
   this.scene.popMatrix();
+
+	this.scene.clearPickRegistration();
 }
