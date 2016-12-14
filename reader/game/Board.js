@@ -8,14 +8,20 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.WHITE = 1;
 
 	this.pieces =  null;
-
+	this.cells = [];
 	this.adaptoids = [];
 	this.adaptoids[0] = [];
 	this.adaptoids[1] = [];
 
+	this.playerTurn = this.WHITE;
+
 	this.members = [];
 	this.members[this.BLACK] = [];
 	this.members[this.WHITE] = [];
+
+	this.pieceNumber = pieceNumber;
+	this.legNumber = legNumber;
+	this.clawNumber = clawNumber;
 
 	var max = Math.max(pieceNumber, legNumber, clawNumber);
 
@@ -50,11 +56,20 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 				[cSpace,-1,0,0,0,0,0,0],
 				[bSpace,-1,-1,0,0,0,0,0],
 				[aSpace,-1,-1,-1,0,0,0,0]];
+
+	this.initializePositions();
+	this.registerCellPicking();
+	this.registerPicking();
 };
 
 
 Board.prototype = Object.create(CGFobject.prototype);
 Board.prototype.constructor = Board;
+
+Board.prototype.setPieces = function(pieces){
+	this.pieces = pieces;
+	this.pieces['boardLocation'].primitives.push(this);
+}
 
 Board.prototype.getPosition = function(radius,angle, team){
 	var t = -1;
@@ -63,58 +78,94 @@ Board.prototype.getPosition = function(radius,angle, team){
 
 	var res ={
 		x: radius* Math.cos(angle) * t,
-		y: radius* Math.sin(angle) * t,
-		z: team
+		y: -0.2,
+		z: radius* Math.sin(angle) * t
 	};
 
 	return res;
 
 }
 
-Board.prototype.initilizePositions = function(){
-
+Board.prototype.initializePositions = function(){
+	var max = Math.max(this.members[this.BLACK].length, this.adaptoids[this.BLACK].length);
 	var k =  x/this.adaptoids[this.BLACK].length
-	pos = this.getPosition(this.width,Math.PI * k, this.BLACK);
+	var radius = this.width -2;
+	var angle = Math.PI/1.5;
+	var plus = Math.PI - angle / 2;
 
 	for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
 		var k =  x/this.adaptoids[this.BLACK].length
-		pos = this.getPosition(this.width,Math.PI * k, this.BLACK);
+		pos = this.getPosition(radius,angle * k + plus, this.BLACK);
 		this.adaptoids[this.BLACK][x].setPosition(pos);
-		pos = this.getPosition(this.width,Math.PI * k, this.WHITE);;
+		pos = this.getPosition(radius,angle * k + plus, this.WHITE);;
 		this.adaptoids[this.WHITE][x].setPosition(pos);
 	}
+
+	for(var y = 0; y < this.board.length; y++){
+		var neg = 0;
+		for(var x = 1; x < this.board[y].length; x++){
+			if(this.board[y][x] == -1){
+				neg++;
+				continue;
+			}
+			var dist = 0;
+			dist = this.board[y][0];
+			var k = 0;
+			if(x != 0){
+				k = dist + x * this.half * 2 - neg*this.half*2;
+			}
+			var j = y * this.half*2;
+			this.cells.push(new Cell(this.scene, this, -this.width/2 - this.half + k, -this.width/2 + this.half + j));
+		}
+	}
+
+}
+
+Board.prototype.play = function(){
+
+	this.playerTurn
+}
+
+Board.prototype.registerCellPicking = function(){
+	for(var i = 0; i < this.cells.length; i++){
+		this.cells[i].setPickID(i);
+	}
+}
+
+Board.prototype.registerPicking = function(){
+	var members = this.members[this.playerTurn].length;
+
+	var max = Math.max(this.pieceNumber, members);
+	var idC = this.cells.length;
+	for(var i = 0; i < max; i++){
+		idC++;
+
+		if(i < this.pieceNumber)
+			this.adaptoids[this.playerTurn][i].setPickID(idC);
+
+		idC++;
+		if(i < members)
+			this.members[this.playerTurn][i].setPickID(idC);
+	}
+
 
 }
 
 Board.prototype.display = function(){
 	if(this.pieces != null){
-		for(var y = 0; y < this.board.length; y++){
-			var neg = 0;
-			for(var x = 1; x < this.board[y].length; x++){
+		for(var y = 0; y < this.cells.length; y++){
 
-				if(this.board[y][x] == -1){
-					neg++;
-					continue;
-				}
+			this.scene.pushMatrix();
 
-				var dist = 0;
-				dist = this.board[y][0];
+			this.scene.translate( 0, 0.2, 0);
+			this.cells[y].display();
 
-				if(x != 0){
-					var k = dist + x * this.half * 2 - neg*this.half*2;
-				}
-				var j = y * this.half*2;
-				this.scene.pushMatrix();
-
-					this.scene.translate(-this.width/2 - this.half + k, 0,-this.width/2 + j);
-					this.pieces['cell'].display();
-
-				this.scene.popMatrix();
-			}
+			this.scene.popMatrix();
 		}
 
 		for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
 			this.scene.pushMatrix();
+			this.scene.translate(0,0.2,0);
 			this.adaptoids[this.BLACK][x].display();
 			this.adaptoids[this.WHITE][x].display();
 			this.scene.popMatrix();
