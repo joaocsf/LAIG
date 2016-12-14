@@ -4,9 +4,9 @@ tabuleiro( [
       		[b,vazio,vazio,vazio,vazio,vazio,seis],
       		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
       		[d,vazio,[0,branco,0,0],vazio,vazio,vazio,[0,preto,0,0],vazio],
-			[e,#,vazio,vazio,vazio,vazio,vazio,vazio],
-      		[f,#,#,vazio,vazio,vazio,vazio,vazio],
-      		[g,#,#,#,vazio,vazio,vazio,vazio]
+			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
+      		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
+      		[g,ht,ht,ht,vazio,vazio,vazio,vazio]
            ]
           ).
 
@@ -16,9 +16,9 @@ tabuleiro3( [
     		[b,vazio,vazio,vazio,vazio,vazio,seis],
     		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
     		[d,vazio,[0,branco,5,1],vazio,vazio,vazio,[0,preto,0,3],vazio],
-			[e,#,vazio,vazio,vazio,vazio,vazio,vazio],
-    		[f,#,#,vazio,vazio,vazio,vazio,vazio],
-    	    [g,#,#,#,vazio,vazio,vazio,vazio]
+			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
+    		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
+    	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
          ]
         ).
 
@@ -28,9 +28,9 @@ tabuleiro2( [
     		[b,vazio,vazio,[2,preto,3,2],vazio,vazio,seis],
     		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
     		[d,vazio,[0,branco,0,0],vazio,vazio,vazio,[0,preto,0,0],vazio],
-			[e,#,vazio,vazio,vazio,vazio,vazio,vazio],
-    		[f,#,#,vazio,vazio,vazio,vazio,[1,preto,3,2]],
-    		[g,#,#,#,vazio,vazio,vazio,vazio]
+			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
+    		[f,ht,ht,vazio,vazio,vazio,vazio,[1,preto,3,2]],
+    		[g,ht,ht,ht,vazio,vazio,vazio,vazio]
          ]
         ).
 
@@ -56,7 +56,7 @@ desenharC(d):-      write('   ').
 desenharC(e):-      write('       ').
 desenharC(f):-      write('          ').
 desenharC(g):-      write('              ').
-desenharC(#):-      write('').
+desenharC(ht):-      write('').
 desenharC(zero):-   desenharC(a).
 desenharC(vazio):-  write('/     \\ ').
 desenharC([_,_,B,_]):-  write('/'),
@@ -72,7 +72,7 @@ desenharM(d):-      write('D-|').
 desenharM(e):-      write('E-    |').
 desenharM(f):-      write('F-       |').
 desenharM(g):-      write('G-           |').
-desenharM(#):-      desenharC(#).
+desenharM(ht):-      desenharC(ht).
 desenharM(vazio):-  write('       |').
 desenharM(zero):-   desenharC(a).
 desenharM([_,A,B,C]):-  write(' '),
@@ -91,7 +91,7 @@ desenharB(d):-      desenharC(d).
 desenharB(e):-      desenharC(e).
 desenharB(f):-      desenharC(f).
 desenharB(g):-      desenharC(g).
-desenharB(#):-      desenharC(#).
+desenharB(ht):-      desenharC(ht).
 desenharB(zero):-   desenharC(a).
 desenharB(um):-     write('       1').
 desenharB(dois):-   write('       2').
@@ -113,10 +113,10 @@ desenharS(d):-      desenharC(d).
 desenharS(e):-      desenharC(e).
 desenharS(f):-      desenharC(f).
 desenharS(g):-      desenharC(g).
-desenharS(#):-      desenharC(#).
+desenharS(ht):-      desenharC(ht).
 desenharS(zero):-   desenharC(a).
-desenharS(vazio):-      write(' ¯¯¯¯¯  ').
-desenharS([_,_,_,_]):-  write(' ¯¯¯¯¯  ').
+desenharS(vazio):-      write(' ï¿½ï¿½ï¿½ï¿½ï¿½  ').
+desenharS([_,_,_,_]):-  write(' ï¿½ï¿½ï¿½ï¿½ï¿½  ').
 desenharS(um):-     write('      / ').
 desenharS(dois):-   write('      / ').
 desenharS(tres):-   write('      / ').
