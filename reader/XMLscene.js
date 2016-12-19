@@ -35,6 +35,7 @@ XMLscene.prototype.init = function (application) {
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
   this.board = new Board(this, 20, 0, 0);
+  this.board.getGameString();
 
   var animation = new Animation();
 

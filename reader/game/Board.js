@@ -176,16 +176,21 @@ Board.prototype.display = function(){
 }
 
 Board.prototype.getGameString = function () {
+
 	var res = [];
-	res.push([zero,um,dois,tres,quatro]);
-	res.push([a,vazio,vazio,vazio,vazio,cinco]);
-	res.push([b,vazio,vazio,vazio,vazio,vazio,seis]);
-	res.push([c,vazio,vazio,vazio,vazio,vazio,vazio,sete]);
-	res.push([d,vazio,vazio,vazio,vazio,vazio,vazio,vazio]);
-	res.push([e,ht,vazio,vazio,vazio,vazio,vazio,vazio]);
-	res.push([f,ht,ht,vazio,vazio,vazio,vazio,vazio]);
-	res.push([g,ht,ht,ht,vazio,vazio,vazio,vazio]);
-	
+	var ht = 'ht';
+	var vazio = 'vazio';
+	res.push(['zero','um','dois','tres','quatro']);
+	res.push(['a',vazio,vazio,vazio,vazio,'cinco']);
+	res.push(['b',vazio,vazio,vazio,vazio,vazio,'seis']);
+	res.push(['c',vazio,vazio,vazio,vazio,vazio,vazio,'sete']);
+	res.push(['d',vazio,vazio,vazio,vazio,vazio,vazio,vazio]);
+	res.push(['e',ht,vazio,vazio,vazio,vazio,vazio,vazio]);
+	res.push(['f',ht,ht,vazio,vazio,vazio,vazio,vazio]);
+	res.push(['g',ht,ht,ht,vazio,vazio,vazio,vazio]);
+	console.log("BOAS!");
+	console.log(res[1][1]);
+
 
 };
 
