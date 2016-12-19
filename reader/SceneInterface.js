@@ -34,9 +34,33 @@ SceneInterface.prototype.init = function(application) {
 	this.gui = new dat.GUI();
 
 	this.lightGroup = this.gui.addFolder("Luzes");
-	this.gui.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime);
+	this.scene.animator.animationTime=0.0001;
 
-	this.gui.add(this.scene.animator, 'play', 0, this.scene.animator.animationMaxTime);
+	var teste = this.gui.add(this.scene.animator, 'animationMaxTime',0, 40);
+
+	var timeline = this.gui.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime, 0.001).listen();
+
+	var scene = this.scene;
+
+	teste.onFinishChange(function(){
+		scene.animator.changedAnimationTime();
+		timeline.__max = scene.animator.animationMaxTime;
+	});
+
+	this.scene.animator.animationTime = 0;
+	timeline.onChange(function(){
+		scene.animator.changingAnimationTime();
+	});
+
+	timeline.onFinishChange(function(){
+		scene.animator.changedAnimationTime();
+	});
+
+
+	this.gui.add(this.scene.animator, 'play',
+							0, this.scene.animator.animationMaxTime).listen();
+
+
 
 	return true;
 };

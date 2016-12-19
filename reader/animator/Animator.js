@@ -8,26 +8,58 @@ function Animator(scene) {
 	this.animations = [];
 	this.lastTime = 0;
 	this.play = false;
+	this.lastPlay = false;
+	this.animate = true;
 };
 
+Animator.prototype.changingAnimationTime = function(){
+	this.animate = false;
+	this.lastPlay = false;
+}
+
+
+Animator.prototype.changedAnimationTime = function(){
+	this.animate = true;
+	this.lastPlay = false;
+}
+
 Animator.prototype.update = function(currTime){
+
 
 
 	if(this.startTime == 0){
 		this.startTime = currTime;
 		return;
 	}
-	if(!this.play)
+	if(!this.play || !this.animate)
 		this.startTime = currTime;
 
-	this.lastTime = currTime - this.startTime;
+
+	if(this.play){
+		if(this.animate)
+			if(!this.lastPlay){
+				this.startTime = currTime - this.animationTime;
+			}else{
+				this.animationTime = currTime - this.startTime;
+			}
+
+	}
+
+
+	if(this.animationTime > this.animationMaxTime){
+		this.animationTime = this.animationMaxTime;
+		this.play = false;
+	}
+
 	var elapsed = this.animationTime;
-	if(this.play)
-		elapsed += currTime - this.startTime;
 
 	for(var i = 0; i < this.animations.length; i++){
 		this.animations[i].update(elapsed);
 	}
+
+
+	this.lastTime = currTime - this.startTime;
+	this.lastPlay = this.play;
 }
 
 Animator.prototype.addAnimation = function(animation){

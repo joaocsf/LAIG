@@ -126,8 +126,10 @@ Board.prototype.resetRound = function(){
 
 Board.prototype.checkRound = function(){
 	console.log("Checking Round");
-	if(this.selected.body && this.selected.cell && this.selected.member)
-		this.doRound();
+	if(!this.selected.body || !this.selected.cell || !this.selected.member)
+		return;
+
+	this.doRound();
 }
 
 Board.prototype.doRound = function(){
