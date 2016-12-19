@@ -37,6 +37,8 @@ XMLscene.prototype.init = function (application) {
     this.board = new Board(this, 20, 0, 0);
 
 	this.setUpdatePeriod(1);
+
+    this.changeHeaderText("Boas Puto tudo bem?");
 };
 
 XMLscene.prototype.setInterface = function (interface) {
@@ -105,6 +107,10 @@ XMLscene.prototype.logPicking = function () {
             this.pickResults.splice(0,this.pickResults.length);//Limpa o array
         }
     }
+};
+
+XMLscene.prototype.changeHeaderText = function (string) {
+    document.getElementsByTagName('h1')[0].innerHTML = string;
 };
 
 // Handler called when the graph is finally loaded.
