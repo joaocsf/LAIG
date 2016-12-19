@@ -4,6 +4,11 @@ jogadaComputador(Cor,Modo,jogo(A,B,Tab),JogoF) :-   desenharJogo(A,B,Tab), nl,
                                                     imprimeVez(Cor), !,
                                                     escolheMelhorJogada(jogo(A,B,Tab), Cor,Modo, JogoF).
 /*---------------------------------------------*/
+%TESTAR ESTE PREDICADO
+jogadaBot(JogoI,Cor,JogoF, A,B) :-
+                                lerRegraM(Cor,A,JogoI,J1),
+                                lerRegraE(Cor,B,J1,J2),
+                                famintos(J2,Cor,JogoF).
 /*Predicado que retorna um jogo para uma determinada cor*/
 jogadaBot(JogoI,Cor,JogoF) :-   lerRegraM(Cor,_,JogoI,J1),
                                 lerRegraE(Cor,_,J1,J2),

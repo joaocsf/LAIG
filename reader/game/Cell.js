@@ -3,7 +3,7 @@ function Cell(scene, board, x, z, bx, by, selectShader){
 	CGFobject.call(this,scene);
 	this.board = board;
 	this.boardPosition = {x: bx, y:by};
-  this.position = {x: x, y:0, z:z};
+  	this.position = {x: x, y:0, z:z};
 	this.pickID = -1;
 	this.occupied = null;
 	this.selected = false;

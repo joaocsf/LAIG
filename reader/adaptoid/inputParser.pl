@@ -11,6 +11,7 @@ parse_input(move(X,_,_),Res) :- move(X,Res).
 parse_input(tabuleiro,T) :- tabuleiro(T).
 parse_input(isTabuleiro(T),yes) :- tabuleiro(T).
 parse_input(isTabuleiro(_),no).
+parse_input(initGame,yes).
 
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

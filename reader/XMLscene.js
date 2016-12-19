@@ -34,8 +34,7 @@ XMLscene.prototype.init = function (application) {
 
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
-  this.board = new Board(this, 20, 0, 0);
-  this.board.getGameString();
+    this.board = new Board(this, 20, 0, 0);
 
 	this.setUpdatePeriod(1);
 };
@@ -48,9 +47,9 @@ XMLscene.prototype.setInterface = function (interface) {
 XMLscene.prototype.initLights = function () {
 
 	this.lights[0].setPosition(1, 2, 1, 1);
-  this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
-  this.lights[0].update();
-  this.lights[0].enable();
+    this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
+    this.lights[0].update();
+    this.lights[0].enable();
 
 
 };

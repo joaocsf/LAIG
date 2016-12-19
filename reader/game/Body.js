@@ -19,6 +19,7 @@ function Body(scene, board, team, selectShader){
 	this.selectShader = selectShader;
 	this.selected = false;
 	this.currentCell = null;
+	this.members = [];
 
 };
 
@@ -98,3 +99,22 @@ Body.prototype.display = function(){
 	this.scene.clearPickRegistration();
 
 }
+
+Body.prototype.getBodyString = function (index) {//[ID,Cor,Garras,Pernas]
+
+	var res = [];
+	res.push(index);
+	res.push(this.team);
+	var nClaws = 0;
+	var nLegs = 0;
+	for(var i = 0; i < this.members.length; i++){
+		if(this.members[i].type == "CLAW"){
+			nClaws++;
+		} else {
+			nLegs++;
+		}
+	}
+	res.push(nClaws,nLegs);
+	return "[" + res + "]";
+
+};

@@ -22,8 +22,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.pieces =  null;
 	this.cells = [];
 	this.adaptoids = [];
-	this.adaptoids[0] = [];
-	this.adaptoids[1] = [];
+	this.adaptoids[this.BLACK] = [];
+	this.adaptoids[this.WHITE] = [];
 
 	this.playerTurn = this.WHITE;
 
@@ -254,6 +254,10 @@ Board.prototype.display = function(){
 	}
 }
 
+Board.prototype.setUpGame = function (tabuleiro) {
+	//Adicionar para cada objeto a key frame necessária
+};
+
 Board.prototype.getGameString = function () {
 
 	var res = [];
@@ -267,10 +271,18 @@ Board.prototype.getGameString = function () {
 	res.push(['e',ht,vazio,vazio,vazio,vazio,vazio,vazio]);
 	res.push(['f',ht,ht,vazio,vazio,vazio,vazio,vazio]);
 	res.push(['g',ht,ht,ht,vazio,vazio,vazio,vazio]);
-	console.log("BOAS!");
-	console.log(res[1][1]);
-
-
+	for(var j = 0; j < this.adaptoids.length; j++){
+		for(var i = 0; i < this.adaptoids[j].length; i++){
+			if(this.adaptoids[j][i].playing){
+				var adaptoid = this.adaptoids[j][i];
+				res[adaptoid.boardPosition.y + 1][adaptoid.boardPosition.x] = adaptoid.getBodyString(i);
+			}
+		}
+	}
+	for(var k = 0; k < res.length ; k++){
+		res[k] = "[" + res[k] + "]";
+	}
+	return "[" + res + "]";
 };
 
 /*	Atributos
