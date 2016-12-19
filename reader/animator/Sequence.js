@@ -14,6 +14,8 @@ function Sequence(name, object, attribute) {
 };
 
 Sequence.prototype.update = function(time){
+	if(!this.keys || !this.keyframes)
+		return;
 
 	var first;
 	var second;
@@ -36,11 +38,11 @@ Sequence.prototype.update = function(time){
 /*Generic method to add a keyframe
 */
 Sequence.prototype.addKeyframe = function(keyframe){
-
 	this.keyframes[keyframe.getTime()] = keyframe;
 
 	this.keys= Object.keys(this.keyframes).sort(function(a,b) { return a - b;});
-	
+	console.log(this.keys);
+
 }
 
 Sequence.prototype.getName = function(){

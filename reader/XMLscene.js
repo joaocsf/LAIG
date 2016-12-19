@@ -37,17 +37,6 @@ XMLscene.prototype.init = function (application) {
   this.board = new Board(this, 20, 0, 0);
   this.board.getGameString();
 
-  var animation = new Animation();
-
-	this.animator.addAnimation(animation);
-	//function Keyframe(time, object, attribute, value, lerpFunction)
-
-  animation.registerSequence("movimento", this.obj, "position");
-	animation.addKeyframe("movimento", new Keyframe( 0 , {x:1, y:1, z:1}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe( 5 , {x:1, y:1, z:1}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe( 10.5 ,{x:2, y:2, z:5}, transition_vector3));
-	animation.addKeyframe("movimento", new Keyframe( 20 ,{x:0, y:0, z:0}, transition_vector3));
-
 	this.setUpdatePeriod(1);
 };
 
@@ -73,6 +62,7 @@ XMLscene.prototype.update = function(currTime){
         this.sea.update(currTime/1000);
 
 	this.animator.update(currTime/1000);
+  this.board.update(currTime/1000);
 }
 
 XMLscene.prototype.initCameras = function () {
@@ -108,6 +98,9 @@ XMLscene.prototype.logPicking = function () {
                     var customId = this.pickResults[i][1];
                     console.log(this.pickResults[i]);
                     console.log(obj.boardPosition);
+
+                    if(obj.OnClick != null)
+                      obj.OnClick();
                 }
             }
             this.pickResults.splice(0,this.pickResults.length);//Limpa o array

@@ -1,7 +1,7 @@
 /*		Class responsible to save the state of the client game
 *	and to display/store all the pieces used.
 */
-function Member(scene, board, team, type) {
+function Member(scene, board, team, type, selectShader) {
 	CGFobject.call(this,scene);
   if(type != 'CLAW' && type != 'LEG'){
     console.error("ERROR! Type undifined!")
@@ -12,6 +12,9 @@ function Member(scene, board, team, type) {
   	this.team = team;
 	this.pickID = -1;
 
+	this.selectShader = selectShader;
+
+
 };
 
 
@@ -19,7 +22,7 @@ Member.prototype = Object.create(CGFobject.prototype);
 Member.prototype.constructor = Member;
 
 Member.prototype.OnClick = function(){
-	this.pickID = -1;
+	this.board.selectMember(this);
 }
 
 Member.prototype.setPickID = function(idC){

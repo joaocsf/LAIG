@@ -7,6 +7,18 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.BLACK = 0;
 	this.WHITE = 1;
 
+	this.lastTime = this.scene.animator.lastTime;
+
+	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
+
+	//Game pieces
+	this.selected = {
+		body: null,
+		cell: null,
+		member : null
+	}
+	//
+
 	this.pieces =  null;
 	this.cells = [];
 	this.adaptoids = [];
@@ -28,18 +40,19 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	for(var i = 0; i < max; i++){
 
 		if(i < pieceNumber){
-			this.adaptoids[this.BLACK].push(new Body(this.scene, this, this.BLACK));
-			this.adaptoids[this.WHITE].push(new Body(this.scene, this, this.WHITE));
+			this.adaptoids[this.BLACK].push(new Body(this.scene, this, this.BLACK, this.selectShader));
+			this.adaptoids[this.WHITE].push(new Body(this.scene, this, this.WHITE, this.selectShader));
 		}
 		if(i < legNumber){
-			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'LEG'));
-			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'LEG'));
+			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'LEG', this.selectShader));
+			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'LEG', this.selectShader));
 		}
 		if(i < clawNumber){
-			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'CLAW'));
-			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'CLAW'));
+			this.members[this.BLACK].push(new Member(this.scene, this, this.BLACK,'CLAW', this.selectShader));
+			this.members[this.WHITE].push(new Member(this.scene, this, this.WHITE,'CLAW', this.selectShader));
 		}
 	}
+
 
 	var width = 1;
 	this.half = width/2;
@@ -57,6 +70,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 				[bSpace,-1,-1,0,0,0,0,0],
 				[aSpace,-1,-1,-1,0,0,0,0]];
 
+	this.time = 0;
 	this.initializePositions();
 	this.registerCellPicking();
 	this.registerPicking();
@@ -65,6 +79,15 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 
 Board.prototype = Object.create(CGFobject.prototype);
 Board.prototype.constructor = Board;
+
+Board.prototype.update = function(time){
+	if(this.time == 0){
+		this.time = time;
+		return;
+	}
+
+	this.selectShader.setUniformsValues({time : time - this.time, inv : 1});
+}
 
 Board.prototype.setPieces = function(pieces){
 	this.pieces = pieces;
@@ -86,6 +109,60 @@ Board.prototype.getPosition = function(radius,angle, team){
 
 }
 
+Board.prototype.resetRound = function(){
+	if(this.selected.body)
+		this.selected.body.selected = false;
+
+	if(this.selected.cell)
+		this.selected.cell.selected = false;
+
+	if(this.selected.member)
+		this.selected.member.selected = false;
+
+	this.selected.body = null;
+	this.selected.cell = null;
+	this.selected.member = null;
+}
+
+Board.prototype.checkRound = function(){
+	console.log("Checking Round");
+	if(this.selected.body && this.selected.cell && this.selected.member)
+		this.doRound();
+}
+
+Board.prototype.doRound = function(){
+	console.log("Doing this round!");
+	//%Check round via prolog
+	//Move pieces if is possible and register them in the animator!
+	if(!this.selected.cell.occupied)
+		this.selected.body.move(this.selected.cell);
+	this.resetRound();
+}
+
+Board.prototype.selectBody = function(object){
+	if(this.selected.body)
+		this.selected.body.selected = false;
+	this.selected.body = object;
+	this.selected.body.selected = true;
+	this.checkRound();
+}
+
+Board.prototype.selectCell = function(object){
+	if(this.selected.cell)
+		this.selected.cell.selected = false;
+	this.selected.cell = object;
+	this.selected.cell.selected = true;
+	this.checkRound();
+}
+
+Board.prototype.selectMember = function(object){
+	if(this.selected.member)
+		this.selected.member.selected = false;
+	this.selected.member = object;
+	this.selected.member.selected = true;
+	this.checkRound();
+}
+
 Board.prototype.initializePositions = function(){
 	var max = Math.max(this.members[this.BLACK].length, this.adaptoids[this.BLACK].length);
 	var k =  x/this.adaptoids[this.BLACK].length
@@ -96,9 +173,9 @@ Board.prototype.initializePositions = function(){
 	for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
 		var k =  x/this.adaptoids[this.BLACK].length
 		pos = this.getPosition(radius,angle * k + plus, this.BLACK);
-		this.adaptoids[this.BLACK][x].setPosition(pos);
+		this.adaptoids[this.BLACK][x].spawnPosition(pos);
 		pos = this.getPosition(radius,angle * k + plus, this.WHITE);;
-		this.adaptoids[this.WHITE][x].setPosition(pos);
+		this.adaptoids[this.WHITE][x].spawnPosition(pos);
 	}
 
 	for(var y = 0; y < this.board.length; y++){
@@ -117,7 +194,7 @@ Board.prototype.initializePositions = function(){
 			var j = y * this.half*2;
 			this.cells.push(new Cell(this.scene, this,
 				-this.width/2 - this.half + k, -this.width/2 + this.half + j,
-			x,y));
+			x,y, this.selectShader));
 		}
 	}
 

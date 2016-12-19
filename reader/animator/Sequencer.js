@@ -2,15 +2,15 @@
 * Each sequence defines an animation of a certain object
 * Each Animated Object must have an Animation class and must be added to the Animator
 */
-function Animation() {
-	
+function Sequencer() {
+
 	this.startTime = 0;
-	
+
 	this.sequences = [];
 };
 
-Animation.prototype.update = function(time){
-	
+Sequencer.prototype.update = function(time){
+
 	for(var key in this.sequences){
 		this.sequences[key].update(time);
 	}
@@ -19,13 +19,13 @@ Animation.prototype.update = function(time){
 /*Adding a keyframe to an sequence, needs an uniqueID and an keyframe
 * The sequence must be registered prior to this point.
 */
-Animation.prototype.addKeyframe = function(sequenceName, keyframe){
-	
+Sequencer.prototype.addKeyframe = function(sequenceName, keyframe){
+
 	if(!this.sequences[sequenceName]){
 		console.error("Sequence don't exist :" + sequenceName);
 		return;
 	}
-	
+
 	this.sequences[sequenceName].addKeyframe(keyframe);
 }
 
@@ -33,12 +33,12 @@ Animation.prototype.addKeyframe = function(sequenceName, keyframe){
 * 	-UniqueID
 *	-the object to edit an it's attribute.
 */
-Animation.prototype.registerSequence = function(sequenceName, object, attribute){
-	
+Sequencer.prototype.registerSequence = function(sequenceName, object, attribute){
+
 	if(!this.sequences[sequenceName]){
 		this.sequences[sequenceName] = new Sequence(sequenceName, object,attribute);
 	}else{
 		console.warn("Sequence already exists!" + sequenceName);
 	}
-	
+
 }
