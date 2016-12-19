@@ -115,8 +115,8 @@ desenharS(f):-      desenharC(f).
 desenharS(g):-      desenharC(g).
 desenharS(ht):-      desenharC(ht).
 desenharS(zero):-   desenharC(a).
-desenharS(vazio):-      write(' �����  ').
-desenharS([_,_,_,_]):-  write(' �����  ').
+desenharS(vazio):-      write(' -----  ').
+desenharS([_,_,_,_]):-  write(' -----  ').
 desenharS(um):-     write('      / ').
 desenharS(dois):-   write('      / ').
 desenharS(tres):-   write('      / ').

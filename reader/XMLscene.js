@@ -35,6 +35,7 @@ XMLscene.prototype.init = function (application) {
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
     this.board = new Board(this, 20, 0, 0);
+    console.log(this.board.getGameString());
 
 	this.setUpdatePeriod(1);
 

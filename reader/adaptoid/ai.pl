@@ -1,6 +1,7 @@
 /*---------------------------------------------*/
 /*Predicado que realiza uma jogada do computador dependendo do seu modo de jogo*/
-jogadaComputador(Cor,Modo,jogo(A,B,Tab),JogoF) :-   desenharJogo(A,B,Tab), nl,
+jogadaComputador(Cor,Modo,jogo(A,B,Tab),JogoF) :-   %desenharJogo(A,B,Tab),
+                                                    nl,
                                                     imprimeVez(Cor), !,
                                                     escolheMelhorJogada(jogo(A,B,Tab), Cor,Modo, JogoF).
 /*---------------------------------------------*/

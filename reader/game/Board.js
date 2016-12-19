@@ -18,6 +18,9 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		member : null
 	}
 	//
+	this.points = [];
+	this.points[this.BLACK] = 0;
+	this.points[this.WHITE] = 0;
 
 	this.pieces =  null;
 	this.cells = [];
@@ -135,6 +138,22 @@ Board.prototype.checkRound = function(){
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 	//%Check round via prolog
+	/*PROLOG MOVES/Commands
+	|		Predicados de ação		|
+	s -> Skip
+	mover(X,Y,Oris) -> Mover a peça em (X,Y) segundo uma lista de orientações
+	capturar(X,Y,Ori) -> Atacar com a peça em (X,Y) para a peça na orientação indicada
+	aC(X,Y,Ori) -> Adicionar corpo a (X,Y) + Ori
+	aP(X,Y) -> Adicionar perna a (X,Y)
+	aG(X,Y) -> Adicionar garra a (X,Y)
+	|			Comandos			|
+	PERGUNTA : Prolog guarda a instancia do jogo ou apenas devolve respostas
+	beginGame[(modo,dificuldade)] -> Devolve o tabuleiro inicial
+	play(Jogador,Jogo,Action) -> devolve tabuleiro ou não se a ação não foi possivel
+	botPlay(Jogador,Jogo) -> devolve tabuleiro e acoes
+	getMoves(X,Y,Pernas) -> Devolve as casas possiveis para uma peca que esteja na posicao (X,Y) e tenha o numero de Pernas
+	isGameOver(A,B,Tab) -> Devolve o jogador que ganhou ou entao nao se o jogo ainda nao acabou. A e B sao as pontuações dos jogadores
+	*/
 	//Move pieces if is possible and register them in the animator!
 	if(!this.selected.cell.occupied)
 		this.selected.body.move(this.selected.cell);
@@ -282,13 +301,14 @@ Board.prototype.getGameString = function () {
 	for(var k = 0; k < res.length ; k++){
 		res[k] = "[" + res[k] + "]";
 	}
-	return "[" + res + "]";
+	return "jogo(" + this.points[this.WHITE] + "," + this.points[this.BLACK] + ",[" + res + "]" + ")";
 };
 
 /*	Atributos
 	this.BLACK = 0;
 	this.WHITE = 1;
 
+	this.points = [];
 	this.pieces =  null;
 	this.cells = [];
 	this.adaptoids = [];

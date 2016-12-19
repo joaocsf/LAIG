@@ -47,13 +47,20 @@ jogando(reRe,Jogo):- jogando(cc,Jogo,notOp,notOp).
 jogando(hc,M,Jogo) :- retract(jogo(A,B,Tab)), !,
                     jogadaBranco(jogo(A,B,Tab),jogo(A1,B1,T1)), !,
                     jogadaComputador(preto,M,jogo(A1,B1,T1),jogo(A2,B2,T2)),
-                    desenharJogo(A2,B2,T2),
+                    %desenharJogo(A2,B2,T2),
                     asserta(jogo(A2,B2,T2)), Jogo = jogo(A2,B2,T2).
 jogando(hc,_,_).
 jogando(cc,Jogo,M1,M2) :- retract(jogo(A,B,Tab)), !,
                     jogadaComputador(branco,M1,jogo(A,B,Tab),jogo(A1,B1,T1)),
+                    %Testing
+                    jogadaBot(jogo(A,B,Tab),branco,jogo(A1,B1,T1),Jogada1,Jogada2),
+                    write(Jogada1), nl, write(Jogada2), nl,
                     jogadaComputador(preto,M2,jogo(A1,B1,T1),jogo(A2,B2,T2)),
-                    desenharJogo(A2,B2,T2), write('Prima /*|ENTER|*\\'), get_char(_),
+                    jogadaBot(jogo(A1,B1,T1),preto,jogo(A2,B2,T2),Jogada3,Jogada4),
+                    write(Jogada3), nl, write(Jogada4), nl,
+                    %Testing
+                    %desenharJogo(A2,B2,T2),
+                    write('Prima /*|ENTER|*\\'), get_char(_),
                     asserta(jogo(A2,B2,T2)), Jogo = jogo(A2,B2,T2).
 jogando(cc,_,_,_).
 
@@ -63,7 +70,8 @@ jogar(Modo) :- init, repeat, once(jogando(Modo,Jogo)), ganhou(Jogador,Jogo), des
 %Representa uma jogada individual
 jogada(jogo(A,B,Tab),Cor,jogo(A3,B3,T3)):-  imprimeVez(Cor), !, repeat,
                                             movimento(jogo(A,B,Tab),Cor,jogo(A1,B1,T1)),
-                                            desenharJogo(A1,B1,T1), !, repeat,
+                                            %desenharJogo(A1,B1,T1),
+                                            !, repeat,
                                             evoluir(jogo(A1,B1,T1),Cor,jogo(A2,B2,T2)), !,
                                             famintos(jogo(A2,B2,T2),Cor,jogo(A3,B3,T3)).
 
