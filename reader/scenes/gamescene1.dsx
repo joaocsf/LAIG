@@ -161,13 +161,19 @@
 
     <primitive id="cone">
 
-      <cylinder base="0.3" top="0.0" height="0.5" slices="10" stacks="3" />
+      <cylinder base="0.1" top="0.0" height="0.5" slices="10" stacks="3" />
 
     </primitive>
 
     <primitive id="cyl">
 
       <cylinder base="0.5" top="0.5" height="0.2" slices="10" stacks="3" />
+
+    </primitive>
+
+    <primitive id="cyl2">
+
+      <cylinder base="0.1" top="0.1" height="0.5" slices="10" stacks="3" />
 
     </primitive>
 
@@ -196,6 +202,8 @@
     </component>
     <component id="clawC">
       <transformation>
+
+        <rotate axis="z" angle="-45"/>
         <rotate axis="x" angle="-90" />
       </transformation>
 
@@ -230,19 +238,31 @@
 
     <component id="legC">
       <transformation>
-        <rotate axis="x" angle="-90" />
+        <rotate axis="y" angle="90" />
+        <rotate axis="x" angle="-45" />
       </transformation>
-
       <materials>
         <material id="inherit" />
       </materials>
-
       <texture id="inherit" />
-
       <children>
-        <primitiveref id="cyl"/>
+        <primitiveref id="cyl2"/>
+        <componentref id="legC2"/>
       </children>
+    </component>
 
+    <component id="legC2">
+      <transformation>
+        <translate x="0" y="0" z="0.5"/>
+        <rotate axis="x" angle="90" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="inherit" />
+      <children>
+        <primitiveref id="cone"/>
+      </children>
     </component>
 
     <component id="bodyC">
