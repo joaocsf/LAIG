@@ -99,9 +99,9 @@ XMLscene.prototype.logPicking = function () {
                 if (obj)
                 {
                     var customId = this.pickResults[i][1];
-                    //console.log(this.pickResults[i]);
-                    //console.log(obj.boardPosition);
+                    console.log(this.pickResults[i]);
 
+                    console.log(obj);
                     if(obj.OnClick != null)
                       obj.OnClick();
                 }

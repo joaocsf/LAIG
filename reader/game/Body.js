@@ -65,6 +65,7 @@ Body.prototype.move = function(cell){
 
 Body.prototype.setPickID = function(id){
 	this.pickID = id;
+	console.log("Team:" + this.team + " Value:" + id + "ID:" + this.id);
 }
 
 Body.prototype.spawnPosition = function(pos){

@@ -43,22 +43,3 @@ Bell.prototype.display = function(){
 	this.scene.clearPickRegistration();
 
 }
-
-Bell.prototype.getBodyString = function (index) {//[ID,Cor,Garras,Pernas]
-
-	var res = [];
-	res.push(index);
-	res.push(this.team);
-	var nClaws = 0;
-	var nLegs = 0;
-	for(var i = 0; i < this.members.length; i++){
-		if(this.members[i].type == "CLAW"){
-			nClaws++;
-		} else {
-			nLegs++;
-		}
-	}
-	res.push(nClaws,nLegs);
-	return "[" + res + "]";
-
-};

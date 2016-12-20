@@ -167,6 +167,8 @@ Board.prototype.doRound = function(){
 
 Board.prototype.endTurn = function(){
 	this.doRound();
+	this.playerTurn = 1 - this.playerTurn;
+	this.registerPicking();
 }
 
 
@@ -301,12 +303,29 @@ Board.prototype.registerCellPicking = function(){
 	for(var i = 0; i < this.cells.length; i++){
 		this.cells[i].setPickID(i + 1);
 	}
+	this.bell.pickID = this.cells.length + 1;
+}
+
+Board.prototype.clearPicking = function(){
+	var team = 1 - this.playerTurn;
+	var members = this.members[this.playerTurn].length;
+	var max = Math.max(this.pieceNumber, members);
+	for(var i = 0; i < max; i++){
+		if(i < this.pieceNumber)
+			this.adaptoids[team][i].setPickID(-1);
+
+		if(i < members)
+			this.members[team][i].setPickID(-1);
+	}
+
 }
 
 Board.prototype.registerPicking = function(){
+	this.scene.clearPickRegistration();
+	this.clearPicking();
 	var members = this.members[this.playerTurn].length;
-	this.bell.pickID = this.cells.length + 1;
 	var max = Math.max(this.pieceNumber, members);
+
 	var idC = this.cells.length + 2;
 	for(var i = 0; i < max; i++){
 		idC++;
