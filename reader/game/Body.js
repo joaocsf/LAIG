@@ -13,7 +13,7 @@ function Body(scene, board, id, team, selectShader){
 
 	this.boardPosition = {x:-1, y:-1};
 	this.board = board;
-  this.team = team;
+	this.team = team;
 	this.position = {x:0, y:0, z:0};
 	this.pickID = -1;
 	this.selectShader = selectShader;
@@ -79,7 +79,7 @@ Body.prototype.spawnPosition = function(pos){
 Body.prototype.resetSelection = function(){
 	this.pieceN = 0;
 	this.color = 0;
-	this.selected = 0;
+	this.selected = false;
 }
 
 Body.prototype.setPosition = function(pos){

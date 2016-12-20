@@ -11,6 +11,7 @@ function Animator(scene) {
 	this.lastPlay = false;
 	this.animate = true;
 	this.playUI;
+
 };
 
 Animator.prototype.changingAnimationTime = function(lmnt){
