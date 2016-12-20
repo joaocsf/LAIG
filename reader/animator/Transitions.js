@@ -4,6 +4,17 @@
  */
 
 /* function to interpolate between two points */
+
+function transition_rigid_vector2(p1, p2, time){
+
+	var res= {
+		x: p1.x,
+		y: p1.y,
+	}
+
+	return res;
+}
+
 function transition_vector3(p1, p2, time){
 
 	var res= {

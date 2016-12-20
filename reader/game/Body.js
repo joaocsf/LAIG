@@ -1,10 +1,10 @@
 /*		Class responsible to save the state of the client game
 *	and to display/store all the pieces used.
 */
-function Body(scene, board, team, selectShader){
+function Body(scene, board, id, team, selectShader){
 	CGFobject.call(this,scene);
 
-
+	this.id = id;
 	this.animation = new Sequencer();
 	this.scene.animator.addAnimation(this.animation);
 
@@ -13,13 +13,14 @@ function Body(scene, board, team, selectShader){
 
 	this.boardPosition = {x:-1, y:-1};
 	this.board = board;
-  	this.team = team;
+  this.team = team;
 	this.position = {x:0, y:0, z:0};
 	this.pickID = -1;
 	this.selectShader = selectShader;
 	this.selected = false;
 	this.currentCell = null;
 	this.members = [];
+	this.color = 0;
 
 };
 
@@ -32,7 +33,6 @@ Body.prototype.select = function(value){
 
 Body.prototype.OnClick = function(){
 	this.board.selectBody(this);
-	this.board.selectMember('none');
 
 }
 
@@ -73,6 +73,12 @@ Body.prototype.spawnPosition = function(pos){
 
 }
 
+Body.prototype.resetSelection = function(){
+	this.pieceN = 0;
+	this.color = 0;
+	this.selected = 0;
+}
+
 Body.prototype.setPosition = function(pos){
 	this.position = pos;
 }
@@ -83,9 +89,10 @@ Body.prototype.display = function(){
 		this.scene.registerForPick(this.pickID,this);
 	}
 
-	if(this.selected)
+	if(this.selected && !this.scene.pickMode){
 		this.scene.setActiveShader(this.selectShader);
-
+		this.selectShader.setUniformsValues({pieceN : this.selected - 1, number: this.color});
+	}
   this.scene.pushMatrix();
 		this.scene.translate(this.position.x, this.position.y, this.position.z);
 
@@ -97,6 +104,9 @@ Body.prototype.display = function(){
 		this.scene.setActiveShader(this.scene.defaultShader);
 
 	this.scene.clearPickRegistration();
+
+	if(this.selected)
+		this.selectShader.setUniformsValues({pieceN : 0});
 
 }
 

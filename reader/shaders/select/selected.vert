@@ -23,9 +23,10 @@ void main( void ) {
   vec2 pos = temp.xz;
 
 	float waveFactor = 0.1;
-  float c = (time * 1.0 + pos.y);
+  float c = (time * 3.0 + pos.y);
   newY = (1.0 + cos(c)) * 0.5;
   gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
   vTextureCoord = aTextureCoord;
+
 
 }

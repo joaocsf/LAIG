@@ -34,12 +34,13 @@ XMLscene.prototype.init = function (application) {
 
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
-    this.board = new Board(this, 20, 0, 0);
+    this.board = new Board(this, 20, 10, 10);
     console.log(this.board.getGameString());
 
 	this.setUpdatePeriod(1);
 
     this.changeHeaderText("Boas Puto tudo bem?");
+    this.changeHeaderText(" ");
 };
 
 XMLscene.prototype.setInterface = function (interface) {
@@ -98,8 +99,8 @@ XMLscene.prototype.logPicking = function () {
                 if (obj)
                 {
                     var customId = this.pickResults[i][1];
-                    console.log(this.pickResults[i]);
-                    console.log(obj.boardPosition);
+                    //console.log(this.pickResults[i]);
+                    //console.log(obj.boardPosition);
 
                     if(obj.OnClick != null)
                       obj.OnClick();

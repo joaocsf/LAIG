@@ -1,5 +1,5 @@
-function Cell(scene, board, x, z, bx, by, selectShader){
-
+function Cell(scene, board, id, x, z, bx, by, selectShader){
+	this.id = id;
 	CGFobject.call(this,scene);
 	this.board = board;
 	this.boardPosition = {x: bx, y:by};
@@ -35,7 +35,7 @@ Cell.prototype.display = function(){
 		this.scene.registerForPick(this.pickID,this);
 	}
 
-	if(this.selected)
+	if(this.selected && !this.scene.pickMode)
 		this.scene.setActiveShader(this.selectShader);
 
   this.scene.pushMatrix();
