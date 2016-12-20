@@ -122,7 +122,10 @@ Board.prototype.getPosition = function(radius,angle, team){
 
 Board.prototype.resetRound = function(){
 	if(this.selected.body)
-		this.selected.body.selected = false;
+		this.selected.body.resetSelection();
+
+	if(this.selected.body2)
+		this.selected.body2.resetSelection();
 
 	if(this.selected.cell)
 		this.selected.cell.selected = false;
@@ -131,6 +134,7 @@ Board.prototype.resetRound = function(){
 		this.selected.member.selected = false;
 
 	this.selected.body = null;
+	this.selected.body2 = null;
 	this.selected.cell = null;
 	this.selected.member = null;
 }
@@ -162,8 +166,14 @@ Board.prototype.doRound = function(){
 	isGameOver(A,B,Tab) -> Devolve o jogador que ganhou ou entao nao se o jogo ainda nao acabou. A e B sao as pontuações dos jogadores
 	*/
 	//Move pieces if is possible and register them in the animator!
-	if(!this.selected.cell.occupied)
-		this.selected.body.move(this.selected.cell);
+
+	if(this.selected.cell && this.selected.body)
+		if(!this.selected.cell.occupied)
+			this.selected.body.move(this.selected.cell);
+
+	if(this.selected.body2 && this.selected.member)
+
+
 	this.resetRound();
 }
 

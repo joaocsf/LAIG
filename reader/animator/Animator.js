@@ -10,6 +10,7 @@ function Animator(scene) {
 	this.play = false;
 	this.lastPlay = false;
 	this.animate = true;
+	this.
 };
 
 Animator.prototype.changingAnimationTime = function(){
