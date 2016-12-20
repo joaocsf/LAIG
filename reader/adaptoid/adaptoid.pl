@@ -1,10 +1,12 @@
 :- use_module(library(lists)).
+/*
 :- include('tabuleiro.pl').
 :- include('testes.pl').
 :- include('logic.pl').
 :- include('utils.pl').
 :- include('ai.pl').
 :- include('menu.pl').
+*/
 
 %Predicado que inicia o jogo criando um tabuleiro com as posicoes iniciais e a instancia jogo com ambos os pontos a 0 e o novo tabuleiro criado
 init :- write('Comecando o jogo!'),tabuleiro(Tab), asserta(jogo(0,0,Tab)), nl.

@@ -115,7 +115,11 @@ Body.prototype.getBodyString = function (index) {//[ID,Cor,Garras,Pernas]
 
 	var res = [];
 	res.push(index);
-	res.push(this.team);
+	if(this.board.WHITE == this.team){
+		res.push("branco");
+	} else {
+		res.push("preto");
+	}
 	var nClaws = 0;
 	var nLegs = 0;
 	for(var i = 0; i < this.members.length; i++){

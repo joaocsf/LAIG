@@ -12,6 +12,9 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 
+	this.mode = "hh";//Acrescentar mode
+	this.dificuldade = "opOp";
+
 	//Game pieces
 	this.selected = {
 		body: null,
@@ -152,10 +155,9 @@ Board.prototype.doRound = function(){
 	aP(X,Y) -> Adicionar perna a (X,Y)
 	aG(X,Y) -> Adicionar garra a (X,Y)
 	|			Comandos			|
-	PERGUNTA : Prolog guarda a instancia do jogo ou apenas devolve respostas
-	beginGame[(modo,dificuldade)] -> Devolve o tabuleiro inicial
+	beginGame -> Devolve o tabuleiro inicial
 	play(Jogador,Jogo,Action) -> devolve tabuleiro ou não se a ação não foi possivel
-	botPlay(Jogador,Jogo) -> devolve tabuleiro e acoes
+	botPlay(Jogador,Dificuldade,Jogo) -> devolve tabuleiro e acoes
 	getMoves(X,Y,Pernas) -> Devolve as casas possiveis para uma peca que esteja na posicao (X,Y) e tenha o numero de Pernas
 	isGameOver(A,B,Tab) -> Devolve o jogador que ganhou ou entao nao se o jogo ainda nao acabou. A e B sao as pontuações dos jogadores
 	*/
@@ -401,34 +403,3 @@ Board.prototype.getGameString = function () {
 	}
 	return "jogo(" + this.points[this.WHITE] + "," + this.points[this.BLACK] + ",[" + res + "]" + ")";
 };
-
-/*	Atributos
-	this.BLACK = 0;
-	this.WHITE = 1;
-
-	this.points = [];
-	this.pieces =  null;
-	this.cells = [];
-	this.adaptoids = [];
-	this.adaptoids[0] = [];
-	this.adaptoids[1] = [];
-
-	this.playerTurn = this.WHITE;
-
-	this.members = [];
-	this.members[this.BLACK] = [];
-	this.members[this.WHITE] = [];
-*/
-/*FORMATO TABULEIRO
-tabuleiro( [
-            [zero,um,dois,tres,quatro],
-            [a,vazio,vazio,vazio,vazio,cinco],
-      		[b,vazio,vazio,vazio,vazio,vazio,seis],
-      		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
-      		[d,vazio,[0,branco,0,0],vazio,vazio,vazio,[0,preto,0,0],vazio],
-			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
-      		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
-      		[g,ht,ht,ht,vazio,vazio,vazio,vazio]
-           ]
-          ).
-*/
