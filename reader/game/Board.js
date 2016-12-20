@@ -172,7 +172,7 @@ Board.prototype.doRound = function(){
 			this.selected.body.move(this.selected.cell);
 
 	if(this.selected.body2 && this.selected.member)
-
+		this.selected.member.storeParent(this.selected.body2);
 
 	this.resetRound();
 }
@@ -185,7 +185,6 @@ Board.prototype.endTurn = function(){
 
 
 Board.prototype.selectBody = function(object){
-
 
 	if(this.selected.body){
 
@@ -346,7 +345,7 @@ Board.prototype.registerPicking = function(){
 			this.adaptoids[this.playerTurn][i].setPickID(idC);
 
 		idC++;
-		if(i < members)
+		if(i < members && !this.members[this.playerTurn][i].parent)
 			this.members[this.playerTurn][i].setPickID(idC);
 	}
 
@@ -374,8 +373,12 @@ Board.prototype.display = function(){
 			this.adaptoids[this.WHITE][x].display();
 		}
 		if(x < this.members[0].length){
-			this.members[this.BLACK][x].display();
-			this.members[this.WHITE][x].display();
+
+			if(!this.members[this.BLACK][x].parent)
+				this.members[this.BLACK][x].display();
+
+			if(!this.members[this.WHITE][x].parent)
+				this.members[this.WHITE][x].display();
 		}
 	}
 

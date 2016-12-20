@@ -5,6 +5,15 @@
 
 /* function to interpolate between two points */
 
+function transition_rigid_float(p1, p2, time){
+	return p1;
+}
+
+function transition_float(p1, p2, time){
+
+	return p1 + (p2 - p1) * time;
+}
+
 function transition_rigid_vector2(p1, p2, time){
 
 	var res= {
@@ -13,6 +22,13 @@ function transition_rigid_vector2(p1, p2, time){
 	}
 
 	return res;
+}
+
+function transition_parent(p1, p2, time){
+
+	p1.obj.setParent(p1.parent);
+	console.log("Here!");
+	return p1.parent;
 }
 
 function transition_vector3(p1, p2, time){

@@ -53,19 +53,24 @@ Body.prototype.move = function(cell){
 
 	this.currentCell = cell;
 	this.currentCell.occupy(this.team);
-
-	console.log("Board Position:");
-	console.log(this.boardPosition);
-
-	console.log("Position:");
-	console.log(this.board);
-
 }
 
+Body.prototype.addMember = function(member){
+	this.members.push(member);
+}
+
+Body.prototype.removeMember = function(member){
+	for(var i = 0; i < this.members.length; i++){
+		if(this.members[i].id == member.id){
+			this.members.splice(i,1);
+			return;
+		}
+	}
+}
 
 Body.prototype.setPickID = function(id){
 	this.pickID = id;
-	console.log("Team:" + this.team + " Value:" + id + "ID:" + this.id);
+	//console.log("Team:" + this.team + " Value:" + id + "ID:" + this.id);
 }
 
 Body.prototype.spawnPosition = function(pos){
@@ -98,6 +103,11 @@ Body.prototype.display = function(){
 		this.scene.translate(this.position.x, this.position.y, this.position.z);
 
 		this.board.pieces['body'].display2(this.board.pieces[this.team].material, this.board.pieces[this.team].texture);
+
+		for(var i = 0; i < this.members.length; i++){
+
+			this.members[i].display();
+		}
 
   this.scene.popMatrix();
 

@@ -10,8 +10,12 @@ function Animator(scene) {
 	this.play = false;
 	this.lastPlay = false;
 	this.animate = true;
-	this.
+	this.playUI;
 };
+
+Animator.prototype.changingAnimationTime = function(lmnt){
+	this.playUI = this.lmnt;
+}
 
 Animator.prototype.changingAnimationTime = function(){
 	this.animate = false;

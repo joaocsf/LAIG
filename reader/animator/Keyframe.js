@@ -17,17 +17,17 @@ function Keyframe(time, value, lerpFunction) {
 	-maybe change that information to the sequence to optimize!
 */
 Keyframe.prototype.lerp = function(object, attribute, keyframe2, t){
-	
+
 	var localTime = t - this.time;
-	
+
 	var deltaTime = keyframe2.time - this.time;
-	
+
 	var time = 0;
-	
+
 	if(deltaTime != 0)
 		time = localTime/deltaTime;
-	
-	
+
+
 	object[attribute] = this.lerpFunction(this.value, keyframe2.value, time);
 }
 

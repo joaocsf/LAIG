@@ -15,14 +15,53 @@ function Member(scene, board, id, team, type, selectShader) {
 	this.pickID = -1;
 	this.position = {x:0, y:0, z:0};
 	this.selectShader = selectShader;
-
 	this.rotation = 0;
+	this.parent = null;
+	//Animation
+	this.animation = new Sequencer();
+	this.scene.animator.addAnimation(this.animation);
 
+	this.animation.registerSequence("position", this, 'position');
+	this.animation.registerSequence("parent", this, 'parent');
+	this.animation.registerSequence("rotation", this, 'rotation');
 };
 
 
 Member.prototype = Object.create(CGFobject.prototype);
 Member.prototype.constructor = Member;
+
+Member.prototype.storeParent = function(parent){
+	var time = 0;
+
+	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
+	this.animation.addKeyframe('position', new Keyframe(time + 0 + 5, parent.position, transition_vector3));
+
+	this.animation.addKeyframe('parent', new Keyframe(time + 0, {obj: this, parent: this.parent}, transition_parent));
+	this.animation.addKeyframe('parent', new Keyframe(time + 0 + 5, {obj: this, parent: parent}, transition_parent));
+
+	if(parent != null){
+		this.animation.addKeyframe('rotation', new Keyframe(time + 0, this.rotation, transition_float));
+		this.animation.addKeyframe('rotation', new Keyframe(time + 5, parent.members.length, transition_rigid_float));
+	}
+}
+
+Member.prototype.setParent = function(parent){
+	if(this.parent && parent)
+		if(this.parent.id == parent.id)
+			return;
+
+	if(this.parent == parent)
+		return;
+
+	if(this.parent)
+		this.parent.removeMember(this);
+
+	this.parent = parent;
+
+	if(parent != null){
+		this.parent.addMember(this);
+	}
+}
 
 Member.prototype.spawnPosition = function(pos){
 	this.position = pos;
@@ -48,10 +87,14 @@ Member.prototype.display = function(){
 	}
 
   this.scene.pushMatrix();
-		this.scene.translate(this.position.x, this.position.y, this.position.z);
-		this.scene.rotate(this.rotation, 0, 1, 0);
+		if(!this.parent)
+			this.scene.translate(this.position.x, this.position.y, this.position.z);
+
+		this.scene.rotate(Math.PI*this.rotation/3, 0, 1, 0);
+
 		this.board.pieces[this.model].display2(this.board.pieces[this.team].material, this.board.pieces[this.team].texture);
-  this.scene.popMatrix();
+
+	this.scene.popMatrix();
 
 	if(this.selected)
 		this.scene.setActiveShader(this.scene.defaultShader);
