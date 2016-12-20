@@ -25,8 +25,9 @@ Keyframe.prototype.lerp = function(object, attribute, keyframe2, t){
 	var time = 0;
 
 	if(deltaTime != 0)
-		time = localTime/deltaTime;
+		time = Math.abs(localTime/deltaTime);
 
+	time = (time > 1)? 1 : time;
 
 	object[attribute] = this.lerpFunction(this.value, keyframe2.value, time);
 }

@@ -43,13 +43,10 @@ Body.prototype.move = function(cell){
 	this.boardPosition.x = cell.boardPosition.x;
 	this.boardPosition.y = cell.boardPosition.y;
 
-	var time;
-	time = 0;
-	this.animation.addKeyframe('position', new Keyframe(0 + 5, cell.position, transition_vector3));
-	//pausa 8 segundos
-	this.animation.addKeyframe('position', new Keyframe(0 + 10, cell.position, transition_curved_vector3));
+	var time = this.scene.animator.animationTime;
 
-	this.animation.addKeyframe('position', new Keyframe(0 + 15, {x:0,y:2,z:0}, transition_vector3));
+	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
+	this.animation.addKeyframe('position', new Keyframe(time + 3, cell.position, transition_rigid_vector3));
 
 	this.currentCell = cell;
 	this.currentCell.occupy(this.team);
@@ -74,7 +71,7 @@ Body.prototype.setPickID = function(id){
 }
 
 Body.prototype.spawnPosition = function(pos){
-	this.animation.addKeyframe('position', new Keyframe(0, pos, transition_curved_vector3));
+	this.animation.addKeyframe('position', new Keyframe(0, pos, transition_rigid_vector3));
 	this.position = pos;
 
 }

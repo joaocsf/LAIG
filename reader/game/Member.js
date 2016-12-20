@@ -17,6 +17,7 @@ function Member(scene, board, id, team, type, selectShader) {
 	this.selectShader = selectShader;
 	this.rotation = 0;
 	this.parent = null;
+	this.startPosition = null;
 	//Animation
 	this.animation = new Sequencer();
 	this.scene.animator.addAnimation(this.animation);
@@ -31,17 +32,32 @@ Member.prototype = Object.create(CGFobject.prototype);
 Member.prototype.constructor = Member;
 
 Member.prototype.storeParent = function(parent){
-	var time = 0;
+	var time = this.scene.animator.animationTime;
 
-	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
-	this.animation.addKeyframe('position', new Keyframe(time + 0 + 5, parent.position, transition_vector3));
+	var fromP = this.position;
+	var toPos = this.startPosition;
+
+	if(parent == null){
+		if(this.parent){
+			fromP = this.parent.position;
+			toPos = this.startPosition;
+		}
+	}
+
+	this.animation.addKeyframe('position', new Keyframe(time + 0,
+		 																									{pos: fromP,
+																											 obj: this.parent}, transition_follow_vector3));
+
+	this.animation.addKeyframe('position', new Keyframe(time + 0 + 3,
+																										{	pos: toPos,
+	 																										obj: parent}, transition_rigid_follow_vector3));
 
 	this.animation.addKeyframe('parent', new Keyframe(time + 0, {obj: this, parent: this.parent}, transition_parent));
-	this.animation.addKeyframe('parent', new Keyframe(time + 0 + 5, {obj: this, parent: parent}, transition_parent));
+	this.animation.addKeyframe('parent', new Keyframe(time + 0 + 3, {obj: this, parent: parent}, transition_parent));
 
 	if(parent != null){
 		this.animation.addKeyframe('rotation', new Keyframe(time + 0, this.rotation, transition_float));
-		this.animation.addKeyframe('rotation', new Keyframe(time + 5, parent.members.length, transition_rigid_float));
+		this.animation.addKeyframe('rotation', new Keyframe(time + 3, parent.members.length, transition_rigid_float));
 	}
 }
 
@@ -53,9 +69,10 @@ Member.prototype.setParent = function(parent){
 	if(this.parent == parent)
 		return;
 
-	if(this.parent)
+	if(this.parent){
+		this.position = this.parent.position;
 		this.parent.removeMember(this);
-
+	}
 	this.parent = parent;
 
 	if(parent != null){
@@ -65,7 +82,7 @@ Member.prototype.setParent = function(parent){
 
 Member.prototype.spawnPosition = function(pos){
 	this.position = pos;
-	console.log(pos);
+	this.startPosition = pos;
 }
 
 Member.prototype.OnClick = function(){

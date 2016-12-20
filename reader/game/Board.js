@@ -209,7 +209,6 @@ Board.prototype.selectBody = function(object){
 	var v1 = (this.selected.body)? this.selected.body.id : "null";
 	var v2 = (this.selected.body2)? this.selected.body2.id : "null";
 
-	console.log("[ " + v1 + " , " + v2 + " ]");
 }
 
 Board.prototype.selectObject = function (obj, name, object){
@@ -238,7 +237,7 @@ Board.prototype.selectMember = function(object){
 Board.prototype.getBodyPosition = function(piece, dist = 0){
 	var id = piece.id;
 	var team = piece.team;
-	console.log(piece);
+
 	var k =  id/this.adaptoids[team].length;
 
 	var radius = this.width - 2;
@@ -253,7 +252,7 @@ Board.prototype.getBodyPosition = function(piece, dist = 0){
 Board.prototype.getMemberPosition = function(piece, dist = 0){
 	var id = piece.id;
 	var team = piece.team;
-	console.log(piece);
+
 	var k =  id/this.members[0].length;
 
 	var radius = this.width - 2;

@@ -10,7 +10,6 @@ function transition_rigid_float(p1, p2, time){
 }
 
 function transition_float(p1, p2, time){
-
 	return p1 + (p2 - p1) * time;
 }
 
@@ -27,10 +26,21 @@ function transition_rigid_vector2(p1, p2, time){
 function transition_parent(p1, p2, time){
 
 	p1.obj.setParent(p1.parent);
-	console.log("Here!");
 	return p1.parent;
 }
 
+function transition_rigid_follow_vector3(p1, p2, time){
+	return (p1.obj)? p1.obj.position : p1.position;
+}
+
+function transition_follow_vector3(p1, p2, time){
+	var point1 = (p1.obj)? p1.obj.position : p1.pos;
+	var point2 = (p2.obj)? p2.obj.position : p2.pos;
+	return transition_curved_vector3(point1, point2, time);
+}
+function transition_rigid_vector3(p1, p2, time){
+	return p1;
+}
 function transition_vector3(p1, p2, time){
 
 	var res= {
@@ -38,7 +48,6 @@ function transition_vector3(p1, p2, time){
 		y: p1.y + (p2.y - p1.y) * time,
 		z: p1.z + (p2.z - p1.z) * time
 	}
-
 	return res;
 }
 

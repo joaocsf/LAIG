@@ -17,20 +17,28 @@ Sequence.prototype.update = function(time){
 	if(!this.keys || !this.keyframes)
 		return;
 
-	var first;
-	var second;
+	var t1;
+	var t2;
+
+	var first = this.keyframes[this.keys[0]];
+	var second = this.keyframes[this.keys[0]];
 	for(var i = 0; i < this.keys.length; i++){
 		var key = this.keys[i];
 		if(key <= time){
+			t1 = key;
 			first = this.keyframes[key];
 		}if(key > time){
+			t2 = key;
 			second = this.keyframes[key];
 			break;
 		}
 	}
-
 	if(!second)
 		second = first;
+	else{
+		if(first.time > second.time)
+			second = first;
+	}
 	first.lerp(this.object, this.attribute,second,time);
 
 }
