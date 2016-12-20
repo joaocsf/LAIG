@@ -5,7 +5,7 @@
 Connection.defaultPort = 8081;
 
 Connection.handleSuccess = function(info) {
-    console.log("Request Successful. Response" + info.target.response)
+    console.log("Request Successful. Response : " + info.target.response)
 }
 
 Connection.handleError = function() {
@@ -18,7 +18,7 @@ e reencaminha as respostas*/
 function Connection(port){
 
     this.port = port || Connection.defaultPort;
-
+    this.getPrologRequest("handshake");
 }
 
 Connection.prototype.constructor = Connection;
@@ -35,14 +35,6 @@ Connection.prototype.getPrologRequest = function (requestString, onSuccess, onEr
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     console.log("Sending request");
     request.send();
-};
-
-Connection.prototype.makeRequest = function () {
-    // Get Parameter Values
-    var requestString = document.querySelector("#query_field").value;
-
-    // Make Request
-    this.getPrologRequest(requestString, handleReply);
 };
 
 Connection.prototype.getPort = function () {

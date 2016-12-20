@@ -12,8 +12,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 
-	this.mode = "hh";//Acrescentar mode
-	this.dificuldade = "opOp";
+	this.mode = "hh";//Acrescentar mode "hc" "cc"
+	this.dificuldade = "opOp";//"retOp"
 
 	//Game pieces
 	this.selected = {
@@ -87,6 +87,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.registerCellPicking();
 	this.registerPicking();
 	this.setUp();
+	this.server.getPrologRequest("beginGame");
 };
 
 
