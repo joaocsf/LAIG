@@ -12,6 +12,32 @@ function Sequence(name, object, attribute) {
 	this.times = [];
 
 };
+Sequence.prototype.clearKeyframes = function(time){
+	if(!this.keyframes || !this.keys)
+	return;
+
+	var deleted = 0;
+	var number = 0;
+	for(var key in this.keyframes){
+		number++;
+		if(key > time){
+			delete this.keyframes[key];
+			deleted++;
+		}
+	}
+
+
+	if(deleted == number){
+		this.keys = null;
+		return;
+	}
+	this.updateKeys();
+}
+
+Sequence.prototype.updateKeys = function(){
+	this.keys= Object.keys(this.keyframes).sort(function(a,b) { return a - b;});
+}
+
 
 Sequence.prototype.update = function(time){
 	if(!this.keys || !this.keyframes)
@@ -48,9 +74,7 @@ Sequence.prototype.update = function(time){
 Sequence.prototype.addKeyframe = function(keyframe){
 	this.keyframes[keyframe.getTime()] = keyframe;
 
-	this.keys= Object.keys(this.keyframes).sort(function(a,b) { return a - b;});
-	console.log(this.keys);
-
+	this.updateKeys();
 }
 
 Sequence.prototype.getName = function(){

@@ -52,10 +52,9 @@ SceneInterface.prototype.init = function(application) {
 	});
 
 
-	this.gui.add(this.scene.animator, 'play',
-							0, this.scene.animator.animationMaxTime).listen();
+	this.gui.add(this.scene.animator, 'play');
 
-
+	this.gui.add(this.scene.animator, 'undo');
 
 	return true;
 };

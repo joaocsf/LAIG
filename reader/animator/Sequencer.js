@@ -19,6 +19,16 @@ Sequencer.prototype.update = function(time){
 /*Adding a keyframe to an sequence, needs an uniqueID and an keyframe
 * The sequence must be registered prior to this point.
 */
+Sequencer.prototype.clearKeyframes = function(time){
+
+	for(var key in this.sequences)
+		this.sequences[key].clearKeyframes(time);
+
+}
+
+/*Adding a keyframe to an sequence, needs an uniqueID and an keyframe
+* The sequence must be registered prior to this point.
+*/
 Sequencer.prototype.addKeyframe = function(sequenceName, keyframe){
 
 	if(!this.sequences[sequenceName]){

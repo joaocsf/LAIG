@@ -1,7 +1,7 @@
 /*Call that handles all animations and iterates over them to play an animation*/
 function Animator(scene) {
 	this.scene = scene;
-
+	this.recording = true;
 	this.startTime = 0;
 	this.animationTime = 0;
 	this.animationMaxTime = 20;
@@ -11,7 +11,7 @@ function Animator(scene) {
 	this.lastPlay = false;
 	this.animate = true;
 	this.playUI;
-
+	this.currTime;
 };
 
 Animator.prototype.changingAnimationTime = function(lmnt){
@@ -23,15 +23,37 @@ Animator.prototype.changingAnimationTime = function(){
 	this.lastPlay = false;
 }
 
-
 Animator.prototype.changedAnimationTime = function(){
 	this.animate = true;
 	this.lastPlay = false;
 }
 
+Animator.prototype.updateMaxTime = function(){
+	this.animationMaxTime = this.animationTime + 5;
+	this.playUI.__max = this.animationMaxTime;
+}
+
+Animator.prototype.undo = function(){
+	console.log("Hello");
+	this.updateMaxTime();
+	console.log(this.animationTime - this.animationMaxTime + " = Rs");
+	this.clearKeyframes(this.animationTime);
+}
+
+Animator.prototype.clearKeyframes = function(time){
+	for(var i = 0; i < this.animations.length; i++){
+		this.animations[i].clearKeyframes(time);
+	}
+}
+
 Animator.prototype.update = function(currTime){
+	this.currTime = currTime;
 
-
+	if(this.recording && this.play){
+			if(this.animationTime > this.animationMaxTime - 5){
+				this.updateMaxTime();
+			}
+	}
 
 	if(this.startTime == 0){
 		this.startTime = currTime;
@@ -51,7 +73,6 @@ Animator.prototype.update = function(currTime){
 
 	}
 
-
 	if(this.animationTime > this.animationMaxTime){
 		this.animationTime = this.animationMaxTime;
 		this.play = false;
@@ -62,7 +83,6 @@ Animator.prototype.update = function(currTime){
 	for(var i = 0; i < this.animations.length; i++){
 		this.animations[i].update(elapsed);
 	}
-
 
 	this.lastTime = currTime - this.startTime;
 	this.lastPlay = this.play;

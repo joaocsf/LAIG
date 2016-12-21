@@ -27,12 +27,6 @@ function transition_object(p1, p2, time){
 	return p1;
 }
 
-function transition_method(p1, p2, time){
-	if(p1)
-		p1.method(p1.value);
-	return p1.value;
-}
-
 function transition_occupy(p1, p2, time){
 	if(p1.obj)
 		p1.obj.occupy(p1.value);
@@ -56,9 +50,11 @@ function transition_follow_vector3(p1, p2, time){
 	var point2 = (p2.obj)? p2.obj.position : p2.pos;
 	return transition_curved_vector3(point1, point2, time);
 }
+
 function transition_rigid_vector3(p1, p2, time){
 	return p1;
 }
+
 function transition_vector3(p1, p2, time){
 
 	var res= {
@@ -78,7 +74,6 @@ function transition_curved_vector3(p1, p2, time){
 	}
 	return res;
 }
-
 
 function copyVector3(v){
   return {x: v.x, y: v.y, z:v.z};
