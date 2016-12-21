@@ -31,7 +31,7 @@ Timer.prototype.display = function(){
 
     this.scene.pushMatrix();
       this.scene.rotate(Math.PI/2, 0,1,0);
-      this.scene.rotate(Math.PI*2* this.time/this.maxTime, 1,0,0);
+      this.scene.rotate(-Math.PI*2* this.time/this.maxTime - Math.PI/2, 1,0,0);
       this.pointer.display();
     this.scene.popMatrix();
 

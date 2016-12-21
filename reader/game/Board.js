@@ -11,7 +11,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
-	this.timer = new Timer(this.scene, 10, 4, 0.5);
+	this.roundTime = 10;
+	this.timer = new Timer(this.scene, this.roundTime, 0, 0.5);
 
 	//Game pieces
 	this.selected = {
@@ -54,6 +55,23 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.legNumber = legNumber;
 	this.clawNumber = clawNumber;
 
+	var width = 1;
+	this.half = width/2;
+	this.width = width * 7;
+	this.time = 0;
+	this.initializeObjects(pieceNumber, legNumber, clawNumber);
+	this.initializePositions();
+	this.initializeAnimations();
+	this.registerCellPicking();
+	this.registerPicking();
+	this.setUp();
+};
+
+
+Board.prototype = Object.create(CGFobject.prototype);
+Board.prototype.constructor = Board;
+
+Board.prototype.initializeObjects = function(pieceNumber, legNumber, clawNumber){
 	var max = Math.max(pieceNumber, legNumber, clawNumber);
 	var off = 0;
 	for(var i = 0; i < max; i++){
@@ -74,20 +92,15 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		}
 		off++;
 	}
-	var width = 1;
-	this.half = width/2;
-	this.width = width * 7;
+}
 
-	this.time = 0;
-	this.initializePositions();
-	this.registerCellPicking();
-	this.registerPicking();
-	this.setUp();
-};
+Board.prototype.initializeAnimations = function(){
+	this.animation = new Sequencer();
+	this.scene.animator.addAnimation(this.animation);
 
-
-Board.prototype = Object.create(CGFobject.prototype);
-Board.prototype.constructor = Board;
+	this.animation.registerSequence('playerTurn', this, 'playerTurn');
+	this.animation.registerSequence('playerTurnTime', this, 'playerTurnTime');
+}
 
 Board.prototype.update = function(time){
 	if(this.time == 0){
@@ -98,10 +111,21 @@ Board.prototype.update = function(time){
 	this.selectShader.setUniformsValues({time : time - this.time, number: 0, pieceN: 0});
 	this.updateTimerValues();
 }
+//Do This in the first round!;
+Board.prototype.storePlayerTurn = function(){
+	var time = this.scene.animator.animationTime;
+	console.log("Here");
+	this.animation.addKeyframe('playerTurn', new Keyframe(time, this.playerTurn, transition_rigid_float));
+	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, this.playerTurnTime, transition_rigid_float));
+
+}
 
 Board.prototype.updateTimerValues = function(){
-	var time = this.scene.animator.animationTime;
+	var time = this.scene.animator.animationTime - this.playerTurnTime;
 	this.timer.setTime(time);
+
+	if(time > this.roundTime)
+		this.endTurn();
 }
 
 Board.prototype.setPieces = function(pieces){
@@ -317,6 +341,8 @@ Board.prototype.doRound = function(){
 Board.prototype.endTurn = function(){
 	this.doRound();
 	this.playerTurn = 1 - this.playerTurn;
+	this.playerTurnTime = this.scene.animator.animationTime;
+	this.storePlayerTurn();
 	this.registerPicking();
 }
 
