@@ -63,6 +63,7 @@ Animator.prototype.resume = function(){
 	this.animationTime = this.animationMaxTime - this.timeOffset;
 	this.recording = true;
 	this.play = true;
+	this.playBtn.name("Stop");
 }
 
 Animator.prototype.update = function(currTime){

@@ -34,7 +34,7 @@ Cell.prototype.storeOccupy = function(object){
 		console.log("Adding:" + object.id + "|" + object.team + " To:" + this.id);
 
 	this.animation.addKeyframe('occupied',
-		new Keyframe(time, {obj:this, value: object}, transition_occupy));
+		new Keyframe(time + duration, {obj:this, value: object}, transition_occupy));
 
 }
 
@@ -48,7 +48,7 @@ Cell.prototype.occupy = function(object){
 
 	if(this.occupied){
 		if(this.occupied.currentCell)
-			if(this.occupied.currentCell.id != this.id)
+			if(this.occupied.currentCell.id == this.id)//Evita concorrencia
 				this.occupied.setCurrentCell(null);
 	}
 
