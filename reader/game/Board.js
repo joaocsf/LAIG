@@ -12,9 +12,6 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 
-	this.mode = "hh";//Acrescentar mode "hc" "cc"
-	this.dificuldade = "opOp";//"retOp"
-
 	//Game pieces
 	this.selected = {
 		body: null,
@@ -27,6 +24,16 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
+	this.mode = "hh";//Acrescentar mode "hc" "cc"
+	this.dificuldade = [];
+	this.dificuldade[this.WHITE] = "op"; //Adicionar "notOp"
+	this.skip_index = 0;
+	this.move_index = 1;
+	this.capturar_index = 2;
+	this.addCorpo_index = 3;
+	this.addGarra_index = 4;
+	this.addPerna_index = 5;
+
 
 	this.pieces =  null;
 	this.cells = [];
@@ -87,7 +94,6 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.registerCellPicking();
 	this.registerPicking();
 	this.setUp();
-	this.server.getPrologRequest("beginGame");
 };
 
 
@@ -150,14 +156,125 @@ Board.prototype.checkRound = function(){
 		return;
 
 	this.doRound();
-}
+};
+
+Board.prototype.doMovement = function (action) {
+	console.log("Moviment Action : " + action);
+
+	switch (action[0]) {
+		case this.skip_index:
+			return;
+			break;
+		case this.move_index:
+			var xi = action[1];
+			var yi = action[2] - 1;
+			var xf = action[3];
+			var yf = action[4] - 1;
+			var startCell = this.getCellAt(xi,yi);
+			var endCell = this.getCellAt(xf,yf);
+			startCell.occupied.move(endCell);
+			break;
+		case this.capturar_index:
+			var xi = action[1];
+			var yi = action[2] - 1;
+			var xf = action[3];
+			var yf = action[4] - 1;
+			//[2,Xi,Yi,Xatacar,Yatacar]
+			break;
+	}
+
+	return;
+};
+
+Board.prototype.doEvolution = function (action) {
+	console.log("Evolution Action : " + action);
+
+	switch (action[0]) {
+		case this.skip_index:
+			return;
+			break;
+		case this.addCorpo_index:
+		//Adicionar Corpo
+			var xvizinho = action[1];
+			var yvizinho = action[2] - 1;
+			var x = action[3];
+			var y = action[4] - 1;
+			var vizinho = this.getCellAt(xvizinho,yvizinho);
+			var cellDest = this.getCellAt(x,y);
+			var corpo = this.getFreeBody();
+			if(vizinho.occupied && !cellDest.occupied)
+				corpo.move(cellDest);
+			break;
+		case this.addGarra_index:
+		//Adicionar Garra
+			var x = action[1];
+			var y = action[2] - 1;
+			var claw = this.getFreeMember("CLAW");
+			var adaptoid = this.getCellAt(x,y).occupied;
+			claw.storeParent(adaptoid);
+			break;
+		case this.addPerna_index:
+		//Adicionar Perna
+			var x = action[1];
+			var y = action[2] - 1;
+			var leg = this.getFreeMember("LEG");
+			var adaptoid = this.getCellAt(x,y).occupied;
+			leg.storeParent(adaptoid);
+			break;
+	};
+
+};
+
+Board.prototype.doFamine = function (action) {
+	console.log("Famine Action : " + action);
+	var enemy = 1 - this.playerTurn;
+	for (var i = 0; i < action.length; i++) {
+		var adaptoid = this.getBodyByID(action[i],enemy);
+		//adaptoid.move(null);//Remove o adaptoid;
+	}
+};
+
+Board.prototype.handleBotPlay = function (response) {
+	console.log("Received Bot Play Response");
+	console.log(response);
+
+	this.points[this.WHITE] = response[0];
+	this.points[this.BLACK] = response[1];
+	this.doMovement(response[2]);
+	this.doEvolution(response[3]);
+	this.doFamine(response[4]);
+};
+
+Board.prototype.jogadaBot = function (currPlayer) {
+	//botPlay(Jogador,Dificuldade,jogo(A,B,Tab))
+	var jogo = this.getGameString();
+	var dif = this.dificuldade[this.playerTurn];
+	var board = this;
+	var request = "botPlay(" + currPlayer + "," + dif + "," + jogo + ")";
+	this.server.getPrologRequest(request,handleResponse);
+
+	function handleResponse(data){
+
+		var response = new Array();
+		response = JSON.parse(data.target.response);
+		console.log(this);
+		board.handleBotPlay(response);
+	}
+};
 
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 
+	//this.jogadaBot("branco");
+
 	var currPlayer = "preto";
 	if(this.WHITE == this.playerTurn)
 		currPlayer = "branco";
+
+	if(this.mode[this.playerTurn] == "c"){
+
+		this.jogadaBot(currPlayer);
+	}
 	//Se algum deles nao existir entao fica a null
 	if(this.selected.body && this.selected.cell)//Movimentação da peca body para cell
 		if(this.selected.cell.occupied)//É um ataque
@@ -215,6 +332,24 @@ Board.prototype.getCellAt = function (x,y) {
 		if(this.cells[i].boardPosition.x == x && this.cells[i].boardPosition.y == y)
 			return this.cells[i];
 	}
+};
+
+Board.prototype.getFreeBody = function () {
+	for (var i = 0; i < this.adaptoids[this.playerTurn].length; i++) {
+		if(!this.adaptoids[this.playerTurn][i].currentCell)
+			return this.adaptoids[this.playerTurn][i];
+	}
+};
+
+Board.prototype.getFreeMember = function (type) {//"CLAW" ou "LEG"
+	for (var i = 0; i < this.members[this.playerTurn].length; i++) {
+		if(!this.members[this.playerTurn][i].parent)
+			return this.members[this.playerTurn][i];
+	}
+};
+
+Board.prototype.getBodyByID = function (id,enemy) {
+	return this.adaptoids[enemy][id];
 };
 
 Board.prototype.setUp = function () {
