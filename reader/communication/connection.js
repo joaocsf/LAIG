@@ -5,8 +5,8 @@
 Connection.defaultPort = 8081;
 
 Connection.handleSuccess = function(info) {
-    console.log("Request Successful. Response : " + info.target.response)
-}
+    console.log("Request Successful. Response : " + info.target.response);
+};
 
 Connection.handleError = function() {
     console.log("Error waiting for response");

@@ -22,7 +22,9 @@ parse_input(play(Jogador,jogo(A,B,Tab),Action),Resultado) :-
 
 parse_input(botPlay(Jogador,Dificuldade,jogo(A,B,Tab)),Resultado) :-
     jogadaComputador(Jogador,Dificuldade,jogo(A,B,Tab),jogo(A1,B1,T1)),
-    jogadaBot(jogo(A,B,Tab),Jogador,jogo(A1,B1,T1),Movimento,Evolucao),
+    jogadaBot(jogo(A,B,Tab),Jogador,jogo(A1,B1,T1),M,E),
+    M =.. MovTemp, E =.. EvoTemp,
+    parseMovimento(MovTemp,Movimento), parseEvolucao(EvoTemp,Evolucao),
     corInv(Jogador,Cor), getDiffIds(Tab,Cor,T1,Diff),
     Resultado = [A1,B1,Movimento,Evolucao,Diff], !.
 
@@ -36,8 +38,26 @@ parse_input(isGameOver(_,_,_),no).
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).
 
-doAction(mover(X,Y,Oris),Jogador,jogo(A,B,Tab),jogo(A1,B1,T1)) :-%O que fazer em relacao a lista de orientacoes?
-    lerRegraM(Jogador,mover(X,Y,Ori),jogo(A,B,Tab),jogo(A1,B1,T1)).
+parseMovimento([mover,X,Y,Oris],[1,X,Y,Xf,Yf]):-
+    sumOrisToPos(X,Y,Oris,Xf,Yf), !.
+
+parseMovimento([capturar,X,Y,Ori],[2,X,Y,Xf,Yf]) :-
+    sumOriToPos(X,Y,Ori,Xf,Yf), !.
+
+parseMovimento([s],[0]) :- !.
+
+parseEvolucao([aC,X,Y,Ori],[3,X,Y,Xf,Yf]) :-
+    sumOriToPos(X,Y,Ori,Xf,Yf), !.
+
+parseEvolucao([aP,X,Y],[5,X,Y]) :- !.
+
+parseEvolucao([aG,X,Y],[4,X,Y]) :- !.
+
+parseEvolucao([s],[0]) :- !.
+
+doAction(mover(X,Y,Npernas,Xf,Yf),Jogador,jogo(A,B,Tab),jogo(A1,B1,T1)) :-
+    listaOriToPos(Tab,X,Y,Oris,Npernas,Xf,Yf), !,
+    lerRegraM(Jogador,mover(X,Y,Oris),jogo(A,B,Tab),jogo(A1,B1,T1)).
 
 doAction(capturar(X,Y,Ori),Jogador,jogo(A,B,Tab),jogo(A1,B1,T1)) :-
     lerRegraM(Jogador,capturar(X,Y,Ori),jogo(A,B,Tab),jogo(A1,B1,T1)).
@@ -64,15 +84,36 @@ getDiffIds([L1|L1s],Cor,[L2|L2s],IDs) :-
     getDiffIds(L1s,Cor,L2s,R2),
     append(R1,R2,IDs), !.
 
+listaOriToPos(_,X,Y,[],0,X,Y).
+listaOriToPos(Tab,Xi,Yi,[Ori|Os],Npernas,Xf,Yf) :-
+    oriDic(Ori,IncX,IncY),
+    N1 is Npernas - 1,
+    N1 >= 0,
+    X1 is Xi + IncX,
+    Y1 is Yi + IncY,
+    getSimboloXY(Tab,vazio,X1,Y1),
+    listaOriToPos(Tab,X1,Y1,Os,N1,Xf,Yf).
+
+sumOrisToPos(X,Y,[],X,Y) :- !.
+sumOrisToPos(Xi,Yi,[Ori|Os],Xf,Yf) :-
+    sumOriToPos(Xi,Yi,Ori,X1,Y1),
+    sumOrisToPos(X1,Y1,Os,Xf,Yf).
+
+sumOriToPos(Xi,Yi,Ori,Xf,Yf) :-
+    oriDic(Ori,IncX,IncY),
+    Xf is Xi + IncX,
+    Yf is Yi + IncY, !.
+
+
 tabuleiro4( [
             [zero,um,dois,tres,quatro],
-            [a,vazio,vazio,[3,preto,6,0],vazio,cinco],
+            [a,vazio,vazio,vazio,[3,preto,0,0],cinco],
     		[b,vazio,vazio,vazio,vazio,vazio,seis],
     		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
-    		[d,vazio,[0,branco,0,1],vazio,vazio,vazio,[0,preto,1,2],vazio],
-			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
-    		[f,ht,ht,vazio,vazio,[1,preto,2,1],vazio,vazio],
-    	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
+    		[d,vazio,[0,branco,0,0],vazio,vazio,vazio,[0,preto,0,0],vazio],
+			[e,ht,vazio,vazio,vazio,vazio,[1,preto,0,0],vazio],
+    		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
+    	    [g,ht,ht,ht,vazio,vazio,[2,preto,0,0],vazio]
          ]
         ).
 
@@ -99,20 +140,3 @@ tabuleiro6( [
     	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
          ]
         ).
-/*
-oriDic(0,0,-1).
-oriDic(1,1,0).
-oriDic(2,1,1).
-oriDic(3,0,1).
-oriDic(4,-1,0).
-oriDic(5,-1,-1).
-*/
-listaOriToPos(_,X,Y,[],0,X,Y).
-listaOriToPos(Tab,Xi,Yi,[Ori|Os],Npernas,Xf,Yf) :-
-    oriDic(Ori,IncX,IncY),
-    N1 is Npernas - 1,
-    N1 >= 0,
-    X1 is Xi + IncX,
-    Y1 is Yi + IncY,
-    getSimboloXY(Tab,vazio,X1,Y1),
-    listaOriToPos(Tab,X1,Y1,Os,N1,Xf,Yf).
