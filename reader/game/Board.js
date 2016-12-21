@@ -12,8 +12,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 
-	this.mode = "hh";//Acrescentar mode
-	this.dificuldade = "opOp";
+	this.mode = "hh";//Acrescentar mode "hc" "cc"
+	this.dificuldade = "opOp";//"retOp"
 
 	//Game pieces
 	this.selected = {
@@ -23,6 +23,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		member : null
 	}
 	//
+	this.server = new Connection();
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
@@ -85,6 +86,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.initializePositions();
 	this.registerCellPicking();
 	this.registerPicking();
+	this.setUp();
+	this.server.getPrologRequest("beginGame");
 };
 
 
@@ -137,11 +140,13 @@ Board.prototype.resetRound = function(){
 	this.selected.body2 = null;
 	this.selected.cell = null;
 	this.selected.member = null;
+	this.movimentar = 0;
+	this.evoluir = 0;
 }
 
 Board.prototype.checkRound = function(){
 	console.log("Checking Round");
-	if(!this.selected.body || !this.selected.cell || !this.selected.member)
+	if(!this.selected.body || !this.selected.cell || !this.selected.member || !this.selected.body2)
 		return;
 
 	this.doRound();
@@ -149,6 +154,27 @@ Board.prototype.checkRound = function(){
 
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
+
+	var currPlayer = "preto";
+	if(this.WHITE == this.playerTurn)
+		currPlayer = "branco";
+	//Se algum deles nao existir entao fica a null
+	if(this.selected.body && this.selected.cell)//Movimentação da peca body para cell
+		if(this.selected.cell.occupied)//É um ataque
+			this.movimentar = 1;
+	if(this.selected.body2 && this.selected.member)//Adicao de um member a peca body2
+		this.evoluir = 1;
+
+	if(this.movimentar){
+		//construir comando de Movimento
+		//Enviar comando
+	}
+
+	if(this.evoluir){
+		//construir comando de evoluir
+		//enviar comando
+	}
+
 	//%Check round via prolog
 	/*PROLOG MOVES/Commands
 	|		Predicados de ação		|
@@ -174,6 +200,7 @@ Board.prototype.doRound = function(){
 	if(this.selected.body2 && this.selected.member)
 		this.selected.member.storeParent(this.selected.body2);
 
+
 	this.resetRound();
 }
 
@@ -182,6 +209,22 @@ Board.prototype.endTurn = function(){
 	this.playerTurn = 1 - this.playerTurn;
 	this.registerPicking();
 }
+
+Board.prototype.getCellAt = function (x,y) {
+	for (var i = 0; i < this.cells.length; i++) {
+		if(this.cells[i].boardPosition.x == x && this.cells[i].boardPosition.y == y)
+			return this.cells[i];
+	}
+};
+
+Board.prototype.setUp = function () {
+
+	this.points[this.BLACK] = 0;
+	this.points[this.WHITE] = 0;
+
+	this.adaptoids[this.BLACK][0].move(this.getCellAt(6,3));
+	this.adaptoids[this.WHITE][0].move(this.getCellAt(2,3));
+};
 
 
 Board.prototype.selectBody = function(object){
@@ -306,7 +349,7 @@ Board.prototype.initializePositions = function(){
 
 Board.prototype.play = function(){
 
-	this.playerTurn
+	//this.playerTurn
 }
 
 Board.prototype.registerCellPicking = function(){
@@ -384,10 +427,6 @@ Board.prototype.display = function(){
 		this.scene.popMatrix();
 	}
 }
-
-Board.prototype.setUpGame = function (tabuleiro) {
-	//Adicionar para cada objeto a key frame necessária
-};
 
 Board.prototype.getGameString = function () {
 

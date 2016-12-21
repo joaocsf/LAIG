@@ -87,6 +87,18 @@ tabuleiro5( [
     	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
          ]
         ).
+
+tabuleiro6( [
+            [zero,um,dois,tres,quatro],
+            [a,vazio,vazio,vazio,vazio,cinco],
+    		[b,vazio,vazio,vazio,vazio,vazio,seis],
+    		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
+    		[d,vazio,vazio,vazio,vazio,obstaculo,vazio,vazio],
+			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
+    		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
+    	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
+         ]
+        ).
 /*
 oriDic(0,0,-1).
 oriDic(1,1,0).
@@ -95,3 +107,12 @@ oriDic(3,0,1).
 oriDic(4,-1,0).
 oriDic(5,-1,-1).
 */
+listaOriToPos(_,X,Y,[],0,X,Y).
+listaOriToPos(Tab,Xi,Yi,[Ori|Os],Npernas,Xf,Yf) :-
+    oriDic(Ori,IncX,IncY),
+    N1 is Npernas - 1,
+    N1 >= 0,
+    X1 is Xi + IncX,
+    Y1 is Yi + IncY,
+    getSimboloXY(Tab,vazio,X1,Y1),
+    listaOriToPos(Tab,X1,Y1,Os,N1,Xf,Yf).
