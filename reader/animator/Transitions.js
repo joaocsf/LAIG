@@ -23,6 +23,24 @@ function transition_rigid_vector2(p1, p2, time){
 	return res;
 }
 
+function transition_object(p1, p2, time){
+	return p1;
+}
+
+function transition_method(p1, p2, time){
+	if(p1)
+		p1.method(p1.value);
+	return p1.value;
+}
+
+function transition_occupy(p1, p2, time){
+	if(p1.obj)
+		p1.obj.occupy(p1.value);
+
+
+	return p1.value;
+}
+
 function transition_parent(p1, p2, time){
 
 	p1.obj.setParent(p1.parent);

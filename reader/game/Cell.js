@@ -8,6 +8,11 @@ function Cell(scene, board, id, x, z, bx, by, selectShader){
 	this.occupied = null;
 	this.selected = false;
 	this.selectShader = selectShader;
+
+	this.animation = new Sequencer();
+	this.scene.animator.addAnimation(this.animation);
+	this.animation.registerSequence('occupied', this, 'occupied');
+
 };
 
 Cell.prototype = Object.create(CGFobject.prototype);
@@ -17,8 +22,35 @@ Cell.prototype.OnClick = function(){
 	this.board.selectCell(this);
 }
 
+Cell.prototype.storeOccupy = function(object){
+	var time = this.scene.animator.animationTime;
+	this.animation.addKeyframe('occupied',
+	new Keyframe(time + 0, {obj:this, value: this.occupied}, transition_occupy));
+
+	this.animation.addKeyframe('occupied',
+		new Keyframe(time + 3, {obj:this, value: object}, transition_occupy));
+
+}
+
 Cell.prototype.occupy = function(object){
+	if(this.occupied && object)
+		if(this.occupied.id == object.id)
+			return;
+
+	if(!this.occupied && !object)
+		return;
+
+	if(this.occupied){
+		this.occupied.setCurrentCell(null);
+	}
+
 	this.occupied = object;
+	var id = (object)? object.id : 'null';
+	console.log("Cell:" + this.id + " Object:" + id);
+	if(this.occupied){
+		this.occupied.boardLocation = this.boardLocation;
+		this.occupied.setCurrentCell(this);
+	}
 }
 
 Cell.prototype.unOcupy = function(){

@@ -9,12 +9,14 @@ function Body(scene, board, id, team, selectShader){
 	this.scene.animator.addAnimation(this.animation);
 
 	this.animation.registerSequence("position", this, 'position');
+	this.animation.registerSequence("position", this, 'position');
 	this.animation.registerSequence("boardPosition", this, 'boardPosition');
 
 	this.boardPosition = {x:-1, y:-1};
 	this.board = board;
   this.team = team;
 	this.position = {x:0, y:0, z:0};
+	this.startPosition = {x:0, y:0, z:0};
 	this.pickID = -1;
 	this.selectShader = selectShader;
 	this.selected = false;
@@ -37,8 +39,6 @@ Body.prototype.OnClick = function(){
 }
 
 Body.prototype.move = function(cell){
-	if(this.currentCell != null)
-		this.currentCell.unOcupy();
 
 	this.boardPosition.x = cell.boardPosition.x;
 	this.boardPosition.y = cell.boardPosition.y;
@@ -47,9 +47,14 @@ Body.prototype.move = function(cell){
 
 	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
 	this.animation.addKeyframe('position', new Keyframe(time + 3, cell.position, transition_rigid_vector3));
-
+	if(this.currentCell)
+			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;
-	this.currentCell.occupy(this.team);
+	this.currentCell.storeOccupy(this);
+}
+
+Body.prototype.setCurrentCell = function(cell){
+	this.currentCell = cell;
 }
 
 Body.prototype.addMember = function(member){
