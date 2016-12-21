@@ -26,7 +26,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.points[this.WHITE] = 0;
 	this.mode = "hh";//Acrescentar mode "hc" "cc"
 	this.dificuldade = [];
-	this.dificuldade[this.WHITE] = "op"; //Adicionar "notOp"
+	this.dificuldade[this.WHITE] = "op";//Adicionar "notOp"
+	this.dificuldade[this.BLACK] = "notOp"; 
 	this.skip_index = 0;
 	this.move_index = 1;
 	this.capturar_index = 2;
