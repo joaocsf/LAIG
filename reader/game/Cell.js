@@ -13,23 +13,28 @@ function Cell(scene, board, id, x, z, bx, by, selectShader){
 	this.scene.animator.addAnimation(this.animation);
 	this.animation.registerSequence('occupied', this, 'occupied');
 
+	this.animation.addKeyframe('occupied',
+	new Keyframe( 0, {obj:this, value: this.occupied}, transition_occupy));
 };
 
 Cell.prototype = Object.create(CGFobject.prototype);
 Cell.prototype.constructor = Cell;
 
 Cell.prototype.OnClick = function(){
-	this.board.selectCell(this);
+	if(this.board.isPlaying())
+		this.board.selectCell(this);
 }
 
 Cell.prototype.storeOccupy = function(object){
 	var time = this.scene.animator.animationTime;
 	var duration = 1;
-	this.animation.addKeyframe('occupied',
-	new Keyframe(time + 0, {obj:this, value: this.occupied}, transition_occupy));
+	//this.animation.addKeyframe('occupied',
+	//new Keyframe(time + 0, {obj:this, value: this.occupied}, transition_occupy));
+	if(object)
+		console.log("Adding:" + object.id + "|" + object.team + " To:" + this.id);
 
 	this.animation.addKeyframe('occupied',
-		new Keyframe(time + duration, {obj:this, value: object}, transition_occupy));
+		new Keyframe(time, {obj:this, value: object}, transition_occupy));
 
 }
 
@@ -42,7 +47,9 @@ Cell.prototype.occupy = function(object){
 		return;
 
 	if(this.occupied){
-		this.occupied.setCurrentCell(null);
+		if(this.occupied.currentCell)
+			if(this.occupied.currentCell.id != this.id)
+				this.occupied.setCurrentCell(null);
 	}
 
 	this.occupied = object;

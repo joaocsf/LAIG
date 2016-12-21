@@ -34,8 +34,15 @@ Body.prototype.select = function(value){
 }
 
 Body.prototype.OnClick = function(){
-	this.board.selectBody(this);
+	if(this.board.isPlaying())
+		this.board.selectBody(this);
 
+}
+
+Body.prototype.removeMembers = function(){
+	for(var i = 0; i < this.members.length; i++){
+		this.members[i].storeParent(null);
+	}
 }
 
 Body.prototype.move = function(cell){
@@ -43,10 +50,22 @@ Body.prototype.move = function(cell){
 	this.boardPosition.x = cell.boardPosition.x;
 	this.boardPosition.y = cell.boardPosition.y;
 
+	var toPos = this.startPosition;
+	if(cell)
+		toPos = cell.position;
+
 	var time = this.scene.animator.animationTime;
 	var duration = 1;
 	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
-	this.animation.addKeyframe('position', new Keyframe(time + duration, cell.position, transition_rigid_vector3));
+	this.animation.addKeyframe('position', new Keyframe(time + duration, toPos, transition_rigid_vector3));
+
+	if(!cell)
+		this.removeMembers();
+
+	var id1 = (this.currentCell)? this.currentCell.id : "null";
+	var id2 = (cell)? cell.id : "null";
+
+	console.log("ID: " + this.id + " From:" + id1 + " To:" + id2);
 	if(this.currentCell)
 			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;
@@ -78,6 +97,7 @@ Body.prototype.setPickID = function(id){
 Body.prototype.spawnPosition = function(pos){
 	this.animation.addKeyframe('position', new Keyframe(0, pos, transition_rigid_vector3));
 	this.position = pos;
+	this.startPosition = pos;
 
 }
 

@@ -9,7 +9,8 @@ Bell.prototype = Object.create(CGFobject.prototype);
 Bell.prototype.constructor = Body;
 
 Bell.prototype.OnClick = function(){
-	this.board.endTurn();
+	if(this.board.isPlaying())
+		this.board.endTurn();
 }
 
 Bell.prototype.setPickID = function(id){

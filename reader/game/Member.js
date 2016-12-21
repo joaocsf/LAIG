@@ -88,7 +88,8 @@ Member.prototype.spawnPosition = function(pos){
 }
 
 Member.prototype.OnClick = function(){
-	this.board.selectMember(this);
+	if(this.board.isPlaying())
+		this.board.selectMember(this);
 }
 
 Member.prototype.setPickID = function(idC){

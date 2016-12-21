@@ -7,6 +7,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.BLACK = 0;
 	this.WHITE = 1;
 
+	this.scene.animator.addUndoListener(this);
 	this.lastTime = this.scene.animator.lastTime;
 
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
@@ -46,6 +47,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 
 	this.playerTurn = this.WHITE;
 	this.playerTurnTime = 0;
+	this.lastPlayerTurn;
+	this.lastPlayerTurnTime;
 
 	this.members = [];
 	this.members[this.BLACK] = [];
@@ -114,29 +117,37 @@ Board.prototype.update = function(time){
 //Do This in the first round!;
 Board.prototype.storePlayerTurn = function(turn, time){
 	var time = this.scene.animator.animationTime;
-
+	if(this.lastPlayerTurnTime < time){
+		this.lastPlayerTurn = turn;
+		this.lastPlayerTurnTime = time;
+	}
 	this.animation.addKeyframe('playerTurn', new Keyframe(time, {obj: this, lstnr: 'playerTurnListener', value: turn}, transition_listener));
 	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, time, transition_rigid_float));
 }
 
 Board.prototype.playerTurnListener = function(turn){
-	console.log("Player:" + turn);
 	if(this.playerTurn == turn){
 		return;
 	}
 	this.playerTurn = turn;
 
-	console.log("Player:" + turn);
 	this.registerPicking();
 	this.resetRound();
 }
 
 Board.prototype.updateTimerValues = function(){
 	var time = this.scene.animator.animationTime - this.playerTurnTime;
+	var t2 = this.scene.animator.animationTime - this.lastPlayerTurnTime;
 	this.timer.setTime(time);
 
-	if(time > this.roundTime)
+	if(t2 > this.roundTime){
 		this.endTurn();
+	}
+}
+
+Board.prototype.onUndo = function(){
+	this.lastPlayerTurnTime = this.playerTurnTime;
+	this.lastPlayerTurn = this.lastPlayerTurn;
 }
 
 Board.prototype.setPieces = function(pieces){
@@ -388,9 +399,11 @@ Board.prototype.setUp = function () {
 	this.adaptoids[this.WHITE][0].move(this.getCellAt(2,3));
 };
 
+Board.prototype.isPlaying = function(){
+	return this.scene.animator.recording;
+}
 
 Board.prototype.selectBody = function(object){
-
 	if(this.selected.body){
 
 		if(this.selected.body2){
@@ -625,3 +638,16 @@ Board.prototype.getGameString = function () {
 	}
 	return "jogo(" + this.points[this.WHITE] + "," + this.points[this.BLACK] + ",[" + res + "]" + ")";
 };
+
+//Debugs
+Board.prototype.debugCells = function(){
+	console.log(this.cells);
+}
+
+Board.prototype.debugBodys = function(){
+	console.log(this.adaptoids);
+}
+
+Board.prototype.debugMembers = function(){
+	console.log(this.members);
+}

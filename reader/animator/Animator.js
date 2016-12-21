@@ -4,7 +4,7 @@ function Animator(scene) {
 	this.recording = true;
 	this.startTime = 0;
 	this.animationTime = 0;
-	this.animationMaxTime = 20;
+	this.animationMaxTime = 0;
 	this.animations = [];
 	this.lastTime = 0;
 	this.play = false;
@@ -12,32 +12,45 @@ function Animator(scene) {
 	this.animate = true;
 	this.playUI;
 	this.currTime;
+	this.listeners = [];
+	this.timeOffset = 5;
+	this.playBtn;
 };
-
-Animator.prototype.changingAnimationTime = function(lmnt){
-	this.playUI = this.lmnt;
-}
 
 Animator.prototype.changingAnimationTime = function(){
 	this.animate = false;
 	this.lastPlay = false;
+	this.recording = false;
 }
 
 Animator.prototype.changedAnimationTime = function(){
 	this.animate = true;
 	this.lastPlay = false;
+	this.recording = false;
 }
 
 Animator.prototype.updateMaxTime = function(){
-	this.animationMaxTime = this.animationTime + 5;
+	this.animationMaxTime = this.animationTime + this.timeOffset;
 	this.playUI.__max = this.animationMaxTime;
 }
 
+Animator.prototype.addUndoListener = function(listener){
+	this.listeners.push(listener);
+}
+
 Animator.prototype.undo = function(){
-	console.log("Hello");
+	for(var i = 0; i < this.listeners.length; i++){
+		this.listeners[i].onUndo();
+	}
 	this.updateMaxTime();
-	console.log(this.animationTime - this.animationMaxTime + " = Rs");
 	this.clearKeyframes(this.animationTime);
+}
+
+Animator.prototype.togglePlay = function(){
+	this.play = !this.play;
+	this.playBtn.name((this.play)? "Stop" : "Play");
+//	this.playBtn.updateDisplay();
+	console.log(this.playBtn);
 }
 
 Animator.prototype.clearKeyframes = function(time){
@@ -46,11 +59,16 @@ Animator.prototype.clearKeyframes = function(time){
 	}
 }
 
+Animator.prototype.resume = function(){
+	this.animationTime = this.animationMaxTime - this.timeOffset;
+	this.recording = true;
+	this.play = true;
+}
+
 Animator.prototype.update = function(currTime){
 	this.currTime = currTime;
-
 	if(this.recording && this.play){
-			if(this.animationTime > this.animationMaxTime - 5){
+			if(this.animationTime > this.animationMaxTime - this.timeOffset){
 				this.updateMaxTime();
 			}
 	}

@@ -36,24 +36,33 @@ SceneInterface.prototype.init = function(application) {
 	this.lightGroup = this.gui.addFolder("Luzes");
 	this.scene.animator.animationTime=0.0001;
 
-	var timeline = this.gui.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime).step(1).listen();
+	var animationGroup = this.gui.addFolder("Animation");
+	var timeline = animationGroup.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime).step(0.2).listen();
 
 	this.scene.animator.playUI = timeline;
 
 	var scene = this.scene;
 
 	this.scene.animator.animationTime = 0;
-	timeline.onChange(function(){
-		scene.animator.changingAnimationTime();
+	timeline.onChange( function(){
+		scene.animator.changingAnimationTime()
 	});
 
-	timeline.onFinishChange(function(){
+	timeline.onFinishChange( function(){
 		scene.animator.changedAnimationTime();
 	});
 
-	this.gui.add(this.scene.animator, 'play');
+	var playButton = animationGroup.add(this.scene.animator, 'togglePlay').name("Play");
+	scene.animator.playBtn = playButton;
 
-	this.gui.add(this.scene.animator, 'undo');
+	animationGroup.add(this.scene.animator, 'resume');
+	animationGroup.add(this.scene.animator, 'undo');
+
+	var debugGroup = this.gui.addFolder("Debug");
+	debugGroup.add(this.scene.board, 'debugCells');
+	debugGroup.add(this.scene.board, 'debugBodys');
+	debugGroup.add(this.scene.board, 'debugMembers');
+
 
 	return true;
 };
