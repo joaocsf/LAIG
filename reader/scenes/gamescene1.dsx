@@ -198,25 +198,36 @@
       <children>
         <componentref id="" />
       </children>
-
     </component>
+
     <component id="clawC">
       <transformation>
-
+        <translate x="0" y="0.1" z="0"/>
         <rotate axis="z" angle="-45"/>
         <rotate axis="x" angle="-90" />
       </transformation>
-
       <materials>
         <material id="inherit" />
       </materials>
-
       <texture id="inherit" />
+      <children>
+        <primitiveref id="cone"/>
+        <componentref id="clawC2"/>
+      </children>
+    </component>
 
+    <component id="clawC2">
+      <transformation>
+
+        <rotate axis="x" angle="-20" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="inherit" />
       <children>
         <primitiveref id="cone"/>
       </children>
-
     </component>
 
     <component id="cellC">

@@ -94,11 +94,11 @@ Member.prototype.setPickID = function(idC){
 }
 
 Member.prototype.display = function(){
-	if(this.pickID > 0){
+	if(this.pickID > 0 && !this.parent){
 		this.scene.registerForPick(this.pickID,this);
 	}
 
-	if(this.selected && !this.scene.pickMode){
+	if(this.selected && !this.scene.pickMode && !this.parent){
 		this.scene.setActiveShader(this.selectShader);
 		this.selectShader.setUniformsValues({pieceN : 1, number: 1});
 	}
@@ -113,7 +113,7 @@ Member.prototype.display = function(){
 
 	this.scene.popMatrix();
 
-	if(this.selected)
+	if(this.selected && !this.parent)
 		this.scene.setActiveShader(this.scene.defaultShader);
 
 	this.scene.clearPickRegistration();
