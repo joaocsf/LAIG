@@ -27,7 +27,7 @@ Connection.prototype.getPrologRequest = function (requestString, onSuccess, onEr
 
     var requestPort = this.port || 8081;
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:'+requestPort+'/'+requestString, true);
+    request.open('GET', 'http://localhost:'+requestPort+'/'+requestString, false);
 
     request.onload = onSuccess || Connection.handleSuccess;
     request.onerror = onError || Connection.handleError;

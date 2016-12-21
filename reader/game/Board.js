@@ -38,7 +38,6 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.addGarra_index = 4;
 	this.addPerna_index = 5;
 
-
 	this.pieces =  null;
 	this.cells = [];
 	this.adaptoids = [];
@@ -168,35 +167,6 @@ Board.prototype.getPosition = function(radius,angle, team){
 	return res;
 }
 
-Board.prototype.resetRound = function(){
-	if(this.selected.body)
-		this.selected.body.resetSelection();
-
-	if(this.selected.body2)
-		this.selected.body2.resetSelection();
-
-	if(this.selected.cell)
-		this.selected.cell.selected = false;
-
-	if(this.selected.member)
-		this.selected.member.selected = false;
-
-	this.selected.body = null;
-	this.selected.body2 = null;
-	this.selected.cell = null;
-	this.selected.member = null;
-	this.movimentar = 0;
-	this.evoluir = 0;
-}
-
-Board.prototype.checkRound = function(){
-	console.log("Checking Round");
-	if(!this.selected.body || !this.selected.cell || !this.selected.member || !this.selected.body2)
-		return;
-
-	this.doRound();
-};
-
 Board.prototype.doMovement = function (action) {
 	console.log("Moviment Action : " + action);
 
@@ -269,8 +239,15 @@ Board.prototype.doFamine = function (action) {
 	var enemy = 1 - this.playerTurn;
 	for (var i = 0; i < action.length; i++) {
 		var adaptoid = this.getBodyByID(action[i],enemy);
-		//adaptoid.move(null);//Remove o adaptoid;
+		adaptoid.move(null);//Remove o adaptoid;
 	}
+};
+
+Board.prototype.famin = function (action) {
+
+	this.points[this.WHITE] = action[0];
+	this.points[this.BLACK] = action[1];
+	this.doFamine(action[2]);
 };
 
 Board.prototype.handleBotPlay = function (response) {
@@ -285,7 +262,7 @@ Board.prototype.handleBotPlay = function (response) {
 };
 
 Board.prototype.jogadaBot = function (currPlayer) {
-	//botPlay(Jogador,Dificuldade,jogo(A,B,Tab))
+
 	var jogo = this.getGameString();
 	var dif = this.dificuldade[this.playerTurn];
 	var board = this;
@@ -301,64 +278,127 @@ Board.prototype.jogadaBot = function (currPlayer) {
 	}
 };
 
+Board.prototype.resetRound = function(){
+	if(this.selected.body)
+		this.selected.body.resetSelection();
+
+	if(this.selected.body2)
+		this.selected.body2.resetSelection();
+
+	if(this.selected.cell)
+		this.selected.cell.selected = false;
+
+	if(this.selected.member)
+		this.selected.member.selected = false;
+
+	this.selected.body = null;
+	this.selected.body2 = null;
+	this.selected.cell = null;
+	this.selected.member = null;
+};
+
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 
-	//this.jogadaBot("branco");
+	var board = this;
 
 	var currPlayer = "preto";
 	if(this.WHITE == this.playerTurn)
 		currPlayer = "branco";
 
-	if(this.mode[this.playerTurn] == "c"){
+	if(this.mode[this.playerTurn] == "c"){//Jogada Computador
 
 		this.jogadaBot(currPlayer);
-	}
-	//Se algum deles nao existir entao fica a null
-	if(this.selected.body && this.selected.cell)//Movimentação da peca body para cell
-		if(this.selected.cell.occupied)//É um ataque
-			this.movimentar = 1;
-	if(this.selected.body2 && this.selected.member)//Adicao de um member a peca body2
-		this.evoluir = 1;
 
-	if(this.movimentar){
-		//construir comando de Movimento
-		//Enviar comando
-	}
+	} else {//Jogada Humano
 
-	if(this.evoluir){
-		//construir comando de evoluir
-		//enviar comando
-	}
+		if(this.selected.body && this.selected.cell){//Construir comando de movimento
+			if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
+				var x = this.selected.cell.boardPosition.x;
+				var y = this.selected.cell.boardPosition.y;
+				var action = "aC(" + x + y + ")";
+				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+				this.server.getPrologRequest(request,handleAC);
 
-	//%Check round via prolog
-	/*PROLOG MOVES/Commands
-	|		Predicados de ação		|
-	s -> Skip
-	mover(X,Y,Oris) -> Mover a peça em (X,Y) segundo uma lista de orientações
-	capturar(X,Y,Ori) -> Atacar com a peça em (X,Y) para a peça na orientação indicada
-	aC(X,Y,Ori) -> Adicionar corpo a (X,Y) + Ori
-	aP(X,Y) -> Adicionar perna a (X,Y)
-	aG(X,Y) -> Adicionar garra a (X,Y)
-	|			Comandos			|
-	beginGame -> Devolve o tabuleiro inicial
-	play(Jogador,Jogo,Action) -> devolve tabuleiro ou não se a ação não foi possivel
-	botPlay(Jogador,Dificuldade,Jogo) -> devolve tabuleiro e acoes
-	getMoves(X,Y,Pernas) -> Devolve as casas possiveis para uma peca que esteja na posicao (X,Y) e tenha o numero de Pernas
-	isGameOver(A,B,Tab) -> Devolve o jogador que ganhou ou entao nao se o jogo ainda nao acabou. A e B sao as pontuações dos jogadores
-	*/
-	//Move pieces if is possible and register them in the animator!
+				function handleAC(data){
+					var response = new Array();
+					response = JSON.parse(data.target.response);
+					console.log(this);
+					if(response[0])
+						this.selected.body.move(this.selected.cell);
+				};
+			};
+		} else {
+			//TODO fazer o movimento e o capturar
+		}
 
-	if(this.selected.cell && this.selected.body)
-		if(!this.selected.cell.occupied)
-			this.selected.body.move(this.selected.cell);
+		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
+			var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
+			var x = this.selected.body2.boardPosition.x;
+			var y = this.selected.body2.boardPosition.y;
+			action += "(" + x + "," + y + ")";
+			if(this.selected.body2.currentCell){
+				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+				this.server.getPrologRequest(request,handleEvolution);
 
-	if(this.selected.body2 && this.selected.member)
-		this.selected.member.storeParent(this.selected.body2);
+				function handleEvolution(data){
+					var response = new Array();
+					response = JSON.parse(data.target.response);
+					console.log(this);
+					if(response[0])
+						board.selected.member.storeParent(this.selected.body2);
+				}
+			}
+		}
 
+		//Quando os comandos estiverem feitos isto torna-se obsoleto
+		if(this.selected.cell && this.selected.body)
+			if(!this.selected.cell.occupied)
+				this.selected.body.move(this.selected.cell);
+
+		if(this.selected.body2 && this.selected.member)
+			this.selected.member.storeParent(this.selected.body2);
+
+		//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
+		this.server.getPrologRequest("esfomeados(" + this.getGameString() + ")," + currPlayer + ")",faminHandler);
+
+		function faminHandler(data){
+			var response = new Array();
+			response = JSON.parse(data.target.response);
+			console.log(this);
+			board.famin(response);
+		};
+	}//Fim Jogada
+
+	//Verificar se o jogo acabou
+	this.server.getPrologRequest("isGameOver(" + this.getGameString + ")",gameOverHandler);
+
+	function gameOverHandler(data){
+		var response = new Array();
+		response = JSON.parse(data.target.response);
+		console.log(this);
+		board.gameOver(response);
+	};
 
 	this.resetRound();
 }
+
+Board.prototype.gameOver = function (status) {
+
+	switch (status[0]) {
+		case 0:
+			return;
+			break;
+		case 1:
+			//this.WHITE ganhou
+			break;
+		case 2:
+			//this.Black ganhou
+			break;
+	}
+
+	return;
+};
 
 Board.prototype.endTurn = function(){
 	this.doRound();
@@ -528,11 +568,6 @@ Board.prototype.initializePositions = function(){
 
 	this.bell.setPosition({x:0, y:-0.2 + 1, z: -(this.width/2 + 1)});
 	this.timer.setPosition({x:0, y:-0.2, z: -(this.width/2 + 1)});
-}
-
-Board.prototype.play = function(){
-
-	//this.playerTurn
 }
 
 Board.prototype.registerCellPicking = function(){
