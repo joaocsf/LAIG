@@ -177,6 +177,12 @@
 
     </primitive>
 
+    <primitive id="sphere">
+
+      <sphere radius="0.5" slices="15" stacks="15" />
+
+    </primitive>
+
   </primitives>
 
 
@@ -280,17 +286,26 @@
       <transformation>
         <rotate axis="x" angle="-90" />
       </transformation>
-
       <materials>
         <material id="inherit" />
       </materials>
-
       <texture id="inherit" />
-
       <children>
         <primitiveref id="coneMid"/>
       </children>
+    </component>
 
+    <component id="bellC">
+      <transformation>
+        <translate x="0" y="0.5" z="0"/>
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="inherit" />
+      <children>
+        <primitiveref id="sphere"/>
+      </children>
     </component>
   <!--
     <component id="carro">
@@ -323,6 +338,7 @@
     <cell component="cellC" />
     <claw component="clawC" />
     <leg component="legC" />
+    <bell component="bellC"/>
     <player1 material="black" texture="none" />
     <player2 material="white" texture="none" />
 

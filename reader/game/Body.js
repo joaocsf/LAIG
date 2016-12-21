@@ -44,9 +44,9 @@ Body.prototype.move = function(cell){
 	this.boardPosition.y = cell.boardPosition.y;
 
 	var time = this.scene.animator.animationTime;
-
+	var duration = 1;
 	this.animation.addKeyframe('position', new Keyframe(time + 0, this.position, transition_curved_vector3));
-	this.animation.addKeyframe('position', new Keyframe(time + 3, cell.position, transition_rigid_vector3));
+	this.animation.addKeyframe('position', new Keyframe(time + duration, cell.position, transition_rigid_vector3));
 	if(this.currentCell)
 			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;

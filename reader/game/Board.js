@@ -11,7 +11,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
-
+	this.timer = new Timer(this.scene, 10, 4, 0.5);
 	this.mode = "hh";//Acrescentar mode "hc" "cc"
 	this.dificuldade = "opOp";//"retOp"
 
@@ -64,23 +64,9 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		}
 		off++;
 	}
-
-
 	var width = 1;
 	this.half = width/2;
-
-	var aSpace = 3* this.half;
-	var bSpace = 2* this.half;
-	var cSpace = 1* this.half;
-	var dSpace = 0;
 	this.width = width * 7;
-	this.board =[[aSpace,0,0,0,0],
-				[bSpace,0,0,0,0,0],
-				[cSpace,0,0,0,0,0,0],
-				[dSpace,0,0,0,0,0,0,0],
-				[cSpace,-1,0,0,0,0,0,0],
-				[bSpace,-1,-1,0,0,0,0,0],
-				[aSpace,-1,-1,-1,0,0,0,0]];
 
 	this.time = 0;
 	this.initializePositions();
@@ -118,9 +104,7 @@ Board.prototype.getPosition = function(radius,angle, team){
 		y: -0.2,
 		z: radius* Math.sin(angle) * t
 	};
-
 	return res;
-
 }
 
 Board.prototype.resetRound = function(){
@@ -308,19 +292,26 @@ Board.prototype.getMemberPosition = function(piece, dist = 0){
 
 
 Board.prototype.initializePositions = function(){
-
-	for(var x = 0; x < this.adaptoids[this.BLACK].length; x++){
-		var blck = this.adaptoids[this.BLACK][x];
-		var wht = this.adaptoids[this.WHITE][x];
-		blck.spawnPosition(this.getBodyPosition(blck, 0));
-		wht.spawnPosition(this.getBodyPosition(wht, 0));
-	}
-
-	for(var x = 0; x < this.members[this.BLACK].length; x++){
-		var blck = this.members[this.BLACK][x];
-		var wht = this.members[this.WHITE][x];
-		blck.spawnPosition(this.getMemberPosition(blck,1));
-		wht.spawnPosition(this.getMemberPosition(wht, 1));
+	var width = 1;
+	var aSpace = 3* this.half;
+	var bSpace = 2* this.half;
+	var cSpace = 1* this.half;
+	var dSpace = 0;
+	this.board =[[aSpace,0,0,0,0],[bSpace,0,0,0,0,0],[cSpace,0,0,0,0,0,0],[dSpace,0,0,0,0,0,0,0],[cSpace,-1,0,0,0,0,0,0],[bSpace,-1,-1,0,0,0,0,0],[aSpace,-1,-1,-1,0,0,0,0]];
+	var max = Math.max(this.adaptoids[this.BLACK].length, this.members[this.BLACK].length);
+	for(var i = 0; i < max; i ++){
+		if(i < this.adaptoids[this.BLACK].length){
+			var blck = this.adaptoids[this.BLACK][i];
+			var wht = this.adaptoids[this.WHITE][i];
+			blck.spawnPosition(this.getBodyPosition(blck, 0));
+			wht.spawnPosition(this.getBodyPosition(wht, 0));
+		}
+		if(i < this.members[this.BLACK].length){
+			var blck = this.members[this.BLACK][i];
+			var wht = this.members[this.WHITE][i];
+			blck.spawnPosition(this.getMemberPosition(blck,1));
+			wht.spawnPosition(this.getMemberPosition(wht, 1));
+		}
 	}
 	var id = 0;
 	for(var y = 0; y < this.board.length; y++){
@@ -344,7 +335,8 @@ Board.prototype.initializePositions = function(){
 		}
 	}
 
-	this.bell.setPosition({x:0, y:0, z: this.width});
+	this.bell.setPosition({x:0, y:-0.2 + 1, z: -(this.width/2 + 1)});
+	this.timer.setPosition({x:0, y:-0.2, z: -(this.width/2 + 1)});
 }
 
 Board.prototype.play = function(){
@@ -399,7 +391,7 @@ Board.prototype.display = function(){
 	this.scene.translate( 0, 0.2, 0);
 
 	this.bell.display();
-
+	this.timer.display();
 	if(this.pieces != null){
 		for(var y = 0; y < this.cells.length; y++){
 

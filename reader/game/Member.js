@@ -44,20 +44,22 @@ Member.prototype.storeParent = function(parent){
 		}
 	}
 
+	var duration = 1;
+
 	this.animation.addKeyframe('position', new Keyframe(time + 0,
 		 																									{pos: fromP,
 																											 obj: this.parent}, transition_follow_vector3));
 
-	this.animation.addKeyframe('position', new Keyframe(time + 0 + 3,
+	this.animation.addKeyframe('position', new Keyframe(time + duration,
 																										{	pos: toPos,
 	 																										obj: parent}, transition_rigid_follow_vector3));
 
 	this.animation.addKeyframe('parent', new Keyframe(time + 0, {obj: this, parent: this.parent}, transition_parent));
-	this.animation.addKeyframe('parent', new Keyframe(time + 0 + 3, {obj: this, parent: parent}, transition_parent));
+	this.animation.addKeyframe('parent', new Keyframe(time + duration, {obj: this, parent: parent}, transition_parent));
 
 	if(parent != null){
 		this.animation.addKeyframe('rotation', new Keyframe(time + 0, this.rotation, transition_float));
-		this.animation.addKeyframe('rotation', new Keyframe(time + 3, parent.members.length, transition_rigid_float));
+		this.animation.addKeyframe('rotation', new Keyframe(time + duration, parent.members.length, transition_rigid_float));
 	}
 }
 

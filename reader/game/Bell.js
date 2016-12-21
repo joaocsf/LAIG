@@ -33,7 +33,7 @@ Bell.prototype.display = function(){
 		this.scene.translate(this.position.x, this.position.y, this.position.z);
 		//criar bell!
 		var team = this.board.playerTurn;
-		this.board.pieces['body'].display2(this.board.pieces[team].material, this.board.pieces[team].texture);
+		this.board.pieces['bell'].display2(this.board.pieces[team].material, this.board.pieces[team].texture);
 
   this.scene.popMatrix();
 

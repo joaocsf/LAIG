@@ -36,7 +36,7 @@ SceneInterface.prototype.init = function(application) {
 	this.lightGroup = this.gui.addFolder("Luzes");
 	this.scene.animator.animationTime=0.0001;
 
-	var timeline = this.gui.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime, 0.001).listen();
+	var timeline = this.gui.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime, 0.1).listen();
 
 	this.scene.animator.playUI = timeline;
 
@@ -50,7 +50,6 @@ SceneInterface.prototype.init = function(application) {
 	timeline.onFinishChange(function(){
 		scene.animator.changedAnimationTime();
 	});
-
 
 	this.gui.add(this.scene.animator, 'play');
 

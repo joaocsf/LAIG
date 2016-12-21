@@ -24,11 +24,12 @@ Cell.prototype.OnClick = function(){
 
 Cell.prototype.storeOccupy = function(object){
 	var time = this.scene.animator.animationTime;
+	var duration = 1;
 	this.animation.addKeyframe('occupied',
 	new Keyframe(time + 0, {obj:this, value: this.occupied}, transition_occupy));
 
 	this.animation.addKeyframe('occupied',
-		new Keyframe(time + 3, {obj:this, value: object}, transition_occupy));
+		new Keyframe(time + duration, {obj:this, value: object}, transition_occupy));
 
 }
 

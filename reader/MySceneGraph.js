@@ -1522,6 +1522,7 @@ MySceneGraph.prototype.parseGameComponents = function(rootElement){
 			case 'leg':
 			case 'body':
 			case 'cell':
+			case 'bell':
 			var componentID = this.reader.getString(child, 'component');
 			component = this.components[componentID];
 			break;
