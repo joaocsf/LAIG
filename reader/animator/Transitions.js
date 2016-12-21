@@ -5,6 +5,11 @@
 
 /* function to interpolate between two points */
 
+function transition_listener(p1, p2, time){
+	p1.obj[p1.lstnr](p1.value);
+	return p1.value;
+}
+
 function transition_rigid_float(p1, p2, time){
 	return p1;
 }

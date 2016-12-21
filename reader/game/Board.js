@@ -112,12 +112,23 @@ Board.prototype.update = function(time){
 	this.updateTimerValues();
 }
 //Do This in the first round!;
-Board.prototype.storePlayerTurn = function(){
+Board.prototype.storePlayerTurn = function(turn, time){
 	var time = this.scene.animator.animationTime;
-	console.log("Here");
-	this.animation.addKeyframe('playerTurn', new Keyframe(time, this.playerTurn, transition_rigid_float));
-	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, this.playerTurnTime, transition_rigid_float));
 
+	this.animation.addKeyframe('playerTurn', new Keyframe(time, {obj: this, lstnr: 'playerTurnListener', value: turn}, transition_listener));
+	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, time, transition_rigid_float));
+}
+
+Board.prototype.playerTurnListener = function(turn){
+	console.log("Player:" + turn);
+	if(this.playerTurn == turn){
+		return;
+	}
+	this.playerTurn = turn;
+
+	console.log("Player:" + turn);
+	this.registerPicking();
+	this.resetRound();
 }
 
 Board.prototype.updateTimerValues = function(){
@@ -340,10 +351,7 @@ Board.prototype.doRound = function(){
 
 Board.prototype.endTurn = function(){
 	this.doRound();
-	this.playerTurn = 1 - this.playerTurn;
-	this.playerTurnTime = this.scene.animator.animationTime;
-	this.storePlayerTurn();
-	this.registerPicking();
+	this.storePlayerTurn(1 - this.playerTurn, this.scene.animator.animationTime);
 }
 
 Board.prototype.getCellAt = function (x,y) {
@@ -526,9 +534,10 @@ Board.prototype.clearPicking = function(){
 	var members = this.members[this.playerTurn].length;
 	var max = Math.max(this.pieceNumber, members);
 	for(var i = 0; i < max; i++){
-		if(i < this.pieceNumber)
-			this.adaptoids[team][i].setPickID(-1);
+		if(i < this.pieceNumber){
 
+			this.adaptoids[team][i].setPickID(-1);
+		}
 		if(i < members)
 			this.members[team][i].setPickID(-1);
 	}
