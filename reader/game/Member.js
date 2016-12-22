@@ -17,7 +17,7 @@ function Member(scene, board, id, team, type, selectShader) {
 	this.selectShader = selectShader;
 	this.rotation = 0;
 	this.parent = null;
-	this.startPosition = null;
+	this.startPosition = {x:0, y:0, z:0};
 	//Animation
 	this.animation = new Sequencer();
 	this.scene.animator.addAnimation(this.animation);
@@ -45,12 +45,15 @@ Member.prototype.storeParent = function(parent){
 	}
 
 	var duration = 1;
+	var offset = 0;
+	if(!parent)
+		offset = 1;
 
-	this.animation.addKeyframe('position', new Keyframe(time + 0,
+	this.animation.addKeyframe('position', new Keyframe(time + offset,
 		 																									{pos: fromP,
 																											 obj: this.parent}, transition_follow_vector3));
 
-	this.animation.addKeyframe('position', new Keyframe(time + duration,
+	this.animation.addKeyframe('position', new Keyframe(time + duration + offset,
 																										{	pos: toPos,
 	 																										obj: parent}, transition_rigid_follow_vector3));
 

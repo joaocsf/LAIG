@@ -47,7 +47,7 @@ function transition_parent(p1, p2, time){
 }
 
 function transition_rigid_follow_vector3(p1, p2, time){
-	return (p1.obj)? p1.obj.position : p1.position;
+	return (p1.obj)? p1.obj.position : p1.pos;
 }
 
 function transition_follow_vector3(p1, p2, time){

@@ -66,7 +66,9 @@ Body.prototype.move = function(cell){
 	if(this.currentCell)
 			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;
-	this.currentCell.storeOccupy(this);
+	
+	if(this.currentCell)
+		this.currentCell.storeOccupy(this);
 }
 
 Body.prototype.setCurrentCell = function(cell){
