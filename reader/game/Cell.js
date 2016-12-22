@@ -56,7 +56,6 @@ Cell.prototype.occupy = function(object){
 	var id = (object)? object.id : 'null';
 	console.log("Cell:" + this.id + " Object:" + id);
 	if(this.occupied){
-		this.occupied.boardLocation = this.boardLocation;
 		this.occupied.setCurrentCell(this);
 	}
 }

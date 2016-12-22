@@ -23,7 +23,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		member : null
 	}
 	//
-	//this.server = new Connection();
+	this.server = new Connection();
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;

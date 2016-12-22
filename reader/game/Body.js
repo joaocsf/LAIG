@@ -70,6 +70,9 @@ Body.prototype.move = function(cell){
 }
 
 Body.prototype.setCurrentCell = function(cell){
+	if(cell){
+		this.boardPosition = cell.boardPosition;
+	}
 	this.currentCell = cell;
 }
 
