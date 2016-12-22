@@ -1,5 +1,6 @@
 function XMLscene() {
     CGFscene.call(this);
+    this.graphsNames =[];
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -34,22 +35,51 @@ XMLscene.prototype.init = function (application) {
 
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
-    this.board = new Board(this, 20, 10, 10);
-    console.log(this.board.getGameString());
+  this.board = new Board(this, 20, 10, 10);
+  console.log(this.board.getGameString());
+
+  for(var i = 0 ; i < this.lights.length; i++){
+    this.lightState.push(this.lights[i].enabled);
+  }
 
   this.currentView = null;
 	this.setUpdatePeriod(1);
   this.transitionValue = 2;
   this.changeHeaderText("Boas Puto tudo bem?");
   this.changeHeaderText(" ");
+  this.graphs = [];
 
+  this.graphName = "";
   var time = 0;
+  this.loading = 0;
 };
+
+XMLscene.prototype.addGraph = function(graph){
+  if(!this.loading)
+    this.graphName = graph.name;
+
+  this.graphs[graph.name] = graph;
+  this.loading++;
+}
 
 XMLscene.prototype.setInterface = function (interface) {
 	this.interface = interface;
 
 };
+
+XMLscene.prototype.resetLights = function(){
+  for(var i = 0; i < this.lights.length; i++){
+    var light = this.lights[i];
+    light.setSpotDirection(0, -1, 0);
+    light.setSpotExponent(10);
+    light.setSpotCutOff(180);
+    light.setConstantAttenuation(1);
+    light.setLinearAttenuation(0);
+    light.setQuadraticAttenuation(0);
+    light.visible = false;
+    light.update();
+  }
+}
 
 XMLscene.prototype.initLights = function () {
 
@@ -63,9 +93,11 @@ XMLscene.prototype.initLights = function () {
 
 XMLscene.prototype.update = function(currTime){
   var time = currTime/1000;
-	this.graph.update(time);
-    if(this.sea != null)
-        this.sea.update(time);
+  if(this.graph)
+	 this.graph.update(time);
+
+  if(this.sea != null)
+      this.sea.update(time);
 
 	this.animator.update(time);
   this.board.update(time);
@@ -81,14 +113,10 @@ XMLscene.prototype.initCameras = function () {
 
 XMLscene.prototype.setDefaultAppearance = function () {
 
-	this.setAmbient(	this.graph.illumination.ambient.r,
-						this.graph.illumination.ambient.g,
-						this.graph.illumination.ambient.b,
-						this.graph.illumination.ambient.a);
-
+	this.setAmbient(0.2, 0.4, 0.8, 1.0);
 	this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);
+  this.setSpecular(0.2, 0.4, 0.8, 1.0);
+  this.setShininess(10.0);
 };
 
 XMLscene.prototype.nextCamera = function(){
@@ -170,41 +198,47 @@ XMLscene.prototype.changeHeaderText = function (string) {
 
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
-XMLscene.prototype.onGraphLoaded = function ()
-{
-	this.gl.clearColor(	this.graph.illumination.background.r,
-						this.graph.illumination.background.g,
-						this.graph.illumination.background.b,
-						this.graph.illumination.background.a);
+
+XMLscene.prototype.updateGraph = function(){
+  console.log("Updating Graph!");
+  this.resetLights();
+  this.graph = this.graphs[this.graphName];
+  this.graph.loadLights();
+  this.gl.clearColor(	this.graph.illumination.background.r,
+            this.graph.illumination.background.g,
+            this.graph.illumination.background.b,
+            this.graph.illumination.background.a);
 
 
-	this.setGlobalAmbientLight(	this.graph.illumination.ambient.r,
-						this.graph.illumination.ambient.g,
-						this.graph.illumination.ambient.b,
-						this.graph.illumination.ambient.a);
+  this.setGlobalAmbientLight(	this.graph.illumination.ambient.r,
+            this.graph.illumination.ambient.g,
+            this.graph.illumination.ambient.b,
+            this.graph.illumination.ambient.a);
 
-	this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.1);
+  this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.1);
 
-	//console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
+  //console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
+  for(var i = 0 ; i < this.lights.length; i++){
+    this.lightState[i] = this.lights[i].enabled;
+  }
 
-	this.nextCamera();
-
-	for(var i = 0 ; i < this.lights.length; i++){
-		if(this.lights[i].visible)
-			this.lightState.push(this.lights[i].enabled);
-
-		console.log(this.lights[i].enabled);
-	}
-	this.interface.updateLights();
-	this.root = this.graph.getRoot();
-
-	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_LOCAL_VIEWER, this.graph.illumination.local);
-	//this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_TWO_SIDED, this.graph.illumination.doubleSided);
+  //this.nextCamera();
+  this.interface.updateLights();
+  this.root = this.graph.getRoot();
+  //this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_LOCAL_VIEWER, this.graph.illumination.local);
+  //this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_TWO_SIDED, this.graph.illumination.doubleSided);
   //Assign Game Entities
-
+  this.currentView = this.graph.currentView;
   this.board.setPieces(this.graph.gameComponents);
+  console.log("End updateGraph!");
+}
 
-
+XMLscene.prototype.onGraphLoaded = function()
+{
+  this.loading --;
+  if(this.loading == 0){
+    this.updateGraph();
+  }
 };
 
 XMLscene.prototype.updateLights = function(){
@@ -230,8 +264,8 @@ XMLscene.prototype.display = function () {
 	// Initialize Model-View matrix as identity (no transformation
 	this.updateProjectionMatrix();
     this.loadIdentity();
-
-	this.updateLights();
+  if(this.graph)
+	 this.updateLights();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
@@ -249,13 +283,14 @@ XMLscene.prototype.display = function () {
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
-	if (this.graph.loadedOk)
-	{
-		for(var i = 0; i < this.lights.length; i++)
-			this.lights[i].update();
-
-		this.root.display();
-	};
+  if(this.graph)
+  	if (this.graph.loadedOk)
+  	{
+  		for(var i = 0; i < this.lights.length; i++)
+  			this.lights[i].update();
+      if(this.root)
+  		  this.root.display();
+  	};
 };
 
 

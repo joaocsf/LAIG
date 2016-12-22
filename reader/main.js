@@ -23,13 +23,17 @@ main=function()
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myScene = new XMLscene();
+
+    var scenes =  ['gamescene1.dsx', 'gamescene2.dsx'];
+    myScene.graphsNames = scenes;
+
     var myInterface = new SceneInterface();
 
     app.init();
 
     app.setScene(myScene);
     app.setInterface(myInterface);
-	myScene.setInterface(myInterface);
+	  myScene.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
@@ -39,10 +43,13 @@ main=function()
 
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors
-	var myGraph = new MySceneGraph(filename, myScene);
 
+
+  for(var k = 0; k < scenes.length; k++){
+    var myGraph = new MySceneGraph(scenes[k], myScene);
+  }
 	// start
-    app.run();
+  app.run();
 }
 
 ]);

@@ -7,7 +7,7 @@
 function SceneInterface() {
 	//call CGFinterface constructor
 	CGFinterface.call(this);
-
+	this.items = [];
 };
 
 SceneInterface.prototype = Object.create(CGFinterface.prototype);
@@ -19,8 +19,17 @@ SceneInterface.prototype.constructor = SceneInterface;
  */
 
 SceneInterface.prototype.updateLights = function(){
-	for(var i = 0; i < this.scene.lightState.length ; i++){
-		this.lightGroup.add(this.scene.lightState, i , this.scene.lightState[i]).name(this.scene.graph.lightsName[i]);
+	console.log(this.scene.graph.lightsName);
+	var length = this.scene.graph.lightsName.length;
+
+
+	for(var i = 0; i < this.scene.lights.length ; i++){
+	  var item = this.items[i];
+		if(i < length){
+			item.name(this.scene.graph.lightsName[i]);
+		}else{
+				item.name("Disabled");
+		}
 	}
 }
 
@@ -30,11 +39,17 @@ SceneInterface.prototype.init = function(application) {
 
 	// init GUI. For more information on the methods, check:
 	//  http://workshop.chromeexperiments.com/examples/gui
-
+	this.lightGroup = null;
 	this.gui = new dat.GUI();
-
 	this.lightGroup = this.gui.addFolder("Luzes");
+
 	this.scene.animator.animationTime=0.0001;
+
+	//
+	for(var i = 0; i < this.scene.lights.length ; i++){
+		var item = this.lightGroup.add(this.scene.lightState, i , this.scene.lightState[i]).name("Disabled").listen();
+		this.items.push(item);
+	}
 
 	var animationGroup = this.gui.addFolder("Animation");
 	var timeline = animationGroup.add(this.scene.animator, 'animationTime').max(0, this.scene.animator.animationMaxTime).step(0.1).listen();
@@ -58,10 +73,16 @@ SceneInterface.prototype.init = function(application) {
 	animationGroup.add(this.scene.animator, 'resume');
 	animationGroup.add(this.scene.animator, 'undo');
 
+	var gameGroup = this.gui.addFolder("Game");
+	this.scene.graphSelector = gameGroup.add(this.scene, 'graphName', this.scene.graphsNames).onFinishChange( function(){
+		scene.updateGraph();
+	}).listen();
+
 	var debugGroup = this.gui.addFolder("Debug");
 	debugGroup.add(this.scene.board, 'debugCells');
 	debugGroup.add(this.scene.board, 'debugBodys');
 	debugGroup.add(this.scene.board, 'debugMembers');
+
 
 
 	return true;

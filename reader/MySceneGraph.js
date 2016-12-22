@@ -1,6 +1,6 @@
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
-
+	this.name = filename;
 	this.illumination = { 	ambient : {r: 0.1, g: 0.1, b: 0.1, a: 1} ,
 							background : {r: 0, g: 0, b: 0, a: 1},
 							local : 0,
@@ -25,8 +25,7 @@ function MySceneGraph(filename, scene) {
 
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
-	scene.graph=this;
-
+	this.scene.addGraph(this);
 	// File reading
 	this.reader = new CGFXMLreader();
 
@@ -37,6 +36,52 @@ function MySceneGraph(filename, scene) {
 	 */
 	console.log("Opening Scene:" + filename);
 	this.reader.open('scenes/'+filename, this);
+}
+
+MySceneGraph.prototype.loadLights = function(){
+
+	for(var key in this.lights){
+		var lightData = this.lights[key];
+		var light = this.scene.lights[lightData.index];
+		light.disable();
+		light.setVisible(true);
+		if(lightData.enable)
+			light.enable();
+
+		light.setPosition(
+			lightData.location.x,
+			lightData.location.y,
+			lightData.location.z,
+			lightData.location.w);
+		light.setAmbient(
+			lightData.ambient.r,
+			lightData.ambient.g,
+			lightData.ambient.b,
+			lightData.ambient.a);
+		light.setDiffuse(
+			lightData.diffuse.r,
+			lightData.diffuse.g,
+			lightData.diffuse.b,
+			lightData.diffuse.a);
+		light.setSpecular(
+			lightData.specular.r,
+			lightData.specular.g,
+			lightData.specular.b,
+			lightData.specular.a);
+
+		if(lightData.type == "omni")
+			continue;
+
+		light.setSpotCutOff(lightData.angle);
+		light.setSpotExponent(lightData.exponent);
+		light.setSpotDirection(
+			lightData.direction.x,
+			lightData.direction.y,
+			lightData.direction.z);
+
+		light.update();
+	}
+
 }
 
 MySceneGraph.prototype.getRoot = function(){
@@ -408,7 +453,8 @@ Parses the following attributes:
 	if(element.id === this.views.default)
 		this.views.defaultID = this.views.childs.length;
 	this.views.childs.push(view);
-
+	if(!this.currentView)
+		this.currentView = view;
 }
 /* Function to parse the element: Views
 Parses the following attributes:
@@ -522,32 +568,37 @@ MySceneGraph.prototype.parseOmniLights = function(element){
 	}
 
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
-	var omni = this.scene.lights[this.lightIndex];
-
-	omni.disable();
-	omni.setVisible(true);
-
-
-	if(enable == 1){
-		this.scene.lights[this.lightIndex].enable();
-	}
 
 	var location = this.getVector4FromElement(element.getElementsByTagName("location")[0]);
-	omni.setPosition(location.x,location.y,location.z,location.w);
-
 	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
-	omni.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
-
 	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
-	omni.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
-
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
-	omni.setSpecular(specular.r,specular.g,specular.b,specular.a);
+
+
+	var data = {
+		type : "omni",
+		index : this.lightIndex, //omni || spot
+		enable : enable,
+		location : location,
+		ambient : ambient,
+		diffuse : diffuse,
+		specular : specular
+	}
+
+	 var omni = this.scene.lights[this.lightIndex];
+	// omni.disable();
+	// omni.setVisible(true);
+	// if(enable == 1)
+	// 	this.scene.lights[this.lightIndex].enable();
+	// omni.setPosition(location.x,location.y,location.z,location.w);
+	// omni.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+	// omni.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+	// omni.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
 	console.log("Omni Added: id: " + omni.id + " enable : " + enable + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
 	this.lightsName.push(element.id);
-	this.lights[element.id] = this.scene.lights[this.lightIndex];
+	this.lights[element.id] = data;
 	this.lightIndex++;
 	omni.update();
 
@@ -574,52 +625,50 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 		console.error("Duplicate light id found : " + element.id);
 	}
 
-	var spot = this.scene.lights[this.lightIndex];
-
-	spot.disable();
-	spot.setVisible(true);
-
-
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
-
-	spot.disable();
-
-	if(enable == 1){
-		spot.enable();
-	}
+	var location = this.getVector3FromElement(element.getElementsByTagName("location")[0]);
+	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
+	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
+	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
 
 	var angle = this.reader.getFloat(element,"angle") || 0.0;
 	angle *= Math.PI/180;
-	spot.setSpotCutOff(angle);
-
 	var exponent = this.reader.getFloat(element,"exponent") || 0.0;
-	spot.setSpotExponent(exponent);
-
 	var target = this.getVector3FromElement(element.getElementsByTagName("target")[0]);
-	var location = this.getVector3FromElement(element.getElementsByTagName("location")[0]);
-	spot.setPosition(location.x,location.y,location.z,1);
 	var direction = {//Direction of the spot is target - location
 		x : target.x - location.x,
 		y : target.y - location.y,
 		z : target.z - location.z
 	}
-	spot.setSpotDirection(direction.x,direction.y,direction.z);
+	var data = {
+		type : "spot",//omni || spot
+		index : this.lightIndex,
+		enable : enable,
+		location : location,
+		ambient : ambient,
+		diffuse : diffuse,
+		specular : specular,
+		angle : angle,
+		exponent : exponent,
+		direction : direction
+	}
 
-	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
-	spot.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+	var spot = this.scene.lights[this.lightIndex];
 
-	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
-	spot.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+	// spot.setSpotCutOff(angle);
+	// spot.setSpotExponent(exponent);
+	// spot.setSpotDirection(direction.x,direction.y,direction.z);
 
-	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
-	spot.setSpecular(specular.r,specular.g,specular.b,specular.a);
+	// spot.setPosition(location.x,location.y,location.z,1);
+	// spot.setAmbient(ambient.r,ambient.g,ambient.b,ambient.a);
+	// spot.setDiffuse(diffuse.r,diffuse.g,diffuse.b,diffuse.a);
+	// spot.setSpecular(specular.r,specular.g,specular.b,specular.a);
 
 	console.log("Spot Added: id: " + spot.id + " enable : " + enable + " angle: " + angle + " exponent: " + exponent + " target: " +  this.printVector3(target) + " location: " + this.printVector3(location) + " ambient: " + this.printRGBA(ambient) + " diffuse: " + this.printRGBA(diffuse) + " specular: " + this.printRGBA(specular));
 
 	this.lightsName.push(element.id);
-	this.lights[element.id] = spot;
+	this.lights[element.id] = data;
 	this.lightIndex++;
-	spot.update();
 
 }
 
