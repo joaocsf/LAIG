@@ -24,6 +24,7 @@ Animator.prototype.changingAnimationTime = function(){
 	if(this.animationTime < 0){
 		this.animationTime = 0;
 	}
+	this.playBtn.name("Play");
 }
 
 Animator.prototype.changedAnimationTime = function(){
