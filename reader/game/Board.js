@@ -136,13 +136,24 @@ Board.prototype.storePlayerTurn = function(turn, time, curr = null){
 }
 
 Board.prototype.setMessage = function () {
-	if(this.points[this.WHITE] >= 5){
+	if(this.points[this.WHITE] >= 5 || this.getCount(this.BLACK) <= 0){
 		this.scene.changeHeaderText("White Player Wins!");
-	} else if (this.points[this.BLACK] >= 5){
+	} else if (this.points[this.BLACK] >= 5 || this.getCount(this.WHITE) <= 0){
 		this.scene.changeHeaderText("Black Player Wins!")
 	} else {
 		this.scene.changeHeaderText("");
 	}
+};
+
+Board.prototype.getCount = function (index) {
+
+	var res = 0;
+	for (var i = 0; i < this.adaptoids[index].length; i++) {
+		if(this.adaptoids[index][i].currentCell)
+			res++;
+	}
+
+	return res;
 };
 
 Board.prototype.playerTurnListener = function(turn){
