@@ -48,7 +48,7 @@ XMLscene.prototype.init = function (application) {
   this.changeHeaderText("Boas Puto tudo bem?");
   this.changeHeaderText(" ");
   this.graphs = [];
-
+  this.cameraCanUpdate = true;
   this.graphName = "";
   var time = 0;
   this.loading = 0;
@@ -103,6 +103,7 @@ XMLscene.prototype.update = function(currTime){
   this.board.update(time);
 
   this.updateCamera(time);
+  this.time = time;
 }
 
 XMLscene.prototype.initCameras = function () {
@@ -120,13 +121,21 @@ XMLscene.prototype.setDefaultAppearance = function () {
 };
 
 XMLscene.prototype.nextCamera = function(){
-  this.currentView =this.graph.getCamera();
+  this.currentView = this.graph.getCamera();
+  this.cameraCanUpdate = true;
 	//this.interface.setActiveCamera(null);
   console.log(this.camera);
 }
 
+XMLscene.prototype.VectDistance = function(p1,p2){
+  var x = p1[0] - p2[0];
+  var y = p1[1] - p2[1];
+  var z = p1[2] - p2[2];
+  return x * x + y * y + z * z;
+}
+
 XMLscene.prototype.updateCamera = function(time){
-  if(!this.currentView)
+  if(!this.currentView || !this.cameraCanUpdate)
     return;
 
   if(!this.time){
@@ -135,7 +144,6 @@ XMLscene.prototype.updateCamera = function(time){
   }
 
   var delta = time - this.time;
-  this.time = time;
   var t = this.transitionValue * delta;
   var fov = transition_float(this.camera.fov, this.currentView.angle, t);
   var near = transition_float(this.camera.near, this.currentView.near, t);
@@ -153,21 +161,37 @@ XMLscene.prototype.updateCamera = function(time){
                               this.currentView.to.z,
                               0], t);
 
-  /*this.camera.
-      fov
-      near
-      far
-      position[4]
-      target[4]
-
-  this.camera.setTarget();
-  */
   this.camera.fov = fov;
   this.camera.near = near;
-  this.camera.far =far;
+  this.camera.far = far;
 
   this.camera.setPosition(from);
   this.camera.setTarget(to);
+
+  var dist = 0.1;
+  var dist2 = 0.01;
+
+  if(this.VectDistance(this.camera.position,
+      [this.currentView.from.x,
+      this.currentView.from.y,
+      this.currentView.from.z,0]) > dist)
+    return;
+
+  if(this.VectDistance(this.camera.target,
+    [this.currentView.to.x,
+    this.currentView.to.y,
+    this.currentView.to.z, 0]) > dist)
+    return;
+
+  if(Math.abs(this.camera.fov - this.currentView.angle) > dist2)
+    return;
+  if(Math.abs(this.camera.near - this.currentView.near) > dist2)
+    return;
+  if(Math.abs(this.camera.far - this.currentView.far) > dist2)
+    return;
+
+  this.cameraCanUpdate = false;
+  console.log(this.camera);
 
 }
 
@@ -228,6 +252,7 @@ XMLscene.prototype.updateGraph = function(){
   //this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_LOCAL_VIEWER, this.graph.illumination.local);
   //this.gl.glLightModeli(this.gl.GL_LIGHT_MODEL_TWO_SIDED, this.graph.illumination.doubleSided);
   //Assign Game Entities
+  this.cameraCanUpdate = true;
   this.currentView = this.graph.currentView;
   this.board.setPieces(this.graph.gameComponents);
   console.log("End updateGraph!");
@@ -273,8 +298,6 @@ XMLscene.prototype.display = function () {
 	this.materialDefault.apply();
 	// Draw axis
 	this.axis.display();
-
-
     //PICKING
     //this.logPicking();
     //this.clearPickRegistration();

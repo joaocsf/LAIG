@@ -75,7 +75,7 @@
 		<texture id="madeira" file="../resources/images/wood1.png" length_s="1.0" length_t="1.0" />
 		<texture id="madeiraP" file="../resources/images/wood.png" length_s="1.0" length_t="1.0" />
 		<texture id="madeiraA" file="../resources/images/wood2.png" length_s="1.0" length_t="1.0" />
-
+    <texture id="numbers" file="../resources/images/numbers.png" length_s="1.0" length_t="1.0" />
 	</textures>
 
   <materials>
@@ -358,7 +358,8 @@
     <player1 material="black" texture="none" />
     <player2 material="white" texture="none" />
     <neutral material="grey" texture="none" />
-
+    <numbers material="white" texture="numbers" />
+    <clock material="white" texture="madeira" />
   </gamecomponents>
 
 </dsx>

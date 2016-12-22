@@ -1578,12 +1578,18 @@ MySceneGraph.prototype.parseGameComponents = function(rootElement){
 			case 'player1':
 			case 'player2':
 			case 'neutral':
+			case 'clock':
+			case 'numbers':
 				component = { material:null, texture:null}
 				var materialID = this.reader.getString(child, 'material');
 				var textureID = this.reader.getString(child, 'texture');
 
 				component.material = this.materials[materialID];
-				component.texture = this.textures[textureID];
+				if(textureID != "none")
+					component.texture = this.textures[textureID].textData;
+				else
+					component.texture = null;
+
 				break;
 			default:
 				component = null;

@@ -9,11 +9,12 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 
 	this.scene.animator.addUndoListener(this);
 	this.lastTime = this.scene.animator.lastTime;
-
+	this.clock = new Clock(this.scene, this);
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
+	this.score = new Score(this.scene, this);
 	this.roundTime = 10;
-	this.maxAnimTime = 3;
+	this.maxAnimTime = 2;
 	this.timer = new Timer(this.scene, this.roundTime, 0, 0.5);
 
 	//Game pieces
@@ -29,7 +30,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
-	this.mode = "hc";//Acrescentar mode "hc" "cc" "ch"
+	this.mode = "cc";//Acrescentar mode "hc" "cc" "ch"
 	this.dificuldade = [];
 	this.dificuldade[this.WHITE] = "op";//"notOp"
 	this.dificuldade[this.BLACK] = "op";//"notOp"
@@ -107,6 +108,8 @@ Board.prototype.initializeAnimations = function(){
 	this.animation.registerSequence('playerTurn', this, 'playerTurn');
 	this.animation.registerSequence('playerTurnTime', this, 'playerTurnTime');
 	this.animation.registerSequence('currentPlayer', this, 'currentPlayer');
+	this.animation.registerSequence('points0', this.points, 0);
+	this.animation.registerSequence('points1', this.points, 1);
 }
 
 Board.prototype.update = function(time){
@@ -117,6 +120,7 @@ Board.prototype.update = function(time){
 
 	this.setMessage();
 	this.selectShader.setUniformsValues({time : time - this.time, number: 0, pieceN: 0});
+	this.clock.setTime(this.scene.animator.animationTime);
 	this.updateTimerValues();
 }
 //Do This in the first round!;
@@ -171,6 +175,11 @@ Board.prototype.playerTurnListener = function(turn){
 }
 
 Board.prototype.setPoints = function (white,black) {
+	var time = this.scene.animator.animationTime;
+
+	this.animation.addKeyframe('points0', new Keyframe(time, black, transition_rigid_float));
+	this.animation.addKeyframe('points1', new Keyframe(time, white, transition_rigid_float));
+
 	this.points[this.WHITE] = white;
 	this.points[this.BLACK] = black;
 };
@@ -466,8 +475,10 @@ Board.prototype.initializePositions = function(){
 		}
 	}
 
-	this.bell.setPosition({x:0, y:-0.2 + 1, z: -(this.width/2 + 1)});
-	this.timer.setPosition({x:0, y:-0.2, z: -(this.width/2 + 1)});
+	this.bell.setPosition({x:0, y: 2, z: -(this.width/2 + 2.4)});
+	this.timer.setPosition({x:0, y: 0, z: -(this.width/2 + 1.3)});
+	this.clock.setPosition({x:0, y:0, z: -(this.width/2 + 1.4)});
+	this.score.setPosition({x:0, y: 2, z: -(this.width/2 + 2.4)});
 }
 
 Board.prototype.registerCellPicking = function(){
@@ -516,10 +527,12 @@ Board.prototype.registerPicking = function(){
 
 Board.prototype.display = function(){
 	this.scene.pushMatrix();
-	this.scene.translate( 0, 0.2, 0);
-
+	this.clock.display();
 	this.bell.display();
 	this.timer.display();
+	this.score.display();
+	this.scene.translate( 0, 0.2, 0);
+
 	if(this.pieces != null){
 		for(var y = 0; y < this.cells.length; y++){
 
@@ -544,7 +557,7 @@ Board.prototype.display = function(){
 		}
 	}
 
-		this.scene.popMatrix();
+	this.scene.popMatrix();
 	}
 }
 
