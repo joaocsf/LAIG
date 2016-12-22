@@ -13,6 +13,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 	this.roundTime = 10;
+	this.maxAnimTime = 2;
 	this.timer = new Timer(this.scene, this.roundTime, 0, 0.5);
 
 	//Game pieces
@@ -44,6 +45,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.adaptoids[this.BLACK] = [];
 	this.adaptoids[this.WHITE] = [];
 
+	this.currentPlayer = this.WHITE;
 	this.playerTurn = this.WHITE;
 	this.playerTurnTime = 0;
 	this.lastPlayerTurn;
@@ -65,6 +67,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.initializePositions();
 	this.initializeAnimations();
 	this.registerCellPicking();
+	this.clearPicking();
 	this.registerPicking();
 	this.setUp();
 };
@@ -102,6 +105,7 @@ Board.prototype.initializeAnimations = function(){
 
 	this.animation.registerSequence('playerTurn', this, 'playerTurn');
 	this.animation.registerSequence('playerTurnTime', this, 'playerTurnTime');
+	this.animation.registerSequence('currentPlayer', this, 'currentPlayer');
 }
 
 Board.prototype.update = function(time){
@@ -114,12 +118,17 @@ Board.prototype.update = function(time){
 	this.updateTimerValues();
 }
 //Do This in the first round!;
-Board.prototype.storePlayerTurn = function(turn, time){
+Board.prototype.storePlayerTurn = function(turn, time, curr = null){
 	var time = this.scene.animator.animationTime;
 	if(this.lastPlayerTurnTime < time){
 		this.lastPlayerTurn = turn;
 		this.lastPlayerTurnTime = time;
 	}
+
+	if(curr != null){
+		this.animation.addKeyframe('currentPlayer', new Keyframe(time, curr , transition_rigid_float));
+	}
+
 	this.animation.addKeyframe('playerTurn', new Keyframe(time, {obj: this, lstnr: 'playerTurnListener', value: turn}, transition_listener));
 	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, time, transition_rigid_float));
 }
@@ -128,9 +137,13 @@ Board.prototype.playerTurnListener = function(turn){
 	if(this.playerTurn == turn){
 		return;
 	}
-	this.playerTurn = turn;
 
-	this.registerPicking();
+	if(this.playerTurn == -1)
+		this.clearPicking();
+
+	this.playerTurn = turn;
+	if(this.playerTurn != -1)
+		this.registerPicking();
 	this.resetRound();
 }
 
@@ -138,15 +151,28 @@ Board.prototype.updateTimerValues = function(){
 	var time = this.scene.animator.animationTime - this.playerTurnTime;
 	var t2 = this.scene.animator.animationTime - this.lastPlayerTurnTime;
 	this.timer.setTime(time);
+	console.log("Plr Turn: ["+ this.lastPlayerTurn + "]" + this.playerTurn +" / " + this.currentPlayer + " T2:" + this.playerTurnTime);
+	if(this.lastPlayerTurn != -1){
+		if(t2 > this.roundTime){
+				this.endTurn();
+			}
 
-	if(t2 > this.roundTime){
-		this.endTurn();
-	}
+	}else
+		if(t2 > this.maxAnimTime){
+			this.swapRound();
+		}
+}
+
+Board.prototype.swapRound = function(){
+	console.error("Swapping!");
+	var team = 1 - this.currentPlayer;
+	this.storePlayerTurn(team, this.scene.animator.animationTime, team);
 }
 
 Board.prototype.onUndo = function(){
 	this.lastPlayerTurnTime = this.playerTurnTime;
-	this.lastPlayerTurn = this.lastPlayerTurn;
+
+	this.lastPlayerTurn = this.playerTurn;
 }
 
 Board.prototype.setPieces = function(pieces){
@@ -394,7 +420,7 @@ Board.prototype.playerCapture = function (board,currPlayer) {
 			}
 		}
 	}
-	
+
 };
 
 Board.prototype.playerEvolution = function (board,currPlayer) {
@@ -496,7 +522,7 @@ Board.prototype.gameOver = function (status) {
 
 Board.prototype.endTurn = function(){
 	this.doRound();
-	this.storePlayerTurn(1 - this.playerTurn, this.scene.animator.animationTime);
+	this.storePlayerTurn(-1, this.scene.animator.animationTime);
 }
 
 Board.prototype.getCellAt = function (x,y) {
@@ -672,16 +698,17 @@ Board.prototype.registerCellPicking = function(){
 }
 
 Board.prototype.clearPicking = function(){
-	var team = 1 - this.playerTurn;
-	var members = this.members[this.playerTurn].length;
+	var members = this.members[this.BLACK].length;
 	var max = Math.max(this.pieceNumber, members);
 	for(var i = 0; i < max; i++){
 		if(i < this.pieceNumber){
 
-			this.adaptoids[team][i].setPickID(-1);
+			this.adaptoids[this.BLACK][i].setPickID(-1);
+			this.adaptoids[this.WHITE][i].setPickID(-1);
 		}
 		if(i < members)
-			this.members[team][i].setPickID(-1);
+			this.members[this.BLACK][i].setPickID(-1);
+			this.members[this.WHITE][i].setPickID(-1);
 	}
 
 }

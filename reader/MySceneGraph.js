@@ -1528,6 +1528,7 @@ MySceneGraph.prototype.parseGameComponents = function(rootElement){
 			break;
 			case 'player1':
 			case 'player2':
+			case 'neutral':
 				component = { material:null, texture:null}
 				var materialID = this.reader.getString(child, 'material');
 				var textureID = this.reader.getString(child, 'texture');
@@ -1543,6 +1544,7 @@ MySceneGraph.prototype.parseGameComponents = function(rootElement){
 		if(component){
 			var index = (child.tagName == 'player1')? 0 :
 									(child.tagName == 'player2')? 1 :
+									(child.tagName == 'neutral')? -1:
 									child.tagName;
 			this.gameComponents[index] = component;
 		}
