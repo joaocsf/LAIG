@@ -115,6 +115,7 @@ Board.prototype.update = function(time){
 		return;
 	}
 
+	this.setMessage();
 	this.selectShader.setUniformsValues({time : time - this.time, number: 0, pieceN: 0});
 	this.updateTimerValues();
 }
@@ -134,6 +135,16 @@ Board.prototype.storePlayerTurn = function(turn, time, curr = null){
 	this.animation.addKeyframe('playerTurnTime', new Keyframe(time, time, transition_rigid_float));
 }
 
+Board.prototype.setMessage = function () {
+	if(this.points[this.WHITE] >= 5){
+		this.scene.changeHeaderText("White Player Wins!");
+	} else if (this.points[this.BLACK] >= 5){
+		this.scene.changeHeaderText("Black Player Wins!")
+	} else {
+		this.scene.changeHeaderText("");
+	}
+};
+
 Board.prototype.playerTurnListener = function(turn){
 	if(this.playerTurn == turn){
 		return;
@@ -147,6 +158,15 @@ Board.prototype.playerTurnListener = function(turn){
 		this.registerPicking();
 	this.resetRound();
 }
+
+Board.prototype.setPoints = function (white,black) {
+	this.points[this.WHITE] = white;
+	this.points[this.BLACK] = black;
+};
+
+Board.prototype.getPoints = function () {
+	return {w : this.points[this.WHITE], b : this.points[this.BLACK]};
+};
 
 Board.prototype.updateTimerValues = function(){
 	var time = this.scene.animator.animationTime - this.playerTurnTime;
@@ -281,8 +301,7 @@ Board.prototype.doFamine = function (action) {
 
 Board.prototype.famin = function (action) {
 
-	this.points[this.WHITE] = action[0];
-	this.points[this.BLACK] = action[1];
+	this.setPoints(action[0],action[1]);
 	this.doFamine(action[2]);
 };
 
@@ -290,21 +309,10 @@ Board.prototype.handleBotPlay = function (response) {
 	console.log("Received Bot Play Response");
 	console.log(response);
 
-	this.points[this.WHITE] = response[0];
-	this.points[this.BLACK] = response[1];
+	this.setPoints(response[0],response[1]);
 	this.doMovement(response[2]);
 	this.doEvolution(response[3]);
 	this.doFamine(response[4]);
-};
-
-Board.prototype.jogadaBot = function (currPlayer) {
-
-	var jogo = this.getGameString();
-	var dif = this.dificuldade[this.playerTurn];
-	var board = this;
-	var request = "botPlay(" + currPlayer + "," + dif + "," + jogo + ")";
-	this.server.getPrologRequest(request,Connection.handleResponse);
-
 };
 
 Board.prototype.resetRound = function(){
@@ -324,24 +332,6 @@ Board.prototype.resetRound = function(){
 	this.selected.body2 = null;
 	this.selected.cell = null;
 	this.selected.member = null;
-};
-
-Board.prototype.playerMovement = function (board,currPlayer) {
-
-	if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
-		this.playerAddBody(board,currPlayer);
-
-	} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
-
-		this.playerMove(board,currPlayer);
-
-	} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
-		if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
-
-			this.playerCapture(board,currPlayer);
-
-		}
-	}
 };
 
 Board.prototype.playerAddBody = function (board,currPlayer) {
@@ -404,13 +394,6 @@ Board.prototype.playerFamine = function (board,currPlayer) {
 
 };
 
-Board.prototype.checkGameEnd = function (board,currPlayer) {
-
-	this.server.getPrologRequest("isGameOver(" + this.getGameString() + ")",Connection.gameOverHandler);
-
-};
-
-
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 
@@ -422,23 +405,28 @@ Board.prototype.doRound = function(){
 
 	if(this.mode[this.playerTurn] == "c"){//Jogada Computador
 
-		this.jogadaBot(currPlayer);
+		//this.jogadaBot(currPlayer);
+		this.logic.jogadaBot(currPlayer);
 
 	} else {//Jogada Humano
 
 		if(this.selected.body && this.selected.cell){//Construir comando de movimento
-			this.playerMovement(board,currPlayer);
+			//this.playerMovement(board,currPlayer);
+			this.logic.playerMovement(board,currPlayer);
 		}
 
 		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
-			this.playerEvolution(board,currPlayer);
+			//this.playerEvolution(board,currPlayer);
+			this.logic.playerEvolution(board,currPlayer);
 		}
 
-		this.playerFamine(board,currPlayer);
+		//this.playerFamine(board,currPlayer);
+		this.logic.playerFamine(board,currPlayer);
 	}//Fim Jogada
 
 	//Verificar se o jogo acabou
-	this.checkGameEnd(board,currPlayer);
+	//this.checkGameEnd(board,currPlayer);
+	this.logic.checkGameEnd(board,currPlayer);
 
 	this.resetRound();
 	this.endTurn();
@@ -498,8 +486,7 @@ Board.prototype.getBodyByID = function (id,enemy) {
 
 Board.prototype.setUp = function () {
 
-	this.points[this.BLACK] = 0;
-	this.points[this.WHITE] = 0;
+	this.setPoints(0,0);
 
 	this.adaptoids[this.BLACK][0].move(this.getCellAt(6,3));
 	this.adaptoids[this.WHITE][0].move(this.getCellAt(2,3));

@@ -1,30 +1,8 @@
 function Logic(board){
     this.board = board;
-    this.body = null;
-    this.cell = null;
-    this.body2 = null;
-    this.member = null;
-    this.currentPlayer = null;
 }
 
 Logic.prototype.constructor = Logic;
-
-Logic.prototype.setParams = function (body,cell,body2,member,currentPlayer) {
-    this.body = body;
-    this.cell = cell;
-    this.body2 = body2;
-    this.member = member;
-    this.currentPlayer = currentPlayer;
-};
-
-Logic.prototype.delParams = function () {
-
-    this.body = null;
-    this.cell = null;
-    this.body2 = null;
-    this.member = null;
-
-};
 
 Logic.prototype.doMovement = function (action) {
 	console.log("Moviment Action : " + action);
@@ -114,8 +92,7 @@ Logic.prototype.doFamine = function (action) {
 
 Logic.prototype.famin = function (action) {
 
-	this.board.points[this.board.WHITE] = action[0];
-	this.board.points[this.board.BLACK] = action[1];
+    this.board.setPoints(action[0],action[1]);
 	this.doFamine(action[2]);
 };
 
@@ -123,15 +100,14 @@ Logic.prototype.handleBotPlay = function (response) {
 	console.log("Received Bot Play Response");
 	console.log(response);
 
-	this.board.points[this.board.WHITE] = response[0];
-	this.board.points[this.board.BLACK] = response[1];
+    this.board.setPoints(response[0],response[1]);
 	this.doMovement(response[2]);
 	this.doEvolution(response[3]);
 	this.doFamine(response[4]);
 };
 
 Logic.prototype.jogadaBot = function (currPlayer) {
-
+    console.log("Logica");
 	var jogo = this.board.getGameString();
 	var dif = this.board.dificuldade[this.board.playerTurn];
 	var board = this.board;
@@ -142,17 +118,18 @@ Logic.prototype.jogadaBot = function (currPlayer) {
 
 Logic.prototype.playerMovement = function (board,currPlayer) {
     //TODO
-	if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
-		this.playerAddBody(board,currPlayer);
+    console.log("Logica");
+	if(!this.board.selected.body.currentCell && !this.board.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
+		this.board.playerAddBody(board,currPlayer);
 
-	} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
+	} else if(this.board.selected.body.currentCell && !this.board.selected.cell.occupied){//Adaptoid placed e a celula desocupada
 
-		this.playerMove(board,currPlayer);
+		this.board.playerMove(board,currPlayer);
 
-	} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
-		if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
+	} else if(this.board.selected.body.currentCell && this.board.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
+		if(this.board.selected.cell.occupied.team != this.board.selected.body.team){//Celula ocupada e com um inimigo de body
 
-			this.playerCapture(board,currPlayer);
+			this.board.playerCapture(board,currPlayer);
 
 		}
 	}
@@ -160,66 +137,69 @@ Logic.prototype.playerMovement = function (board,currPlayer) {
 
 Logic.prototype.playerAddBody = function (board,currPlayer) {
     //TODO
-	var x = this.selected.cell.boardPosition.x;
-	var y = this.selected.cell.boardPosition.y + 1;
+	var x = this.board.selected.cell.boardPosition.x;
+	var y = this.board.selected.cell.boardPosition.y + 1;
 	var action = "aC(" + x + "," + y + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+	var request = "play("+ currPlayer + "," + this.board.getGameString() + "," + action + ")";
 	this.board.server.getPrologRequest(request,Connection.handleAC);
 
 };
 
 Logic.prototype.playerMove = function (board,currPlayer) {
 
-	var xi = this.selected.body.boardPosition.x;
-	var yi = this.selected.body.boardPosition.y + 1;
+	var xi = this.board.selected.body.boardPosition.x;
+	var yi = this.board.selected.body.boardPosition.y + 1;
 	console.log("BOAS");
-	console.log(this.selected.body);
-	var nPernas = this.selected.body.getNumLegs();
+	console.log(this.board.selected.body);
+	var nPernas = this.board.selected.body.getNumLegs();
 	console.log("NLegs" + nPernas);
-	var xf = this.selected.cell.boardPosition.x;
-	var yf = this.selected.cell.boardPosition.y + 1;
+	var xf = this.board.selected.cell.boardPosition.x;
+	var yf = this.board.selected.cell.boardPosition.y + 1;
 	var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,Connection.handleMove);
+	var request = "play("+ currPlayer + "," + this.board.getGameString() + "," + action + ")";
+	this.board.server.getPrologRequest(request,Connection.handleMove);
 
 };
 
 Logic.prototype.playerCapture = function (board,currPlayer) {
 
-	var xi = this.selected.body.boardPosition.x;
-	var yi = this.selected.body.boardPosition.y + 1;
-	var nPernas = this.selected.body.getNumLegs();
-	var xf = this.selected.cell.boardPosition.x;
-	var yf = this.selected.cell.boardPosition.y + 1;
+	var xi = this.board.selected.body.boardPosition.x;
+	var yi = this.board.selected.body.boardPosition.y + 1;
+	var nPernas = this.board.selected.body.getNumLegs();
+	var xf = this.board.selected.cell.boardPosition.x;
+	var yf = this.board.selected.cell.boardPosition.y + 1;
 
 	var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,Connection.handleCapture);
+	var request = "play("+ currPlayer + "," + this.board.getGameString() + "," + action + ")";
+	this.board.server.getPrologRequest(request,Connection.handleCapture);
 
 };
 
 Logic.prototype.playerEvolution = function (board,currPlayer) {
 
-	var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
-	var x = this.selected.body2.boardPosition.x;
-	var y = this.selected.body2.boardPosition.y + 1;
+    console.log("Logica");
+	var action = (this.board.selected.member.type == "CLAW")? "aG" : "aP";
+	var x = this.board.selected.body2.boardPosition.x;
+	var y = this.board.selected.body2.boardPosition.y + 1;
 	action += "(" + x + "," + y + ")";
-	if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
-		var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-		this.server.getPrologRequest(request,Connection.handleEvolution);
+	if(this.board.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
+		var request = "play("+ currPlayer + "," + this.board.getGameString() + "," + action + ")";
+		this.board.server.getPrologRequest(request,Connection.handleEvolution);
 	}
 
 };
 
 Logic.prototype.playerFamine = function (board,currPlayer) {
 
+    console.log("Logica");
 	//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
-	this.server.getPrologRequest("esfomeados(" + this.getGameString() + "," + currPlayer + ")",Connection.faminHandler);
+	this.board.server.getPrologRequest("esfomeados(" + this.board.getGameString() + "," + currPlayer + ")",Connection.faminHandler);
 
 };
 
 Logic.prototype.checkGameEnd = function (board,currPlayer) {
 
-	this.server.getPrologRequest("isGameOver(" + this.getGameString() + ")",Connection.gameOverHandler);
+    console.log("Logica");
+	this.board.server.getPrologRequest("isGameOver(" + this.board.getGameString() + ")",Connection.gameOverHandler);
 
 };

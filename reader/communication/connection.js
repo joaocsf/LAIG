@@ -87,15 +87,26 @@ Connection.handleCapture = function (data) {
         if(adaptoid.getNumClaws() == enemy.getNumClaws()){//Same claws morrem os dois
             adaptoid.move(null);
             enemy.move(null);
-            Connection.board.points[Connection.board.playerTurn]++;
-            Connection.board.points[1 - Connection.board.playerTurn]++;
+            var points = Connection.board.getPoints();
+            Connection.board.setPoints(points.w + 1,points.b + 1);
         } else if (adaptoid.getNumClaws() > enemy.getNumClaws()){//Ganhou o adaptoid
             enemy.move(null);
             adaptoid.move(Connection.board.selected.cell);
-            Connection.board.points[Connection.board.playerTurn]++;
+            var points = Connection.board.getPoints();
+            if(adaptoid.team == Connection.board.WHITE){
+                Connection.board.setPoints(points.w + 1,points.b);
+            } else {
+                Connection.board.setPoints(points.w,points.b + 1);
+            }
         } else{//Ganhou o enemy
             adaptoid.move(null);
-            Connection.board.points[1 - Connection.board.playerTurn]++;
+            var points = Connection.board.getPoints();
+            var points = Connection.board.getPoints();
+            if(adaptoid.team == Connection.board.WHITE){
+                Connection.board.setPoints(points.w,points.b + 1);
+            } else {
+                Connection.board.setPoints(points.w + 1,points.b);
+            }
         }
     }
 };
@@ -104,7 +115,6 @@ Connection.handleEvolution = function (data) {
 
     var response = new Array();
     response = JSON.parse(data.target.response);
-    console.log(this);
     if(response[0])
         Connection.board.selected.member.storeParent(Connection.board.selected.body2);
 
@@ -114,7 +124,6 @@ Connection.faminHandler = function (data) {
 
     var response = new Array();
     response = JSON.parse(data.target.response);
-    console.log(this);
     Connection.board.famin(response);
 };
 
@@ -122,6 +131,5 @@ Connection.gameOverHandler = function (data) {
 
     var response = new Array();
     response = JSON.parse(data.target.response);
-    console.log(this);
     Connection.board.gameOver(response);
 };
