@@ -36,7 +36,6 @@ XMLscene.prototype.init = function (application) {
 	this.cylinder = new Cylinder(this, 1, 1, 1, 20, 20);
 
   this.board = new Board(this, 20, 10, 10);
-  console.log(this.board.getGameString());
 
   for(var i = 0 ; i < this.lights.length; i++){
     this.lightState.push(this.lights[i].enabled);
@@ -45,7 +44,6 @@ XMLscene.prototype.init = function (application) {
   this.currentView = null;
 	this.setUpdatePeriod(1);
   this.transitionValue = 2;
-  this.changeHeaderText("Boas Puto tudo bem?");
   this.changeHeaderText(" ");
   this.graphs = [];
   this.cameraCanUpdate = true;

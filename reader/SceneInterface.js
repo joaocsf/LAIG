@@ -83,7 +83,13 @@ SceneInterface.prototype.init = function(application) {
 	debugGroup.add(this.scene.board, 'debugBodys');
 	debugGroup.add(this.scene.board, 'debugMembers');
 
-
+	var optionsGroup = this.gui.addFolder("Options");
+	optionsGroup.add(this.scene.board,'mode', {'H vs H' : 'hh', 'H vs C' : 'hc', 'C vs H' : 'ch', 'C vs C' : 'cc'}).name("Mode");
+	var difficultyGroup = optionsGroup.addFolder("Difficulty");
+	difficultyGroup.add(this.scene.board.dificuldade,1,{'Defensivo' : 'notOp', 'Ofensivo' : 'op'}).name("Bot 1");
+	difficultyGroup.add(this.scene.board.dificuldade,0,{'Defensivo' : 'notOp', 'Ofensivo' : 'op'}).name("Bot 2");
+	// Modes -> H vs C | H vs H | C vs C | C vs H
+	// Difficulties -> Defensivo(notOp) | Ofensivo(op);
 
 	return true;
 };

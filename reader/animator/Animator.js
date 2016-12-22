@@ -1,10 +1,11 @@
 /*Call that handles all animations and iterates over them to play an animation*/
 function Animator(scene) {
 	this.scene = scene;
-	this.recording = true;
+	this.recording = false;
 	this.startTime = 0;
 	this.animationTime = 0;
-	this.animationMaxTime = 0;
+	this.timeOffset = 5;
+	this.animationMaxTime = this.timeOffset;
 	this.animations = [];
 	this.lastTime = 0;
 	this.play = false;
@@ -13,7 +14,6 @@ function Animator(scene) {
 	this.playUI;
 	this.currTime;
 	this.listeners = [];
-	this.timeOffset = 5;
 	this.playBtn;
 };
 

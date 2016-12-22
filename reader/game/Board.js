@@ -50,7 +50,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.currentPlayer = this.WHITE;
 	this.playerTurn = this.WHITE;
 	this.playerTurnTime = 0;
-	this.lastPlayerTurn;
+	this.lastPlayerTurn = this.playerTurn;
 	this.lastPlayerTurnTime = 0;
 
 	this.members = [];
@@ -140,9 +140,9 @@ Board.prototype.storePlayerTurn = function(turn, time, curr = null){
 }
 
 Board.prototype.setMessage = function () {
-	if(this.points[this.WHITE] >= 5 || this.getCount(this.BLACK) <= 0){
+	if((this.points[this.WHITE] >= 5 || this.getCount(this.BLACK) <= 0) && this.scene.animator.animationTime > this.maxAnimTime){
 		this.scene.changeHeaderText("White Player Wins!");
-	} else if (this.points[this.BLACK] >= 5 || this.getCount(this.WHITE) <= 0){
+	} else if ((this.points[this.BLACK] >= 5 || this.getCount(this.WHITE) <= 0) && this.scene.animator.animationTime > this.maxAnimTime){
 		this.scene.changeHeaderText("Black Player Wins!")
 	} else {
 		this.scene.changeHeaderText("");
@@ -196,8 +196,9 @@ Board.prototype.updateTimerValues = function(){
 	if(this.lastPlayerTurn != -1){
 		if(t2 > this.roundTime){
 				this.endTurn();
-			}
-
+		} else if(this.mode[this.lastPlayerTurn] == "c" && this.isPlaying()){
+				this.doRound();
+		}
 	}else
 		if(t2 > this.maxAnimTime){
 			this.swapRound();
