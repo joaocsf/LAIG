@@ -164,7 +164,7 @@ Board.prototype.updateTimerValues = function(){
 }
 
 Board.prototype.swapRound = function(){
-	console.error("Swapping!");
+
 	var team = 1 - this.currentPlayer;
 	this.storePlayerTurn(team, this.scene.animator.animationTime, team);
 }

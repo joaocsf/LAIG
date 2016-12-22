@@ -123,7 +123,7 @@ MySceneGraph.prototype.getCamera = function(){
 	else
 		this.views.defaultID = 0;
 
-	return new CGFcamera(view.angle, view.near, view.far, vec3.fromValues(view.from.x, view.from.y, view.from.z), vec3.fromValues(view.to.x, view.to.y, view.to.z));
+	return view;
 
 }
 

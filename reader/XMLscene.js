@@ -37,10 +37,13 @@ XMLscene.prototype.init = function (application) {
     this.board = new Board(this, 20, 10, 10);
     console.log(this.board.getGameString());
 
+  this.currentView = null;
 	this.setUpdatePeriod(1);
+  this.transitionValue = 2;
+  this.changeHeaderText("Boas Puto tudo bem?");
+  this.changeHeaderText(" ");
 
-    this.changeHeaderText("Boas Puto tudo bem?");
-    this.changeHeaderText(" ");
+  var time = 0;
 };
 
 XMLscene.prototype.setInterface = function (interface) {
@@ -59,13 +62,15 @@ XMLscene.prototype.initLights = function () {
 };
 
 XMLscene.prototype.update = function(currTime){
-
-	this.graph.update(currTime/1000);
+  var time = currTime/1000;
+	this.graph.update(time);
     if(this.sea != null)
-        this.sea.update(currTime/1000);
+        this.sea.update(time);
 
-	this.animator.update(currTime/1000);
-  this.board.update(currTime/1000);
+	this.animator.update(time);
+  this.board.update(time);
+
+  this.updateCamera(time);
 }
 
 XMLscene.prototype.initCameras = function () {
@@ -87,9 +92,57 @@ XMLscene.prototype.setDefaultAppearance = function () {
 };
 
 XMLscene.prototype.nextCamera = function(){
-	this.camera = this.graph.getCamera();
-	this.interface.setActiveCamera(this.camera);
+  this.currentView =this.graph.getCamera();
+	//this.interface.setActiveCamera(null);
+  console.log(this.camera);
 }
+
+XMLscene.prototype.updateCamera = function(time){
+  if(!this.currentView)
+    return;
+
+  if(!this.time){
+    this.time = time;
+    return;
+  }
+
+  var delta = time - this.time;
+  this.time = time;
+  var t = this.transitionValue * delta;
+  var fov = transition_float(this.camera.fov, this.currentView.angle, t);
+  var near = transition_float(this.camera.near, this.currentView.near, t);
+  var far = transition_float(this.camera.far, this.currentView.far, t);
+
+  var from = transition_Array4To3(this.camera.position,
+                              [this.currentView.from.x,
+                              this.currentView.from.y,
+                              this.currentView.from.z,
+                              0], t);
+
+  var to = transition_Array4To3(this.camera.target,
+                              [this.currentView.to.x,
+                              this.currentView.to.y,
+                              this.currentView.to.z,
+                              0], t);
+
+  /*this.camera.
+      fov
+      near
+      far
+      position[4]
+      target[4]
+
+  this.camera.setTarget();
+  */
+  this.camera.fov = fov;
+  this.camera.near = near;
+  this.camera.far =far;
+
+  this.camera.setPosition(from);
+  this.camera.setTarget(to);
+
+}
+
 
 XMLscene.prototype.logPicking = function () {
     if (this.pickMode == false) {

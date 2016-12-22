@@ -70,6 +70,16 @@ function transition_vector3(p1, p2, time){
 	return res;
 }
 
+function transition_Array4To3(p1, p2, time){
+
+	var res= [
+		p1[0] + (p2[0] - p1[0]) * time,
+		p1[1] + (p2[1] - p1[1]) * time,
+		p1[2] + (p2[2] - p1[2]) * time
+	];
+	return res;
+}
+
 function transition_curved_vector3(p1, p2, time){
 
 	var res= {
