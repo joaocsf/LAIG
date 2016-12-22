@@ -151,7 +151,7 @@ Board.prototype.updateTimerValues = function(){
 	var time = this.scene.animator.animationTime - this.playerTurnTime;
 	var t2 = this.scene.animator.animationTime - this.lastPlayerTurnTime;
 	this.timer.setTime(time);
-	console.log("Plr Turn: ["+ this.lastPlayerTurn + "]" + this.playerTurn +" / " + this.currentPlayer + " T2:" + this.playerTurnTime);
+	//console.log("Plr Turn: ["+ this.lastPlayerTurn + "]" + this.playerTurn +" / " + this.currentPlayer + " T2:" + this.playerTurnTime);
 	if(this.lastPlayerTurn != -1){
 		if(t2 > this.roundTime){
 				this.endTurn();
