@@ -29,10 +29,10 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
-	this.mode = "cc";//Acrescentar mode "hc" "cc"
+	this.mode = "hc";//Acrescentar mode "hc" "cc" "ch"
 	this.dificuldade = [];
-	this.dificuldade[this.WHITE] = "op";//Adicionar "notOp"
-	this.dificuldade[this.BLACK] = "op";
+	this.dificuldade[this.WHITE] = "op";//"notOp"
+	this.dificuldade[this.BLACK] = "op";//"notOp"
 	this.skip_index = 0;
 	this.move_index = 1;
 	this.capturar_index = 2;
@@ -214,107 +214,6 @@ Board.prototype.getPosition = function(radius,angle, team){
 	return res;
 }
 
-Board.prototype.doMovement = function (action) {
-	console.log("Moviment Action : " + action);
-
-	switch (action[0]) {
-		case this.skip_index:
-			return;
-			break;
-		case this.move_index:
-			var xi = action[1];
-			var yi = action[2] - 1;
-			var xf = action[3];
-			var yf = action[4] - 1;
-
-			var startCell = this.getCellAt(xi,yi);
-			var endCell = this.getCellAt(xf,yf);
-			if(startCell.occupied && !endCell.occupied)
-				startCell.occupied.move(endCell);
-			break;
-		case this.capturar_index:
-			var xi = action[1];
-			var yi = action[2] - 1;
-			var xf = action[3];
-			var yf = action[4] - 1;
-
-			var startCell = this.getCellAt(xi,yi);
-			var cellDest = this.getCellAt(xf,yf);
-			if(startCell.occupied && cellDest.occupied){
-				cellDest.occupied.move(null);
-				startCell.occupied.move(cellDest);
-			}
-			break;
-	}
-
-	return;
-};
-
-Board.prototype.doEvolution = function (action) {
-	console.log("Evolution Action : " + action);
-
-	switch (action[0]) {
-		case this.skip_index:
-			return;
-			break;
-		case this.addCorpo_index:
-		//Adicionar Corpo
-			var xvizinho = action[1];
-			var yvizinho = action[2] - 1;
-			var x = action[3];
-			var y = action[4] - 1;
-			var vizinho = this.getCellAt(xvizinho,yvizinho);
-			var cellDest = this.getCellAt(x,y);
-			var corpo = this.getFreeBody();
-			if(vizinho.occupied && !cellDest.occupied)
-				corpo.move(cellDest);
-			break;
-		case this.addGarra_index:
-		//Adicionar Garra
-			var id = action[1];
-			var claw = this.getFreeMember("CLAW");
-			var adaptoid = this.getBodyByID(id,this.playerTurn);
-			if(adaptoid && (adaptoid.team == claw.team))
-				claw.storeParent(adaptoid);
-			break;
-		case this.addPerna_index:
-		//Adicionar Perna
-			var id = action[1];
-			var leg = this.getFreeMember("LEG");
-			var adaptoid = this.getBodyByID(id,this.playerTurn);
-			if(adaptoid && (adaptoid.team == leg.team))
-				leg.storeParent(adaptoid);
-			break;
-	};
-
-};
-
-Board.prototype.doFamine = function (action) {
-	console.log("Famine Action : " + action);
-	var enemy = 1 - this.playerTurn;
-	for (var i = 0; i < action.length; i++) {
-		var adaptoid = this.getBodyByID(action[i],enemy);
-		if(adaptoid.currentCell)
-			adaptoid.move(null);//Remove o adaptoid;
-	}
-};
-
-Board.prototype.famin = function (action) {
-
-	this.setPoints(action[0],action[1]);
-	this.doFamine(action[2]);
-};
-
-Board.prototype.handleBotPlay = function (response) {
-	console.log("Received Bot Play Response");
-	console.log(response);
-
-	this.setPoints(response[0],response[1]);
-	this.doMovement(response[2]);
-	this.doEvolution(response[3]);
-	this.doFamine(response[4]);
-};
-
 Board.prototype.resetRound = function(){
 	if(this.selected.body)
 		this.selected.body.resetSelection();
@@ -334,66 +233,6 @@ Board.prototype.resetRound = function(){
 	this.selected.member = null;
 };
 
-Board.prototype.playerAddBody = function (board,currPlayer) {
-
-	var x = this.selected.cell.boardPosition.x;
-	var y = this.selected.cell.boardPosition.y + 1;
-	var action = "aC(" + x + "," + y + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,Connection.handleAC);
-
-};
-
-Board.prototype.playerMove = function (board,currPlayer) {
-
-	var xi = this.selected.body.boardPosition.x;
-	var yi = this.selected.body.boardPosition.y + 1;
-	console.log("BOAS");
-	console.log(this.selected.body);
-	var nPernas = this.selected.body.getNumLegs();
-	console.log("NLegs" + nPernas);
-	var xf = this.selected.cell.boardPosition.x;
-	var yf = this.selected.cell.boardPosition.y + 1;
-	var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,Connection.handleMove);
-
-};
-
-Board.prototype.playerCapture = function (board,currPlayer) {
-
-	var xi = this.selected.body.boardPosition.x;
-	var yi = this.selected.body.boardPosition.y + 1;
-	var nPernas = this.selected.body.getNumLegs();
-	var xf = this.selected.cell.boardPosition.x;
-	var yf = this.selected.cell.boardPosition.y + 1;
-
-	var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,Connection.handleCapture);
-
-};
-
-Board.prototype.playerEvolution = function (board,currPlayer) {
-
-	var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
-	var x = this.selected.body2.boardPosition.x;
-	var y = this.selected.body2.boardPosition.y + 1;
-	action += "(" + x + "," + y + ")";
-	if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
-		var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-		this.server.getPrologRequest(request,Connection.handleEvolution);
-	}
-
-};
-
-Board.prototype.playerFamine = function (board,currPlayer) {
-
-	//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
-	this.server.getPrologRequest("esfomeados(" + this.getGameString() + "," + currPlayer + ")",Connection.faminHandler);
-
-};
-
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 
@@ -405,27 +244,26 @@ Board.prototype.doRound = function(){
 
 	if(this.mode[this.playerTurn] == "c"){//Jogada Computador
 
-		//this.jogadaBot(currPlayer);
 		this.logic.jogadaBot(currPlayer);
 
 	} else {//Jogada Humano
 
 		if(this.selected.body && this.selected.cell){//Construir comando de movimento
-			//this.playerMovement(board,currPlayer);
+
 			this.logic.playerMovement(board,currPlayer);
 		}
 
 		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
-			//this.playerEvolution(board,currPlayer);
+
 			this.logic.playerEvolution(board,currPlayer);
 		}
 
-		//this.playerFamine(board,currPlayer);
+
 		this.logic.playerFamine(board,currPlayer);
 	}//Fim Jogada
 
 	//Verificar se o jogo acabou
-	//this.checkGameEnd(board,currPlayer);
+
 	this.logic.checkGameEnd(board,currPlayer);
 
 	this.resetRound();

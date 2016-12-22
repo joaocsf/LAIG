@@ -57,8 +57,7 @@ Connection.handleResponse = function (data) {
 
 		var response = new Array();
 		response = JSON.parse(data.target.response);
-		console.log(this);
-		Connection.board.handleBotPlay(response);
+		Connection.logic.handleBotPlay(response);
 };
 
 Connection.handleAC = function (data) {
@@ -124,7 +123,7 @@ Connection.faminHandler = function (data) {
 
     var response = new Array();
     response = JSON.parse(data.target.response);
-    Connection.board.famin(response);
+    Connection.logic.famin(response);
 };
 
 Connection.gameOverHandler = function (data) {
