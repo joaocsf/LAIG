@@ -181,13 +181,15 @@ Board.prototype.doMovement = function (action) {
 			var yf = action[4] - 1;
 			var startCell = this.getCellAt(xi,yi);
 			var endCell = this.getCellAt(xf,yf);
-			startCell.occupied.move(endCell);
+			if(startCell.occupied)
+				startCell.occupied.move(endCell);
 			break;
 		case this.capturar_index:
 			var xi = action[1];
 			var yi = action[2] - 1;
 			var xf = action[3];
 			var yf = action[4] - 1;
+			//TODO Atacar
 			//[2,Xi,Yi,Xatacar,Yatacar]
 			break;
 	}
@@ -220,7 +222,8 @@ Board.prototype.doEvolution = function (action) {
 			var y = action[2] - 1;
 			var claw = this.getFreeMember("CLAW");
 			var adaptoid = this.getCellAt(x,y).occupied;
-			claw.storeParent(adaptoid);
+			if(adaptoid)
+				claw.storeParent(adaptoid);
 			break;
 		case this.addPerna_index:
 		//Adicionar Perna
@@ -228,7 +231,8 @@ Board.prototype.doEvolution = function (action) {
 			var y = action[2] - 1;
 			var leg = this.getFreeMember("LEG");
 			var adaptoid = this.getCellAt(x,y).occupied;
-			leg.storeParent(adaptoid);
+			if(adaptoid)
+				leg.storeParent(adaptoid);
 			break;
 	};
 
@@ -297,6 +301,128 @@ Board.prototype.resetRound = function(){
 	this.selected.member = null;
 };
 
+Board.prototype.playerMovement = function (board,currPlayer) {
+
+	if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
+		var x = this.selected.cell.boardPosition.x;
+		var y = this.selected.cell.boardPosition.y + 1;
+		var action = "aC(" + x + y + ")";
+		var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+		this.server.getPrologRequest(request,handleAC);
+
+		function handleAC(data){
+			var response = new Array();
+			response = JSON.parse(data.target.response);
+			if(response[0])
+				this.selected.body.move(this.selected.cell);
+		};
+	} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
+
+		var xi = this.selected.body.boardPosition.x;
+		var yi = this.selected.body.boardPosition.y + 1;
+		var nPernas = this.selected.body.getNumLegs();
+		var xf = this.selected.cell.boardPosition.x;
+		var yf = this.selected.cell.boardPosition.y + 1;
+		var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
+		var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+		this.server.getPrologRequest(request,handleMove);
+
+		function handleMove(data){
+			var response = new Array();
+			response = JSON.parse(data.target.response);
+			if(response[0])
+				this.selected.body.move(this.selected.cell);
+		};
+
+	} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
+		if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
+			//TODO pedido de capturar
+			var xi = this.selected.body.boardPosition.x;
+			var yi = this.selected.body.boardPosition.y + 1;
+			var nPernas = this.selected.body.getNumLegs();
+			var xf = this.selected.cell.boardPosition.x;
+			var yf = this.selected.cell.boardPosition.y + 1;
+			var adaptoid = this.selected.body;
+			var enemy = this.selected.cell.occupied;
+			var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
+			var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+			this.server.getPrologRequest(request,handleCapture);
+
+			function handleCapture(data){
+				var response = new Array();
+				response = JSON.parse(data.target.response);
+				if(response[0]){//Indica que sim pode capturar
+					if(adaptoid.getNumClaws() == enemy.getNumClaws()){//Same claws morrem os dois
+						//TODO talvez mover o adaptoid para a posicao do inimigo
+						adaptoid.move(null);
+						enemy.move(null);
+						board.points[board.playerTurn]++;
+						board.points[1 - board.playerTurn]++;
+					} else if (adaptoid.getNumClaws() > enemy.getNumClaws()){//Ganhou o adaptoid
+						//TODO talvez mover o adaptoid para a posicao do inimigo
+						adaptoid.move(board.selected.cell);
+						enemy.move(null);
+						board.points[board.playerTurn]++;
+					} else{//Gnhou o enemy
+						//TODO talvez mover o adaptoid para a posicao do inimigo
+						adaptoid.move(null);
+						board.points[1 - board.playerTurn]++;
+					}
+					//TODO ver quem tem mais garras e quem ganha a batalha
+				}
+			}
+		}
+	}
+};
+
+Board.prototype.playerEvolution = function (board,currPlayer) {
+
+	var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
+	var x = this.selected.body2.boardPosition.x;
+	var y = this.selected.body2.boardPosition.y + 1;
+	action += "(" + x + "," + y + ")";
+	if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
+		var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+		this.server.getPrologRequest(request,handleEvolution);
+
+		function handleEvolution(data){
+			var response = new Array();
+			response = JSON.parse(data.target.response);
+			console.log(this);
+			if(response[0])
+				board.selected.member.storeParent(this.selected.body2);
+		}
+	}
+
+};
+
+Board.prototype.playerFamine = function (board,currPlayer) {
+
+	//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
+	this.server.getPrologRequest("esfomeados(" + this.getGameString() + ")," + currPlayer + ")",faminHandler);
+
+	function faminHandler(data){
+		var response = new Array();
+		response = JSON.parse(data.target.response);
+		console.log(this);
+		board.famin(response);
+	};
+
+};
+
+Board.prototype.checkGameEnd = function (board,currPlayer) {
+	
+	this.server.getPrologRequest("isGameOver(" + this.getGameString() + ")",gameOverHandler);
+
+	function gameOverHandler(data){
+		var response = new Array();
+		response = JSON.parse(data.target.response);
+		console.log(this);
+		board.gameOver(response);
+	};
+};
+
+
 Board.prototype.doRound = function(){
 	console.log("Doing this round!");
 
@@ -313,126 +439,18 @@ Board.prototype.doRound = function(){
 	} else {//Jogada Humano
 
 		if(this.selected.body && this.selected.cell){//Construir comando de movimento
-			if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
-				var x = this.selected.cell.boardPosition.x;
-				var y = this.selected.cell.boardPosition.y + 1;
-				var action = "aC(" + x + y + ")";
-				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-				this.server.getPrologRequest(request,handleAC);
-
-				function handleAC(data){
-					var response = new Array();
-					response = JSON.parse(data.target.response);
-					if(response[0])
-						this.selected.body.move(this.selected.cell);
-				};
-			} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
-
-				var xi = this.selected.body.boardPosition.x;
-				var yi = this.selected.body.boardPosition.y + 1;
-				var nPernas = this.selected.body.getNumLegs();
-				var xf = this.selected.cell.boardPosition.x;
-				var yf = this.selected.cell.boardPosition.y + 1;
-				var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-				var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-				this.server.getPrologRequest(request,handleMove);
-
-				function handleMove(data){
-					var response = new Array();
-					response = JSON.parse(data.target.response);
-					if(response[0])
-						this.selected.body.move(this.selected.cell);
-				};
-
-			} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
-				if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
-					//TODO pedido de capturar
-					var xi = this.selected.body.boardPosition.x;
-					var yi = this.selected.body.boardPosition.y + 1;
-					var nPernas = this.selected.body.getNumLegs();
-					var xf = this.selected.cell.boardPosition.x;
-					var yf = this.selected.cell.boardPosition.y + 1;
-					var adaptoid = this.selected.body;
-					var enemy = this.selected.cell.occupied;
-					var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
-					var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-					this.server.getPrologRequest(request,handleCapture);
-
-					function handleCapture(data){
-						var response = new Array();
-						response = JSON.parse(data.target.response);
-						if(response[0]){//Indica que sim pode capturar
-							if(adaptoid.getNumClaws() == enemy.getNumClaws()){//Same claws morrem os dois
-								//TODO talvez mover o adaptoid para a posicao do inimigo
-								adaptoid.move(null);
-								enemy.move(null);
-								board.points[board.playerTurn]++;
-								board.points[1 - board.playerTurn]++;
-							} else if (adaptoid.getNumClaws() > enemy.getNumClaws()){//Ganhou o adaptoid
-								//TODO talvez mover o adaptoid para a posicao do inimigo
-								adaptoid.move(board.selected.cell);
-								enemy.move(null);
-								board.points[board.playerTurn]++;
-							} else{//Gnhou o enemy
-								//TODO talvez mover o adaptoid para a posicao do inimigo
-								adaptoid.move(null);
-								board.points[1 - board.playerTurn]++;
-							}
-							//TODO ver quem tem mais garras e quem ganha a batalha
-						}
-					}
-				}
-			}
+			this.playerMovement(board,currPlayer);
 		}
 
 		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
-
-			var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
-			var x = this.selected.body2.boardPosition.x;
-			var y = this.selected.body2.boardPosition.y + 1;
-			action += "(" + x + "," + y + ")";
-			if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
-				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-				this.server.getPrologRequest(request,handleEvolution);
-
-				function handleEvolution(data){
-					var response = new Array();
-					response = JSON.parse(data.target.response);
-					console.log(this);
-					if(response[0])
-						board.selected.member.storeParent(this.selected.body2);
-				}
-			}
+			this.playerEvolution(board,currPlayer);
 		}
 
-		//Quando os comandos estiverem feitos isto torna-se obsoleto
-		if(this.selected.cell && this.selected.body)
-			if(!this.selected.cell.occupied)
-				this.selected.body.move(this.selected.cell);
-
-		if(this.selected.body2 && this.selected.member)
-			this.selected.member.storeParent(this.selected.body2);
-
-		//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
-		this.server.getPrologRequest("esfomeados(" + this.getGameString() + ")," + currPlayer + ")",faminHandler);
-
-		function faminHandler(data){
-			var response = new Array();
-			response = JSON.parse(data.target.response);
-			console.log(this);
-			board.famin(response);
-		};
+		this.playerFamine(board,currPlayer);
 	}//Fim Jogada
 
 	//Verificar se o jogo acabou
-	this.server.getPrologRequest("isGameOver(" + this.getGameString + ")",gameOverHandler);
-
-	function gameOverHandler(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		console.log(this);
-		board.gameOver(response);
-	};
+	this.checkGameEnd(board,currPlayer);
 
 	this.resetRound();
 }
@@ -716,7 +734,7 @@ Board.prototype.getGameString = function () {
 	res.push(['g',ht,ht,ht,vazio,vazio,vazio,vazio]);
 	for(var j = 0; j < this.adaptoids.length; j++){
 		for(var i = 0; i < this.adaptoids[j].length; i++){
-			if(this.adaptoids[j][i].playing){
+			if(this.adaptoids[j][i].currentCell){
 				var adaptoid = this.adaptoids[j][i];
 				res[adaptoid.boardPosition.y + 1][adaptoid.boardPosition.x] = adaptoid.getBodyString(i);
 			}
