@@ -327,10 +327,9 @@ Board.prototype.doRound = function(){
 					if(response[0])
 						this.selected.body.move(this.selected.cell);
 				};
-			};
-		} else {
+			} else {
 			//TODO fazer o movimento e o capturar
-		}
+			}
 
 		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
 			var action = (this.selected.member.type == "CLAW")? "aG" : "aP";

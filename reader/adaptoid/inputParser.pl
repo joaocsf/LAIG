@@ -35,16 +35,15 @@ parse_input(isGameOver(_),0).
 
 %So falta este comando
 parse_input(play(Jogador,jogo(A,B,Tab),Action),Resultado) :-
-    doAction(Action,Jogador,jogo(A,B,Tab),jogo(A1,B1,T1),Resultado).
+    doAction(Action,Jogador,jogo(A,B,Tab),_,Resultado).
 
-doAction(mover(X,Y,Npernas,Xf,Yf),Jogador,jogo(A,B,Tab),jogo(A1,B1,T1)) :-
-    listaOriToPos(Tab,X,Y,Oris,Npernas,Xf,Yf), !,
+doAction(mover(X,Y,Npernas,Xf,Yf),_,jogo(_,_,Tab),_,[1]) :-
+    listaOriToPos(Tab,X,Y,_,Npernas,Xf,Yf), !.
+doAction(mover(_,_,_,_,_),_,_,_,[0]).
 
-    lerRegraM(Jogador,mover(X,Y,Oris),jogo(A,B,Tab),jogo(A1,B1,T1)).
-
-doAction(capturar(X,Y,Xf,Yf),Jogador,jogo(A,B,Tab),jogo(A1,B1,T1)) :-
-    dist(X,Y,Xf,Yf,Dist), !, Dist =< 1, !,
-    lerRegraM(Jogador,capturar(X,Y,Ori),jogo(A,B,Tab),jogo(A1,B1,T1)).
+doAction(capturar(X,Y,Npernas,Xf,Yf),_,_,_,[1]) :-
+    tabuleiro_vazio(T), listaOriToPos(T,X,Y,_,Npernas,Xf,Yf).
+doAction(capturar(_,_,_,_,_),_,_,_,[0]).
 
 doAction(aC(X,Y),Jogador,jogo(_,_,Tab),_,[1]) :-
     surroundPos(X,Y,Jogador,Tab).
@@ -133,24 +132,12 @@ tabuleiro4( [
          ]
         ).
 
-tabuleiro5( [
+tabuleiro_vazio( [
             [zero,um,dois,tres,quatro],
             [a,vazio,vazio,vazio,vazio,cinco],
     		[b,vazio,vazio,vazio,vazio,vazio,seis],
     		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
-    		[d,vazio,[0,branco,5,1],vazio,vazio,vazio,vazio,vazio],
-			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
-    		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
-    	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
-         ]
-        ).
-
-tabuleiro6( [
-            [zero,um,dois,tres,quatro],
-            [a,vazio,vazio,vazio,vazio,cinco],
-    		[b,vazio,vazio,vazio,vazio,vazio,seis],
-    		[c,vazio,vazio,vazio,vazio,vazio,vazio,sete],
-    		[d,vazio,vazio,vazio,vazio,obstaculo,vazio,vazio],
+    		[d,vazio,vazio,vazio,vazio,vazio,vazio,vazio],
 			[e,ht,vazio,vazio,vazio,vazio,vazio,vazio],
     		[f,ht,ht,vazio,vazio,vazio,vazio,vazio],
     	    [g,ht,ht,ht,vazio,vazio,vazio,vazio]
