@@ -27,7 +27,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
-	this.mode = "hh";//Acrescentar mode "hc" "cc"
+	this.mode = "cc";//Acrescentar mode "hc" "cc"
 	this.dificuldade = [];
 	this.dificuldade[this.WHITE] = "op";//Adicionar "notOp"
 	this.dificuldade[this.BLACK] = "notOp";
@@ -315,7 +315,7 @@ Board.prototype.doRound = function(){
 		if(this.selected.body && this.selected.cell){//Construir comando de movimento
 			if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
 				var x = this.selected.cell.boardPosition.x;
-				var y = this.selected.cell.boardPosition.y;
+				var y = this.selected.cell.boardPosition.y + 1;
 				var action = "aC(" + x + y + ")";
 				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
 				this.server.getPrologRequest(request,handleAC);
@@ -323,20 +323,75 @@ Board.prototype.doRound = function(){
 				function handleAC(data){
 					var response = new Array();
 					response = JSON.parse(data.target.response);
-					console.log(this);
 					if(response[0])
 						this.selected.body.move(this.selected.cell);
 				};
-			} else {
-			//TODO fazer o movimento e o capturar
+			} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
+
+				var xi = this.selected.body.boardPosition.x;
+				var yi = this.selected.body.boardPosition.y + 1;
+				var nPernas = this.selected.body.getNumLegs();
+				var xf = this.selected.cell.boardPosition.x;
+				var yf = this.selected.cell.boardPosition.y + 1;
+				var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
+				var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+				this.server.getPrologRequest(request,handleMove);
+
+				function handleMove(data){
+					var response = new Array();
+					response = JSON.parse(data.target.response);
+					if(response[0])
+						this.selected.body.move(this.selected.cell);
+				};
+
+			} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
+				if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
+					//TODO pedido de capturar
+					var xi = this.selected.body.boardPosition.x;
+					var yi = this.selected.body.boardPosition.y + 1;
+					var nPernas = this.selected.body.getNumLegs();
+					var xf = this.selected.cell.boardPosition.x;
+					var yf = this.selected.cell.boardPosition.y + 1;
+					var adaptoid = this.selected.body;
+					var enemy = this.selected.cell.occupied;
+					var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
+					var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+					this.server.getPrologRequest(request,handleCapture);
+
+					function handleCapture(data){
+						var response = new Array();
+						response = JSON.parse(data.target.response);
+						if(response[0]){//Indica que sim pode capturar
+							if(adaptoid.getNumClaws() == enemy.getNumClaws()){//Same claws morrem os dois
+								//TODO talvez mover o adaptoid para a posicao do inimigo
+								adaptoid.move(null);
+								enemy.move(null);
+								board.points[board.playerTurn]++;
+								board.points[1 - board.playerTurn]++;
+							} else if (adaptoid.getNumClaws() > enemy.getNumClaws()){//Ganhou o adaptoid
+								//TODO talvez mover o adaptoid para a posicao do inimigo
+								adaptoid.move(board.selected.cell);
+								enemy.move(null);
+								board.points[board.playerTurn]++;
+							} else{//Gnhou o enemy
+								//TODO talvez mover o adaptoid para a posicao do inimigo
+								adaptoid.move(null);
+								board.points[1 - board.playerTurn]++;
+							}
+							//TODO ver quem tem mais garras e quem ganha a batalha
+						}
+					}
+				}
 			}
+		}
 
 		if(this.selected.body2 && this.selected.member){//construir comando de evoluir
+
 			var action = (this.selected.member.type == "CLAW")? "aG" : "aP";
 			var x = this.selected.body2.boardPosition.x;
-			var y = this.selected.body2.boardPosition.y;
+			var y = this.selected.body2.boardPosition.y + 1;
 			action += "(" + x + "," + y + ")";
-			if(this.selected.body2.currentCell){
+			if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
 				var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
 				this.server.getPrologRequest(request,handleEvolution);
 

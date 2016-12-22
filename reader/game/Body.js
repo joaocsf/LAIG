@@ -143,6 +143,24 @@ Body.prototype.display = function(){
 
 }
 
+Body.prototype.getNumClaws = function () {
+	var res = 0;
+	for (var member in this.members) {
+		if(member.type == "CLAW")
+			res++
+	}
+	return res;
+};
+
+Body.prototype.getNumLegs = function () {
+	var res = 0;
+	for (var member in this.members) {
+		if(member.type == "LEG")
+			res++
+	}
+	return res;
+};
+
 Body.prototype.getBodyString = function (index) {//[ID,Cor,Garras,Pernas]
 
 	var res = [];
