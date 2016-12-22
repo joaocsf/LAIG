@@ -13,7 +13,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 	this.roundTime = 10;
-	this.maxAnimTime = 2;
+	this.maxAnimTime = 3;
 	this.timer = new Timer(this.scene, this.roundTime, 0, 0.5);
 
 	//Game pieces
@@ -24,7 +24,8 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 		member : null
 	}
 	//
-	this.server = new Connection();
+	this.logic = new Logic(this);
+	this.server = new Connection(this,this.logic);
 	this.points = [];
 	this.points[this.BLACK] = 0;
 	this.points[this.WHITE] = 0;
@@ -220,8 +221,8 @@ Board.prototype.doMovement = function (action) {
 			var startCell = this.getCellAt(xi,yi);
 			var cellDest = this.getCellAt(xf,yf);
 			if(startCell.occupied && cellDest.occupied){
-				startCell.occupied.move(cellDest);
 				cellDest.occupied.move(null);
+				startCell.occupied.move(cellDest);
 			}
 			break;
 	}
@@ -303,15 +304,8 @@ Board.prototype.jogadaBot = function (currPlayer) {
 	var dif = this.dificuldade[this.playerTurn];
 	var board = this;
 	var request = "botPlay(" + currPlayer + "," + dif + "," + jogo + ")";
-	this.server.getPrologRequest(request,handleResponse);
+	this.server.getPrologRequest(request,Connection.handleResponse);
 
-	function handleResponse(data){
-
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		console.log(this);
-		board.handleBotPlay(response);
-	}
 };
 
 Board.prototype.resetRound = function(){
@@ -336,16 +330,16 @@ Board.prototype.resetRound = function(){
 Board.prototype.playerMovement = function (board,currPlayer) {
 
 	if(!this.selected.body.currentCell && !this.selected.cell.occupied){//Nao esta em jogo logo é para adicionar corpo e a celula nao esta ocupada
-		this.playerAddBody(body,currPlayer);
+		this.playerAddBody(board,currPlayer);
 
 	} else if(this.selected.body.currentCell && !this.selected.cell.occupied){//Adaptoid placed e a celula desocupada
 
-		this.playerMove(body,currPlayer);
+		this.playerMove(board,currPlayer);
 
 	} else if(this.selected.body.currentCell && this.selected.cell.occupied){//Ver se o body esta placed e a celula ocupada
 		if(this.selected.cell.occupied.team != this.selected.body.team){//Celula ocupada e com um inimigo de body
 
-			this.playerCapture(body,currPlayer);
+			this.playerCapture(board,currPlayer);
 
 		}
 	}
@@ -355,16 +349,9 @@ Board.prototype.playerAddBody = function (board,currPlayer) {
 
 	var x = this.selected.cell.boardPosition.x;
 	var y = this.selected.cell.boardPosition.y + 1;
-	var action = "aC(" + x + y + ")";
-	var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,handleAC);
-
-	function handleAC(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		if(response[0])
-		this.selected.body.move(this.selected.cell);
-	};
+	var action = "aC(" + x + "," + y + ")";
+	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+	this.server.getPrologRequest(request,Connection.handleAC);
 
 };
 
@@ -372,19 +359,15 @@ Board.prototype.playerMove = function (board,currPlayer) {
 
 	var xi = this.selected.body.boardPosition.x;
 	var yi = this.selected.body.boardPosition.y + 1;
+	console.log("BOAS");
+	console.log(this.selected.body);
 	var nPernas = this.selected.body.getNumLegs();
+	console.log("NLegs" + nPernas);
 	var xf = this.selected.cell.boardPosition.x;
 	var yf = this.selected.cell.boardPosition.y + 1;
 	var action = "mover(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
 	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,handleMove);
-
-	function handleMove(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		if(response[0])
-		this.selected.body.move(this.selected.cell);
-	};
+	this.server.getPrologRequest(request,Connection.handleMove);
 
 };
 
@@ -395,31 +378,10 @@ Board.prototype.playerCapture = function (board,currPlayer) {
 	var nPernas = this.selected.body.getNumLegs();
 	var xf = this.selected.cell.boardPosition.x;
 	var yf = this.selected.cell.boardPosition.y + 1;
-	var adaptoid = this.selected.body;
-	var enemy = this.selected.cell.occupied;
+
 	var action = "capturar(" + xi + "," + yi + "," + nPernas + "," + xf + "," + yf + ")";
 	var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-	this.server.getPrologRequest(request,handleCapture);
-
-	function handleCapture(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		if(response[0]){//Indica que sim pode atacar
-			if(adaptoid.getNumClaws() == enemy.getNumClaws()){//Same claws morrem os dois
-				adaptoid.move(null);
-				enemy.move(null);
-				board.points[board.playerTurn]++;
-				board.points[1 - board.playerTurn]++;
-			} else if (adaptoid.getNumClaws() > enemy.getNumClaws()){//Ganhou o adaptoid
-				adaptoid.move(board.selected.cell);
-				enemy.move(null);
-				board.points[board.playerTurn]++;
-			} else{//Ganhou o enemy
-				adaptoid.move(null);
-				board.points[1 - board.playerTurn]++;
-			}
-		}
-	}
+	this.server.getPrologRequest(request,Connection.handleCapture);
 
 };
 
@@ -430,16 +392,8 @@ Board.prototype.playerEvolution = function (board,currPlayer) {
 	var y = this.selected.body2.boardPosition.y + 1;
 	action += "(" + x + "," + y + ")";
 	if(this.selected.body2.currentCell){//Só é possivel adicionar pernas ou garras se o corpo estiver placed
-		var resquest = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
-		this.server.getPrologRequest(request,handleEvolution);
-
-		function handleEvolution(data){
-			var response = new Array();
-			response = JSON.parse(data.target.response);
-			console.log(this);
-			if(response[0])
-				board.selected.member.storeParent(this.selected.body2);
-		}
+		var request = "play("+ currPlayer + "," + this.getGameString() + "," + action + ")";
+		this.server.getPrologRequest(request,Connection.handleEvolution);
 	}
 
 };
@@ -447,27 +401,14 @@ Board.prototype.playerEvolution = function (board,currPlayer) {
 Board.prototype.playerFamine = function (board,currPlayer) {
 
 	//Verificar esfomeados | SO E FEITO SE FOR A JOGADA DO PLAYER O COMPUTADOR JA FAZ ISTO
-	this.server.getPrologRequest("esfomeados(" + this.getGameString() + ")," + currPlayer + ")",faminHandler);
-
-	function faminHandler(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		console.log(this);
-		board.famin(response);
-	};
+	this.server.getPrologRequest("esfomeados(" + this.getGameString() + "," + currPlayer + ")",Connection.faminHandler);
 
 };
 
 Board.prototype.checkGameEnd = function (board,currPlayer) {
 
-	this.server.getPrologRequest("isGameOver(" + this.getGameString() + ")",gameOverHandler);
+	this.server.getPrologRequest("isGameOver(" + this.getGameString() + ")",Connection.gameOverHandler);
 
-	function gameOverHandler(data){
-		var response = new Array();
-		response = JSON.parse(data.target.response);
-		console.log(this);
-		board.gameOver(response);
-	};
 };
 
 
@@ -501,27 +442,31 @@ Board.prototype.doRound = function(){
 	this.checkGameEnd(board,currPlayer);
 
 	this.resetRound();
+	this.endTurn();
 }
 
 Board.prototype.gameOver = function (status) {
 
 	switch (status[0]) {
 		case 0:
-			return;
 			break;
 		case 1:
+		//TODO
+			//Apagar picking
 			//this.WHITE ganhou
 			break;
 		case 2:
+		//TODO
+			//Apagar picking
 			//this.Black ganhou
 			break;
 	}
 
-	return;
+	this.resetRound();
 };
 
 Board.prototype.endTurn = function(){
-	this.doRound();
+	//this.doRound();
 	this.storePlayerTurn(-1, this.scene.animator.animationTime);
 }
 
@@ -626,7 +571,6 @@ Board.prototype.getBodyPosition = function(piece, dist = 0){
 	return pos;
 }
 
-
 Board.prototype.getMemberPosition = function(piece, dist = 0){
 	var id = piece.id;
 	var team = piece.team;
@@ -640,7 +584,6 @@ Board.prototype.getMemberPosition = function(piece, dist = 0){
 	pos.x += dist * ((team)? 1 : -1);
 	return pos;
 }
-
 
 Board.prototype.initializePositions = function(){
 	var width = 1;

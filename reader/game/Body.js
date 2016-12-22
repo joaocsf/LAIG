@@ -66,7 +66,7 @@ Body.prototype.move = function(cell){
 	if(this.currentCell)
 			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;
-	
+
 	if(this.currentCell)
 		this.currentCell.storeOccupy(this);
 }
@@ -147,18 +147,18 @@ Body.prototype.display = function(){
 
 Body.prototype.getNumClaws = function () {
 	var res = 0;
-	for (var member in this.members) {
-		if(member.type == "CLAW")
-			res++
+	for (var i = 0; i < this.members.length; i++) {
+		if(this.members[i].type == "CLAW")
+			res++;
 	}
 	return res;
 };
 
 Body.prototype.getNumLegs = function () {
 	var res = 0;
-	for (var member in this.members) {
-		if(member.type == "LEG")
-			res++
+	for (var i = 0; i < this.members.length; i++) {
+		if(this.members[i].type == "LEG")
+			res++;
 	}
 	return res;
 };

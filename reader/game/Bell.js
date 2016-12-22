@@ -10,7 +10,8 @@ Bell.prototype.constructor = Body;
 
 Bell.prototype.OnClick = function(){
 	if(this.board.isPlaying())
-		this.board.endTurn();
+		this.board.doRound();
+		//this.board.endTurn();
 }
 
 Bell.prototype.setPickID = function(id){
