@@ -47,9 +47,6 @@ Body.prototype.removeMembers = function(){
 
 Body.prototype.move = function(cell){
 
-	this.boardPosition.x = cell.boardPosition.x;
-	this.boardPosition.y = cell.boardPosition.y;
-
 	var toPos = this.startPosition;
 	if(cell)
 		toPos = cell.position;
@@ -62,10 +59,10 @@ Body.prototype.move = function(cell){
 	if(!cell)
 		this.removeMembers();
 
-	var id1 = (this.currentCell)? this.currentCell.id : "null";
-	var id2 = (cell)? cell.id : "null";
+	//var id1 = (this.currentCell)? this.currentCell.id : "null";
+	//var id2 = (cell)? cell.id : "null";
 
-	console.log("ID: " + this.id + " From:" + id1 + " To:" + id2);
+	//console.log("ID: " + this.id + " From:" + id1 + " To:" + id2);
 	if(this.currentCell)
 			this.currentCell.storeOccupy(null);
 	this.currentCell = cell;
