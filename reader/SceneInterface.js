@@ -37,7 +37,7 @@ SceneInterface.prototype.init = function(application) {
 	this.scene.animator.animationTime=0.0001;
 
 	var animationGroup = this.gui.addFolder("Animation");
-	var timeline = animationGroup.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime).step(0.2).listen();
+	var timeline = animationGroup.add(this.scene.animator, 'animationTime').max(0, this.scene.animator.animationMaxTime).step(0.1).listen();
 
 	this.scene.animator.playUI = timeline;
 

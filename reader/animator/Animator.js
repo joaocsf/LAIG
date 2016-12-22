@@ -21,6 +21,9 @@ Animator.prototype.changingAnimationTime = function(){
 	this.animate = false;
 	this.lastPlay = false;
 	this.recording = false;
+	if(this.animationTime < 0){
+		this.animationTime = 0;
+	}
 }
 
 Animator.prototype.changedAnimationTime = function(){
