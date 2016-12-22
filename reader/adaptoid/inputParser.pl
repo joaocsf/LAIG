@@ -19,7 +19,7 @@ parse_input(botPlay(Jogador,Dificuldade,jogo(A,B,Tab)),Resultado) :-
     jogadaComputador(Jogador,Dificuldade,jogo(A,B,Tab),jogo(A1,B1,T1)),
     jogadaBot(jogo(A,B,Tab),Jogador,jogo(A1,B1,T1),M,E),
     M =.. MovTemp, E =.. EvoTemp,
-    parseMovimento(MovTemp,Movimento), parseEvolucao(EvoTemp,Evolucao),
+    parseMovimento(MovTemp,Movimento), parseEvolucao(T1,EvoTemp,Evolucao),
     corInv(Jogador,Cor), getDiffIds(Tab,Cor,T1,Diff),
     Resultado = [A1,B1,Movimento,Evolucao,Diff], !.
 
@@ -68,14 +68,14 @@ parseMovimento([capturar,X,Y,Ori],[2,X,Y,Xf,Yf]) :-
 
 parseMovimento([s],[0]) :- !.
 
-parseEvolucao([aC,X,Y,Ori],[3,X,Y,Xf,Yf]) :-
+parseEvolucao(_,[aC,X,Y,Ori],[3,X,Y,Xf,Yf]) :-
     sumOriToPos(X,Y,Ori,Xf,Yf), !.
 
-parseEvolucao([aP,X,Y],[5,X,Y]) :- !.
+parseEvolucao(Tab,[aP,X,Y],[5,Id]) :- getSimboloXY(Tab,[Id,_,_,_],X,Y), !.
 
-parseEvolucao([aG,X,Y],[4,X,Y]) :- !.
+parseEvolucao(Tab,[aG,X,Y],[4,Id]) :- getSimboloXY(Tab,[Id,_,_,_],X,Y), !.
 
-parseEvolucao([s],[0]) :- !.
+parseEvolucao(_,[s],[0]) :- !.
 
 getDiffIdsAux([],_,[],[]) :- !.
 getDiffIdsAux([[ID,Cor,_,_]|E1s],Cor,[vazio|E2s],Res) :-

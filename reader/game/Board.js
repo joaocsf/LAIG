@@ -209,7 +209,7 @@ Board.prototype.doMovement = function (action) {
 
 			var startCell = this.getCellAt(xi,yi);
 			var endCell = this.getCellAt(xf,yf);
-			if(startCell.occupied)
+			if(startCell.occupied && !endCell.occupied)
 				startCell.occupied.move(endCell);
 			break;
 		case this.capturar_index:
@@ -251,20 +251,18 @@ Board.prototype.doEvolution = function (action) {
 			break;
 		case this.addGarra_index:
 		//Adicionar Garra
-			var x = action[1];
-			var y = action[2] - 1;
+			var id = action[1];
 			var claw = this.getFreeMember("CLAW");
-			var adaptoid = this.getCellAt(x,y).occupied;
-			if(adaptoid)
+			var adaptoid = this.getBodyByID(id,this.playerTurn);
+			if(adaptoid && (adaptoid.team == claw.team))
 				claw.storeParent(adaptoid);
 			break;
 		case this.addPerna_index:
 		//Adicionar Perna
-			var x = action[1];
-			var y = action[2] - 1;
+			var id = action[1];
 			var leg = this.getFreeMember("LEG");
-			var adaptoid = this.getCellAt(x,y).occupied;
-			if(adaptoid)
+			var adaptoid = this.getBodyByID(id,this.playerTurn);
+			if(adaptoid && (adaptoid.team == leg.team))
 				leg.storeParent(adaptoid);
 			break;
 	};
@@ -276,7 +274,8 @@ Board.prototype.doFamine = function (action) {
 	var enemy = 1 - this.playerTurn;
 	for (var i = 0; i < action.length; i++) {
 		var adaptoid = this.getBodyByID(action[i],enemy);
-		adaptoid.move(null);//Remove o adaptoid;
+		if(adaptoid.currentCell)
+			adaptoid.move(null);//Remove o adaptoid;
 	}
 };
 
@@ -454,11 +453,13 @@ Board.prototype.gameOver = function (status) {
 		//TODO
 			//Apagar picking
 			//this.WHITE ganhou
+			this.scene.changeHeaderText("White Player wins");
 			break;
 		case 2:
 		//TODO
 			//Apagar picking
 			//this.Black ganhou
+			this.scene.changeHeaderText("Black Player wins");
 			break;
 	}
 
