@@ -79,7 +79,7 @@
 	</textures>
 
   <materials>
-    <material id="material1" >
+     <material id="material1" >
       <emission r="0.1" g="0.1" b="0.1" a="1.0" />
       <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
       <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
@@ -106,7 +106,7 @@
     <material id="black" >
       <emission r="0.0" g="0.0" b="0.0" a="1.0" />
       <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
-      <diffuse r="1.0" g="0.1" b="0.1" a="1.0" />
+      <diffuse r="0.1" g="0.1" b="0.1" a="1.0" />
       <specular r="0.5" g="0.5" b="0.5" a="1.0" />
       <shininess value="1.0" />
     </material>
@@ -122,7 +122,7 @@
     <material id="white" >
       <emission r="0.0" g="0.0" b="0.0" a="1.0" />
       <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
-      <diffuse r="0.1" g="1.0" b="1.0" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
       <specular r="0.5" g="0.5" b="0.5" a="1.0" />
       <shininess value="1.0" />
     </material>
@@ -162,7 +162,7 @@
   <primitives>
 
     <primitive id="plane">
-        <cylinder base="0.55" top="0.55" height="10" slices="30" stacks="3" />
+        <cylinder base="1" top="0.6" height="10" slices="30" stacks="3" />
     </primitive>
 
     <primitive id="coneMid">

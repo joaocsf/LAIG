@@ -90,7 +90,7 @@ Logic.prototype.handleBotPlay = function (response) {
 };
 
 Logic.prototype.doFamine = function (action) {
-	console.log("Famine Action : " + action);
+	//console.log("Famine Action : " + action);
 	var enemy = 1 - this.board.playerTurn;
 	for (var i = 0; i < action.length; i++) {
 		var adaptoid = this.board.getBodyByID(action[i],enemy);
