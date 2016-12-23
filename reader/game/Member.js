@@ -127,7 +127,13 @@ Member.prototype.display = function(){
 
 		this.scene.rotate(Math.PI*this.rotation/3, 0, 1, 0);
 
-		this.board.pieces[this.model].display2(this.board.pieces[this.team].material, this.board.pieces[this.team].texture);
+		var props = this.board.pieces[this.team].texture;
+		if(props){
+			props = {textData : props};
+		}
+
+		this.board.pieces[this.model].display2(this.board.pieces[this.team].material, props);
+		//console.log(this.board.pieces[this.team]);
 
 	this.scene.popMatrix();
 

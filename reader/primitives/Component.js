@@ -84,7 +84,7 @@ function Component(scene) {
                tex = null;
             break;
             case "inherit":
-               tex = texture;
+                tex = texture;
             break;
         }
 
