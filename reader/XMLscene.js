@@ -260,9 +260,10 @@ XMLscene.prototype.onGraphLoaded = function()
 XMLscene.prototype.updateLights = function(){
 
 	for(var i = 0; i < this.lightState.length; i++){
-		if(this.lightState[i])
+
+		if(this.lightState[i]){
 			this.lights[i].enable();
-		else
+		}else
 			this.lights[i].disable();
 	}
 

@@ -43,6 +43,7 @@ MySceneGraph.prototype.loadLights = function(){
 	for(var key in this.lights){
 		var lightData = this.lights[key];
 		var light = this.scene.lights[lightData.index];
+		console.error(lightData.index);
 		light.disable();
 		light.setVisible(true);
 		if(lightData.enable)
@@ -72,7 +73,7 @@ MySceneGraph.prototype.loadLights = function(){
 		light.update();
 		if(lightData.type == "omni")
 			continue;
-		
+
 		light.setSpotCutOff(lightData.angle);
 		light.setSpotExponent(lightData.exponent);
 		light.setSpotDirection(
@@ -80,6 +81,8 @@ MySceneGraph.prototype.loadLights = function(){
 			lightData.direction.y,
 			lightData.direction.z);
 
+		console.error(lightData);
+		console.error(light);
 		light.update();
 	}
 
@@ -628,6 +631,12 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 
 	var enable = this.reader.getBoolean(element, "enabled") || 0;
 	var location = this.getVector3FromElement(element.getElementsByTagName("location")[0]);
+	location = {
+		x: location.x,
+		y: location.y,
+		z: location.z,
+		w: 1
+	};
 	var ambient =  this.getRGBAFromElement(element.getElementsByTagName("ambient")[0]);
 	var diffuse = this.getRGBAFromElement(element.getElementsByTagName("diffuse")[0]);
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);

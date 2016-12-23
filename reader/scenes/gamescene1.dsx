@@ -54,20 +54,20 @@
       <specular r="0.0" g="0.0" b="0.0" a="1.0" />
     </omni>
 
-    <spot id="spot1" enabled="1" angle="10" exponent="2">
+    <spot id="spot1" enabled="1" angle="1" exponent="2">
       <target x="0.0" y="0.0" z="0.0" />
       <location x="1.0" y="2.0" z="0.0" />
       <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-      <diffuse r="1.0" g="0.0" b="0.0" a="1.0" />
-      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="0.3" g="0.3" b="0.3" a="1.0" />
+      <specular r="0.5" g="0.5" b="0.5" a="1.0" />
     </spot>
 
-    <spot id="spot2" enabled="1" angle="40" exponent="3">
+    <spot id="spot2" enabled="1" angle="1" exponent="3">
       <target x="0.0" y="0.0" z="0.0" />
       <location x="-1.0" y="2.0" z="0.0" />
       <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-      <diffuse r="1.0" g="1.0" b="0.0" a="1.0" />
-      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+      <diffuse r="0.3" g="0.3" b="0.3" a="1.0" />
+      <specular r="0.5" g="0.5" b="0.5" a="1.0" />
     </spot>
   </lights>
 
