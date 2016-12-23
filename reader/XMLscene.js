@@ -121,8 +121,6 @@ XMLscene.prototype.setDefaultAppearance = function () {
 XMLscene.prototype.nextCamera = function(){
   this.currentView = this.graph.getCamera();
   this.cameraCanUpdate = true;
-	//this.interface.setActiveCamera(null);
-  console.log(this.camera);
 }
 
 XMLscene.prototype.VectDistance = function(p1,p2){
@@ -189,7 +187,6 @@ XMLscene.prototype.updateCamera = function(time){
     return;
 
   this.cameraCanUpdate = false;
-  console.log(this.camera);
 
 }
 
@@ -202,9 +199,7 @@ XMLscene.prototype.logPicking = function () {
                 if (obj)
                 {
                     var customId = this.pickResults[i][1];
-                    //console.log(this.pickResults[i]);
 
-                    //console.log(obj);
                     if(obj.OnClick != null)
                       obj.OnClick();
                 }
@@ -222,7 +217,7 @@ XMLscene.prototype.changeHeaderText = function (string) {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 
 XMLscene.prototype.updateGraph = function(){
-  console.log("Updating Graph!");
+
   this.resetLights();
   this.graph = this.graphs[this.graphName];
   this.graph.loadLights();
@@ -239,7 +234,7 @@ XMLscene.prototype.updateGraph = function(){
 
   this.axis = new CGFaxis(this,this.graph.sceneInfo.axis_length,0.1);
 
-  //console.log("Axis Length is : " + this.axis.length + "; " + this.axis.thickness);
+
   for(var i = 0 ; i < this.lights.length; i++){
     this.lightState[i] = this.lights[i].enabled;
   }
@@ -253,7 +248,7 @@ XMLscene.prototype.updateGraph = function(){
   this.cameraCanUpdate = true;
   this.currentView = this.graph.currentView;
   this.board.setPieces(this.graph.gameComponents);
-  console.log("End updateGraph!");
+
 }
 
 XMLscene.prototype.onGraphLoaded = function()
@@ -313,26 +308,3 @@ XMLscene.prototype.display = function () {
   		  this.root.display();
   	};
 };
-
-
-//Exemplo de logPicking
-/*
-LightingScene.prototype.logPicking = function ()
-{
-	if (this.pickMode == false) {
-		if (this.pickResults != null && this.pickResults.length > 0) {
-			for (var i=0; i< this.pickResults.length; i++) {
-				var obj = this.pickResults[i][0];
-				if (obj)
-				{
-					var customId = this.pickResults[i][1];
-                    console.log(this.pickResults[i]);
-                    console.log(obj);
-					console.log("Picked object: " + obj + ", with pick id " + customId);
-				}
-			}
-			this.pickResults.splice(0,this.pickResults.length);//Limpa o array
-		}
-	}
-}
-*/

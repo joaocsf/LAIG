@@ -78,6 +78,8 @@ SceneInterface.prototype.init = function(application) {
 		scene.updateGraph();
 	}).listen();
 
+	gameGroup.add(this.scene.board, 'resetGame').name("Reset Game");
+
 	var debugGroup = this.gui.addFolder("Debug");
 	debugGroup.add(this.scene.board, 'debugCells');
 	debugGroup.add(this.scene.board, 'debugBodys');

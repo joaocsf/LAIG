@@ -13,7 +13,7 @@ function Board(scene, pieceNumber, legNumber, clawNumber) {
 	this.selectShader = new CGFshader(this.scene.gl, "shaders/select/selected.vert", "shaders/select/selected.frag");
 	this.bell = new Bell(this.scene, this)
 	this.score = new Score(this.scene, this);
-	this.roundTime = 10;
+	this.roundTime = 15;
 	this.maxAnimTime = 2;
 	this.timer = new Timer(this.scene, this.roundTime, 0, 0.5);
 
@@ -112,6 +112,22 @@ Board.prototype.initializeAnimations = function(){
 	this.animation.registerSequence('points1', this.points, 1);
 }
 
+Board.prototype.resetGame = function (){
+
+	this.scene.animator.animationTime = 0;
+	this.scene.animator.undo();
+
+	this.currentPlayer = this.WHITE;
+	this.playerTurn = this.WHITE;
+	this.playerTurnTime = 0;
+	this.lastPlayerTurn = this.playerTurn;
+	this.lastPlayerTurnTime = 0;
+	console.log(this.scene.animator.animationTime);
+	this.setUp();
+	this.scene.animator.resume();
+	console.log(this.scene.animator.animationTime);
+}
+
 Board.prototype.update = function(time){
 	if(this.time == 0){
 		this.time = time;
@@ -140,9 +156,10 @@ Board.prototype.storePlayerTurn = function(turn, time, curr = null){
 }
 
 Board.prototype.setMessage = function () {
-	if((this.points[this.WHITE] >= 5 || this.getCount(this.BLACK) <= 0) && this.scene.animator.animationTime > this.maxAnimTime){
+	if((this.points[this.WHITE] >= 5 || this.getCount(this.BLACK) <= 0) && this.scene.animator.animationTime > 3){
 		this.scene.changeHeaderText("White Player Wins!");
-	} else if ((this.points[this.BLACK] >= 5 || this.getCount(this.WHITE) <= 0) && this.scene.animator.animationTime > this.maxAnimTime){
+	} else if ((this.points[this.BLACK] >= 5 || this.getCount(this.WHITE) <= 0) && this.scene.animator.animationTime > 3){
+		console.error("Thats why:" +  this.scene.animator.animationTime);
 		this.scene.changeHeaderText("Black Player Wins!")
 	} else {
 		this.scene.changeHeaderText("");
@@ -255,7 +272,7 @@ Board.prototype.resetRound = function(){
 };
 
 Board.prototype.doRound = function(){
-	console.log("Doing this round!");
+
 
 	var board = this;
 
@@ -300,13 +317,13 @@ Board.prototype.gameOver = function (status) {
 		//TODO
 			//Apagar picking
 			//this.WHITE ganhou
-			this.scene.changeHeaderText("White Player wins");
+			//this.scene.changeHeaderText("White Player wins");
 			break;
 		case 2:
 		//TODO
 			//Apagar picking
 			//this.Black ganhou
-			this.scene.changeHeaderText("Black Player wins");
+			//this.scene.changeHeaderText("Black Player wins");
 			break;
 	}
 
