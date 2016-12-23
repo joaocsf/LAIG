@@ -68,6 +68,8 @@ Score.prototype.display = function(){
 		this.scene.popMatrix();
 
     var points = this.board.points[this.board.BLACK];
+		mat = this.board.pieces['numbers'].material;
+		mat.setTexture(this.board.pieces['numbers'].texture);
 		mat.apply();
 
     this.scene.pushMatrix();
