@@ -69,9 +69,10 @@ MySceneGraph.prototype.loadLights = function(){
 			lightData.specular.b,
 			lightData.specular.a);
 
+		light.update();
 		if(lightData.type == "omni")
 			continue;
-
+		
 		light.setSpotCutOff(lightData.angle);
 		light.setSpotExponent(lightData.exponent);
 		light.setSpotDirection(
@@ -632,7 +633,7 @@ MySceneGraph.prototype.parseSpotLights = function(element){
 	var specular = this.getRGBAFromElement(element.getElementsByTagName("specular")[0]);
 
 	var angle = this.reader.getFloat(element,"angle") || 0.0;
-	angle *= Math.PI/180;
+	//angle *= Math.PI/180;
 	var exponent = this.reader.getFloat(element,"exponent") || 0.0;
 	var target = this.getVector3FromElement(element.getElementsByTagName("target")[0]);
 	var direction = {//Direction of the spot is target - location

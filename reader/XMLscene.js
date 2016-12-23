@@ -72,9 +72,7 @@ XMLscene.prototype.resetLights = function(){
     light.setSpotExponent(10);
     light.setSpotCutOff(180);
     light.setConstantAttenuation(1);
-    light.setLinearAttenuation(0);
-    light.setQuadraticAttenuation(0);
-    light.visible = false;
+    light.setVisible(false);
     light.update();
   }
 }
