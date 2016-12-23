@@ -126,7 +126,11 @@ Body.prototype.display = function(){
   this.scene.pushMatrix();
 		this.scene.translate(this.position.x, this.position.y, this.position.z);
 
-		this.board.pieces['body'].display2(this.board.pieces[this.team].material, this.board.pieces[this.team].texture);
+		var props = this.board.pieces[this.team].texture;
+		if(props){
+			props = {textData : props};
+		}
+		this.board.pieces['body'].display2(this.board.pieces[this.team].material,props);
 
 		for(var i = 0; i < this.members.length; i++){
 

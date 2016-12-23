@@ -36,7 +36,12 @@ Bell.prototype.display = function(){
 		//criar bell!
 		var team = this.board.playerTurn;
 
-		this.board.pieces['bell'].display2(this.board.pieces[team].material, this.board.pieces[team].texture);
+		var props = this.board.pieces[team].texture;
+		if(props){
+			props = {textData : props};
+		}
+
+		this.board.pieces['bell'].display2(this.board.pieces[team].material, props);
 
   this.scene.popMatrix();
 
