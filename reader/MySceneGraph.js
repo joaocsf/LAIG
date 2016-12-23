@@ -43,7 +43,7 @@ MySceneGraph.prototype.loadLights = function(){
 	for(var key in this.lights){
 		var lightData = this.lights[key];
 		var light = this.scene.lights[lightData.index];
-		console.error(lightData.index);
+
 		light.disable();
 		light.setVisible(true);
 		if(lightData.enable)
@@ -81,8 +81,6 @@ MySceneGraph.prototype.loadLights = function(){
 			lightData.direction.y,
 			lightData.direction.z);
 
-		console.error(lightData);
-		console.error(light);
 		light.update();
 	}
 
