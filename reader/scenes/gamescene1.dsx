@@ -137,6 +137,14 @@
       <shininess value="1.0" />
     </material>
 
+    <material id="corpo1" >
+      <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+      <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+      <diffuse r="0.85" g="0.51" b="0.54" a="1.0" />
+      <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+      <shininess value="1.0" />
+    </material>
+
   </materials>
 
   <transformations>
@@ -186,24 +194,45 @@
       <sphere radius="0.5" slices="15" stacks="15" />
     </primitive>
 
+    <primitive id="bottom">
+      <cylinder base="0.3" top="0.2" height="1.0" slices="10" stacks="3" />
+    </primitive>
+
+    <primitive id="coneBom">
+      <cylinder base="1.0" top="0.0" height="1.0" slices="5" stacks="3" />
+    </primitive>
+
+    <primitive id="cabeca">
+      <cylinder base="1.0" top="0.0" height="1.0" slices="10" stacks="5" />
+    </primitive>
+
   </primitives>
 
 
   <components>
     <component id="rute">
-
-
-        <!-- bloco "transformation" obrigatorio -->
       <transformation>
-      <transformationref id="movimento1" />
+       <translate x="0" y="0" z="0"/>
       </transformation>
       <materials>
         <material id="material1" />
       </materials>
-
       <texture id="textura1" />
+      <children>
+        <componentref id="drawBoard" />
+        <componentref id="drawPatrick"/>
+        <componentref id="drawPatrick2"/>
+      </children>
+    </component>
 
-      <!-- bloco "children" obrigatorio num "component" -->
+    <component id="drawBoard">
+      <transformation>
+        <transformationref id="movimento1" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="inherit" />
       <children>
         <componentref id="floorC" />
       </children>
@@ -324,6 +353,181 @@
         <primitiveref id="plane"/>
       </children>
     </component>
+
+    <component id="drawPatrick">
+      <transformation>
+        <translate x="-1.5" y="0.2" z="0.0" />
+        <rotate axis="y" angle="180" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="corpo" />
+        <componentref id="braco1" />
+        <componentref id="braco2" />
+        <componentref id="bottom-1" />
+        <componentref id="perna1" />
+        <componentref id="perna2" />
+      </children>
+    </component>
+
+    <component id="drawPatrick2">
+      <transformation>
+        <translate x="1.5" y="0.2" z="0.0" />
+        <rotate axis="y" angle="0" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="corpo" />
+        <componentref id="braco1" />
+        <componentref id="braco2" />
+        <componentref id="bottom-1" />
+        <componentref id="perna1" />
+        <componentref id="perna2" />
+      </children>
+    </component>
+
+    <component id="patrick">
+      <transformation>
+        <translate x="0.0" y="0.0" z="0.0" />
+        <rotate axis="y" angle="90" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="corpo" />
+        <componentref id="braco1" />
+        <componentref id="braco2" />
+        <componentref id="bottom-1" />
+        <componentref id="perna1" />
+        <componentref id="perna2" />
+      </children>
+    </component>
+
+    <component id="corpo">
+      <transformation>
+        <scale x="0.3" y="1.0" z="0.3" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="cabeca" />
+      </children>
+    </component>
+
+    <component id="bottom-1">
+      <transformation>
+        <scale x="1.0" y="0.2" z="1.0" />
+        <rotate axis="x" angle="90" />
+      </transformation>
+      <materials>
+        <material id="normal" />
+      </materials>
+      <texture id="bottom" />
+      <children>
+      <primitiveref id="bottom" />
+      </children>
+    </component>
+
+    <component id="braco2">
+      <transformation>
+        <translate x="0.05" y="0.3" z="0.0" />
+        <rotate axis="x" angle="-90" />
+        <scale x="0.15" y="0.5" z="0.15" />
+      </transformation>
+      <materials>
+        <material id="corpo1" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="coneBom" />
+      </children>
+    </component>
+
+    <component id="braco1">
+      <transformation>
+        <translate x="0.05" y="0.3" z="0.0" />
+        <rotate axis="x" angle="90" />
+        <scale x="0.15" y="0.5" z="0.15" />
+      </transformation>
+      <materials>
+        <material id="corpo1" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="coneBom" />
+      </children>
+    </component>
+
+    <component id="perna1">
+      <transformation>
+        <translate x="0.0" y="-0.00" z="0.1" />
+        <rotate axis="y" angle="-80" />
+        <rotate axis="x" angle="120" />
+        <scale x="0.15" y="0.6" z="0.15" />
+      </transformation>
+      <materials>
+        <material id="corpo1" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="coneBom" />
+      </children>
+    </component>
+
+    <component id="perna2">
+      <transformation>
+        <translate x="0.0" y="-0.00" z="-0.1" />
+        <rotate axis="y" angle="-100" />
+        <rotate axis="x" angle="120" />
+        <scale x="0.15" y="0.6" z="0.15" />
+      </transformation>
+      <materials>
+        <material id="corpo1" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="coneBom" />
+      </children>
+    </component>
+
+    <component id="coneBom">
+      <transformation>
+        <rotate axis="x" angle="-90" />
+      </transformation>
+      <materials>
+        <material id="inherit" />
+      </materials>
+      <texture id="inherit" />
+      <children>
+          <primitiveref id="coneBom" />
+      </children>
+    </component>
+
+    <component id="cabeca">
+      <transformation>
+        <scale x="1.0" y="1.0" z="1.0" />
+        <rotate axis="x" angle="-90" />
+      </transformation>
+      <materials>
+        <material id="normal" />
+      </materials>
+      <texture id="face" />
+      <children>
+        <primitiveref id="cabeca" />
+      </children>
+    </component>
+
+
   <!--
     <component id="carro">
       <transformation>
@@ -350,17 +554,17 @@
   </components>
 
   <gamecomponents>
-    <boardLocation component="rute" />
-    <body component="bodyC" />
-    <cell component="cellC" />
-    <claw component="clawC" />
-    <leg component="legC" />
+    <boardLocation component="drawBoard"/>
+    <body component="bodyC"/>
+    <cell component="cellC"/>
+    <claw component="clawC"/>
+    <leg component="legC"/>
     <bell component="bellC"/>
-    <player1 material="black" texture="none" />
-    <player2 material="white" texture="none" />
-    <neutral material="grey" texture="none" />
-    <numbers material="grey" texture="numbers" />
-    <clock material="white" texture="madeiraP" />
+    <player1 material="black" texture="none"/>
+    <player2 material="white" texture="none"/>
+    <neutral material="grey" texture="none"/>
+    <numbers material="grey" texture="numbers"/>
+    <clock material="white" texture="madeira"/>
   </gamecomponents>
 
 </dsx>
