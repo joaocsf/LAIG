@@ -70,11 +70,11 @@ Member.prototype.storeFirst = function(){
 
 	this.animation.addKeyframe('position', new Keyframe(0,
 		 																									{pos: this.startPosition,
-																											 obj: null}, transition_follow_vector3));
+																											 obj: null}, transition_rigid_follow_vector3));
 
 	this.animation.addKeyframe('parent', new Keyframe(0, {obj: this, parent: null}, transition_parent));
 
-	this.animation.addKeyframe('rotation', new Keyframe(0, 0, transition_float));
+	this.animation.addKeyframe('rotation', new Keyframe(0, 0, transition_rigid_float));
 }
 
 Member.prototype.setParent = function(parent){

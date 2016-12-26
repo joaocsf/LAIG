@@ -11,7 +11,7 @@ function Animator(scene) {
 	this.play = false;
 	this.lastPlay = false;
 	this.animate = true;
-	this.playUI;
+	this.playUI = [];
 	this.currTime;
 	this.listeners = [];
 	this.playBtn;
@@ -35,7 +35,8 @@ Animator.prototype.changedAnimationTime = function(){
 
 Animator.prototype.updateMaxTime = function(){
 	this.animationMaxTime = this.animationTime + this.timeOffset;
-	this.playUI.__max = this.animationMaxTime;
+	for(var v = 0; v < this.playUI.length; v++)
+		this.playUI[v].__max = this.animationMaxTime;
 }
 
 Animator.prototype.addUndoListener = function(listener){

@@ -52,20 +52,25 @@ SceneInterface.prototype.init = function(application) {
 	}
 
 	var animationGroup = this.gui.addFolder("Animation");
+	var timelineSlider = animationGroup.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime).step(0.1).listen();
 	var timeline = animationGroup.add(this.scene.animator, 'animationTime').max(0, this.scene.animator.animationMaxTime).step(0.1).listen();
+	var updater1 = function(){
+		scene.animator.changingAnimationTime()
+	}
+	var updater2 = function(){
+		scene.animator.changedAnimationTime()
+	}
+	timeline.onChange(updater1);
+	timeline.onFinishChange(updater2);
 
-	this.scene.animator.playUI = timeline;
+	timelineSlider.onChange(updater1);
+	timelineSlider.onFinishChange(updater2);
+
+	this.scene.animator.playUI.push(timeline,timelineSlider);
 
 	var scene = this.scene;
 
 	this.scene.animator.animationTime = 0;
-	timeline.onChange( function(){
-		scene.animator.changingAnimationTime()
-	});
-
-	timeline.onFinishChange( function(){
-		scene.animator.changedAnimationTime();
-	});
 
 	var playButton = animationGroup.add(this.scene.animator, 'togglePlay').name("Play");
 	scene.animator.playBtn = playButton;
