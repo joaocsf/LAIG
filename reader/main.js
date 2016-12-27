@@ -11,9 +11,22 @@ function getUrlVars() {
     return vars;
 }
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'primitives/Component.js', 'primitives/Rectangle.js', 'SceneInterface.js', 'primitives/Torus.js', 'primitives/Triangle.js', 'primitives/Cylinder.js', 'primitives/Sphere.js',
-                'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'primitives/Plane.js', 'primitives/Patch.js', 'primitives/Vehicle.js','primitives/Chessboard.js', 'primitives/Sea.js',
+serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'SceneInterface.js',
 
+  'primitives/Component.js', 'primitives/Rectangle.js',  'primitives/Torus.js',
+  'primitives/Triangle.js', 'primitives/Cylinder.js', 'primitives/Sphere.js',
+  'primitives/Plane.js', 'primitives/Patch.js', 'primitives/Vehicle.js',
+  'primitives/Chessboard.js', 'primitives/Sea.js', 'primitives/Display.js',
+
+	'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js',
+
+  'animator/Animator.js', 'animator/Sequencer.js', 'animator/Keyframe.js',
+  'animator/Transitions.js', 'animator/Sequence.js',
+
+  'game/Board.js','game/Body.js','game/Member.js', 'game/Cell.js', 'game/Bell.js',
+  'game/Timer.js', 'game/Clock.js', 'game/Score.js',
+
+  'communication/connection.js','game/Logic.js',
 
 
 main=function()
@@ -21,13 +34,17 @@ main=function()
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myScene = new XMLscene();
+
+    var scenes =  ['gamescene1.dsx', 'gamescene2.dsx'];
+    myScene.graphsNames = scenes;
+
     var myInterface = new SceneInterface();
 
     app.init();
 
     app.setScene(myScene);
     app.setInterface(myInterface);
-	myScene.setInterface(myInterface);
+	  myScene.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
@@ -37,10 +54,13 @@ main=function()
 
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors
-	var myGraph = new MySceneGraph(filename, myScene);
 
+
+  for(var k = 0; k < scenes.length; k++){
+    var myGraph = new MySceneGraph(scenes[k], myScene);
+  }
 	// start
-    app.run();
+  app.run();
 }
 
 ]);

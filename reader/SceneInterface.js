@@ -7,7 +7,7 @@
 function SceneInterface() {
 	//call CGFinterface constructor
 	CGFinterface.call(this);
-
+	this.items = [];
 };
 
 SceneInterface.prototype = Object.create(CGFinterface.prototype);
@@ -19,8 +19,17 @@ SceneInterface.prototype.constructor = SceneInterface;
  */
 
 SceneInterface.prototype.updateLights = function(){
-	for(var i = 0; i < this.scene.lightState.length ; i++){
-		this.lightGroup.add(this.scene.lightState, i , this.scene.lightState[i]).name(this.scene.graph.lightsName[i]);
+	console.log(this.scene.graph.lightsName);
+	var length = this.scene.graph.lightsName.length;
+
+
+	for(var i = 0; i < this.scene.lights.length ; i++){
+	  var item = this.items[i];
+		if(i < length){
+			item.name(this.scene.graph.lightsName[i]);
+		}else{
+				item.name("Disabled");
+		}
 	}
 }
 
@@ -30,29 +39,64 @@ SceneInterface.prototype.init = function(application) {
 
 	// init GUI. For more information on the methods, check:
 	//  http://workshop.chromeexperiments.com/examples/gui
-
+	this.lightGroup = null;
 	this.gui = new dat.GUI();
-
 	this.lightGroup = this.gui.addFolder("Luzes");
 
-	// add a button:
-	// the first parameter is the object that is being controlled (in this case the scene)
-	// the identifier 'doSomething' must be a function declared as part of that object (i.e. a member of the scene class)
-	// e.g. LightingScene.prototype.doSomething = function () { console.log("Doing something..."); };
+	this.scene.animator.animationTime=0.0001;
 
-	// add a group of controls (and open/expand by defult)
+	//
+	for(var i = 0; i < this.scene.lights.length ; i++){
+		var item = this.lightGroup.add(this.scene.lightState, i , this.scene.lightState[i]).name("Disabled").listen();
+		this.items.push(item);
+	}
 
-	// add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
-	// e.g. this.option1=true; this.option2=false;
+	var animationGroup = this.gui.addFolder("Animation");
+	var timelineSlider = animationGroup.add(this.scene.animator, 'animationTime', 0, this.scene.animator.animationMaxTime).step(0.1).listen();
+	var timeline = animationGroup.add(this.scene.animator, 'animationTime').max(0, this.scene.animator.animationMaxTime).step(0.1).listen();
+	var updater1 = function(){
+		scene.animator.changingAnimationTime()
+	}
+	var updater2 = function(){
+		scene.animator.changedAnimationTime()
+	}
+	timeline.onChange(updater1);
+	timeline.onFinishChange(updater2);
 
+	timelineSlider.onChange(updater1);
+	timelineSlider.onFinishChange(updater2);
 
+	this.scene.animator.playUI.push(timeline,timelineSlider);
 
+	var scene = this.scene;
 
-	// add a slider
-	// must be a numeric variable of the scene, initialized in scene.init e.g.
-	// this.speed=3;
-	// min and max values can be specified as parameters
+	this.scene.animator.animationTime = 0;
 
+	var playButton = animationGroup.add(this.scene.animator, 'togglePlay').name("Play");
+	scene.animator.playBtn = playButton;
+
+	animationGroup.add(this.scene.animator, 'resume');
+	animationGroup.add(this.scene.animator, 'undo');
+
+	var gameGroup = this.gui.addFolder("Game");
+	this.scene.graphSelector = gameGroup.add(this.scene, 'graphName', this.scene.graphsNames).onFinishChange( function(){
+		scene.updateGraph();
+	}).listen();
+
+	gameGroup.add(this.scene.board, 'resetGame').name("Reset Game");
+
+	var debugGroup = this.gui.addFolder("Debug");
+	debugGroup.add(this.scene.board, 'debugCells');
+	debugGroup.add(this.scene.board, 'debugBodys');
+	debugGroup.add(this.scene.board, 'debugMembers');
+
+	var optionsGroup = this.gui.addFolder("Options");
+	optionsGroup.add(this.scene.board,'mode', {'H vs H' : 'hh', 'H vs C' : 'hc', 'C vs H' : 'ch', 'C vs C' : 'cc'}).name("Mode");
+	var difficultyGroup = optionsGroup.addFolder("Difficulty");
+	difficultyGroup.add(this.scene.board.dificuldade,1,{'Defensivo' : 'notOp', 'Ofensivo' : 'op'}).name("Bot 1");
+	difficultyGroup.add(this.scene.board.dificuldade,0,{'Defensivo' : 'notOp', 'Ofensivo' : 'op'}).name("Bot 2");
+	// Modes -> H vs C | H vs H | C vs C | C vs H
+	// Difficulties -> Defensivo(notOp) | Ofensivo(op);
 
 	return true;
 };
